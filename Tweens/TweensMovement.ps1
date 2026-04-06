@@ -41,6 +41,43 @@ function NumericDisplay {
     
 }
 
+function ProgressBar {
+    <#
+    .SYNOPSIS
+        Updates the value of a ProgressBar control during an animation.
+    .DESCRIPTION
+        Calculates the current progress value based on elapsed ticks and the easing function. 
+        Updates the target ProgressBar's Value property.
+    .PARAMETER tweenObj
+        The TweenNumericVal object containing the animation state and the ProgressBar control.
+    #>
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [TweenNumericVal]
+        $tweenObj
+    )
+
+    $tweenObj.nbTicks++
+    
+    if ($tweenObj.nbTicks -gt $tweenObj.duration) {
+        # animation ended
+
+        # Remove the tweenObject from the list of tweenObjects to animate
+        $Script:listToAnimate.Remove($tweenObj)
+
+        # Log some stuff
+        Write-Host $tweenObj.control.Name "animation ends. Duration :" $($(Get-Date) - $animationStartTime) "(supposed duration :" $($tweenObj.duration / $refreshRate) "sec.)"
+   
+    }
+    else {
+        $val = Ease $tweenObj.easing $tweenObj.startValue $tweenObj.delta $tweenObj.nbTicks $tweenObj.duration
+        $tweenObj.control.Value = $val
+    }
+
+}
+
 function MoveTo {
     <#
     .SYNOPSIS

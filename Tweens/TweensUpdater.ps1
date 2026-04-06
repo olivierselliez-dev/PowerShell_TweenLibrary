@@ -5,6 +5,13 @@ $timer.Interval = $($(1 / $($Script:refreshRate * 2)) * 1000)
 $timer.Add_Tick({ Update })
 
 function Update {
+    <#
+    .SYNOPSIS
+        Processes active animations on each timer tick.
+    .DESCRIPTION
+        Iterates through the global list of tweens and dispatches each to its 
+        corresponding update function (NumericDisplay, ProgressBar, or MoveTo).
+    #>
 
     if ($Script:listToAnimate.Count -gt 0) {
         try {
@@ -13,6 +20,9 @@ function Update {
                 switch ($tw.animationType) {
                     "numeric" {
                         NumericDisplay $tw
+                    }
+                    "progressBar" {
+                        ProgressBar $tw
                     }
                     "moveTo" { 
                         MoveTo $tw

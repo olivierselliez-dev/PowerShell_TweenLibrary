@@ -25,7 +25,6 @@ class TweenNumericVal : Tween {
         $this.endValue = $endVal
         $this.duration = $dur * $Script:refreshRate
 
-        $this.startValue = [double]$obj.Text
         $this.delta = $this.endValue - $this.startValue
         $this.nbTicks = 0
         $this.startTime = Get-Date

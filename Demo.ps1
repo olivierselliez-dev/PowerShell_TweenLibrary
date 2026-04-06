@@ -30,7 +30,7 @@ function CreateAnimatedControls {
     .SYNOPSIS
         Creates the UI elements that will be animated.
     .DESCRIPTION
-        Instantiates and adds labels and buttons to the main form to demonstrate different types of animations.
+        Instantiates and adds labels, progress bars, and buttons to the main form to demonstrate different types of animations.
     #>
 
     #region animated value
@@ -48,13 +48,26 @@ function CreateAnimatedControls {
     $Script:mainForm.Controls.Add($Script:animatedValue)
     #endregion
 
+    #region animated progressBar
+
+    $Script:animatedProgressBar = New-Object System.Windows.Forms.ProgressBar
+    $Script:animatedProgressBar.Width = 200
+    $Script:animatedProgressBar.Height = 25
+    $Script:animatedProgressBar.Name = "'Animated ProgressBar'"
+    $Script:animatedProgressBar.Value = 0
+    $Script:animatedProgressBar.Style = [System.Windows.Forms.ProgressBarStyle]::Continuous
+    $Script:animatedProgressBar.Location = [System.Drawing.Point]::new(10, 40)
+    $Script:mainForm.Controls.Add($Script:animatedProgressBar)
+
+    #endregion
+
     #region animated button
     $Script:animatedBtn = New-Object System.Windows.Forms.Button
     $Script:animatedBtn.AutoSize = $true
     $Script:animatedBtn.Text = "Animated Button"
     $Script:animatedBtn.Name = "'Animated Button'"
     $Script:animatedBtn.Add_Click({ onClickAnimatedButton })
-    $Script:animatedBtn.Location = [System.Drawing.Point]::new(10, 40)
+    $Script:animatedBtn.Location = [System.Drawing.Point]::new(10, 80)
     $Script:mainForm.Controls.Add($Script:animatedBtn)
     #endregion
 
@@ -63,7 +76,7 @@ function CreateAnimatedControls {
     $Script:animatedLabel.AutoSize = $true
     $Script:animatedLabel.Text = "This is an animated label"
     $Script:animatedLabel.Name = "'Animated Label'"
-    $Script:animatedLabel.Location = [System.Drawing.Point]::new(10, 80)
+    $Script:animatedLabel.Location = [System.Drawing.Point]::new(10, 130)
     $Script:mainForm.Controls.Add($Script:animatedLabel)
     #endregion
 
@@ -83,7 +96,7 @@ function CreateInputs {
     $grBoxSettings.Width = $Script:mainForm.ClientRectangle.Size.Width - 10
     $grBoxSettings.AutoSize = $true
     # $grBoxSettings.Location = [System.Drawing.Point]::new(5, $Script:btnStart.Location.Y - 5 - $grBoxSettings.Height - 25)
-    $grBoxSettings.Location = [System.Drawing.Point]::new(5, 403) 
+    $grBoxSettings.Location = [System.Drawing.Point]::new(5, 350) 
     $Script:mainForm.Controls.Add($grBoxSettings)
 
     #region AnimatedValue
@@ -125,7 +138,7 @@ function CreateInputs {
     $labelValueDuration = New-Object System.Windows.Forms.Label
     $labelValueDuration.AutoSize = $true
     $labelValueDuration.Text = "duration (sec):"
-    $labelValueDuration.Location = [System.Drawing.Point]::new($Script:txtBoxValueTo.Location.X + $Script:txtBoxValueTo.Width, $labelValue.Location.Y)
+    $labelValueDuration.Location = [System.Drawing.Point]::new($Script:txtBoxValueTo.Location.X + $Script:txtBoxValueTo.Width + 20, $labelValue.Location.Y)
     $grBoxSettings.Controls.Add($labelValueDuration)
 
     $Script:txtBoxValueDuration = New-Object System.Windows.Forms.TextBox
@@ -138,7 +151,7 @@ function CreateInputs {
     $labelValueEasing = New-Object System.Windows.Forms.Label
     $labelValueEasing.AutoSize = $true
     $labelValueEasing.Text = "Easing:"
-    $labelValueEasing.Location = [System.Drawing.Point]::new($Script:txtBoxValueDuration.Location.X + $Script:txtBoxValueDuration.Width, $labelValue.Location.Y)
+    $labelValueEasing.Location = [System.Drawing.Point]::new($Script:txtBoxValueDuration.Location.X + $Script:txtBoxValueDuration.Width + 20, $labelValue.Location.Y)
     $grBoxSettings.Controls.Add($labelValueEasing)
 
     $Script:cBoxValueEasing = New-Object System.Windows.Forms.ComboBox
@@ -166,13 +179,79 @@ function CreateInputs {
 
     #endregion
 
+    #region AnimatedProgressBar
+
+    [System.Windows.Forms.Label]$labelProgressBar | Out-Null # Out-Null to avoid messages in the console
+    $labelProgressBar = New-Object System.Windows.Forms.Label
+    $labelProgressBar.AutoSize = $true
+    $labelProgressBar.Text = "`"Animated ProgressBar`":"
+    $labelProgressBar.Location = [System.Drawing.Point]::new(5, 50)
+    $grBoxSettings.Controls.Add($labelProgressBar)
+
+    [System.Windows.Forms.Label]$labelProgressBarStart | Out-Null # Out-Null to avoid messages in the console
+    $labelProgressBarStart = New-Object System.Windows.Forms.Label
+    $labelProgressBarStart.AutoSize = $true
+    $labelProgressBarStart.Text = "from (%):"
+    $labelProgressBarStart.Location = [System.Drawing.Point]::new(141, $labelProgressBar.Location.Y)
+    $grBoxSettings.Controls.Add($labelProgressBarStart) 
+
+    $Script:txtBoxProgressBarStart = New-Object System.Windows.Forms.TextBox
+    $Script:txtBoxProgressBarStart.Width = 25
+    $Script:txtBoxProgressBarStart.Text = "0"
+    $Script:txtBoxProgressBarStart.Location = [System.Drawing.Point]::new(194, $labelProgressBar.Location.Y - 2)
+    $grBoxSettings.Controls.Add($Script:txtBoxProgressBarStart)
+
+    [System.Windows.Forms.Label]$labelProgressBarEnd | Out-Null # Out-Null to avoid messages in the console
+    $labelProgressBarEnd = New-Object System.Windows.Forms.Label
+    $labelProgressBarEnd.AutoSize = $true
+    $labelProgressBarEnd.Text = "to:"
+    $labelProgressBarEnd.Location = [System.Drawing.Point]::new($Script:txtBoxProgressBarStart.Location.X + $Script:txtBoxProgressBarStart.Width, $labelProgressBar.Location.Y)
+    $grBoxSettings.Controls.Add($labelProgressBarEnd)
+
+    $Script:txtBoxProgressBarEnd = New-Object System.Windows.Forms.TextBox
+    $Script:txtBoxProgressBarEnd.Width = 25
+    $Script:txtBoxProgressBarEnd.Text = "100"
+    $Script:txtBoxProgressBarEnd.Location = [System.Drawing.Point]::new($labelProgressBarEnd.Location.X + $labelProgressBarEnd.Width, $labelProgressBar.Location.Y - 2)
+    $grBoxSettings.Controls.Add($Script:txtBoxProgressBarEnd)
+
+    [System.Windows.Forms.Label]$labelProgressBarDuration | Out-Null # Out-Null to avoid messages in the console
+    $labelProgressBarDuration = New-Object System.Windows.Forms.Label
+    $labelProgressBarDuration.AutoSize = $true
+    $labelProgressBarDuration.Text = "duration (sec):"
+    $labelProgressBarDuration.Location = [System.Drawing.Point]::new($Script:txtBoxProgressBarEnd.Location.X + $Script:txtBoxProgressBarEnd.Width + 20, $labelProgressBar.Location.Y)
+    $grBoxSettings.Controls.Add($labelProgressBarDuration)
+
+    $Script:txtBoxProgressBarDuration = New-Object System.Windows.Forms.TextBox
+    $Script:txtBoxProgressBarDuration.Width = 25
+    $Script:txtBoxProgressBarDuration.Text = 5
+    $Script:txtBoxProgressBarDuration.Location = [System.Drawing.Point]::new($labelProgressBarDuration.Location.X + $labelProgressBarDuration.Width, $labelProgressBar.Location.Y - 2)
+    $grBoxSettings.Controls.Add($Script:txtBoxProgressBarDuration)
+
+    [System.Windows.Forms.Label]$labelProgressBarEasing | Out-Null # Out-Null to avoid messages in the console
+    $labelProgressBarEasing = New-Object System.Windows.Forms.Label
+    $labelProgressBarEasing.AutoSize = $true
+    $labelProgressBarEasing.Text = "Easing:"
+    $labelProgressBarEasing.Location = [System.Drawing.Point]::new($Script:txtBoxProgressBarDuration.Location.X + $Script:txtBoxProgressBarDuration.Width + 20, $labelProgressBar.Location.Y)
+    $grBoxSettings.Controls.Add($labelProgressBarEasing)
+
+    $Script:cBoxProgressBarEasing = New-Object System.Windows.Forms.ComboBox
+    $Script:cBoxProgressBarEasing.DropDownStyle = 'DropDownList'
+    $Script:cBoxProgressBarEasing.AutoSize = $true
+    $Script:cBoxProgressBarEasing.Location = [System.Drawing.Point]::new($labelProgressBarEasing.Location.X + $labelProgressBarEasing.Width, $labelProgressBar.Location.Y - 2)
+    PopulateComboBoxEasing $Script:cBoxProgressBarEasing
+    $Script:cBoxProgressBarEasing.SelectedIndex = 0
+    $grBoxSettings.Controls.Add($Script:cBoxProgressBarEasing)
+
+    #endregion
+
+
     #region AnimatedButton
     
     [System.Windows.Forms.Label]$labelBtn1 | Out-Null # Out-Null to avoid messages in the console
     $labelBtn1 = New-Object System.Windows.Forms.Label
     $labelBtn1.AutoSize = $true
     $labelBtn1.Text = "`"Animated Button`":"
-    $labelBtn1.Location = [System.Drawing.Point]::new(5, 50)
+    $labelBtn1.Location = [System.Drawing.Point]::new(5, 80)
     $grBoxSettings.Controls.Add($labelBtn1) 
 
     [System.Windows.Forms.Label]$labelBtn1Dest | Out-Null # Out-Null to avoid messages in the console
@@ -211,7 +290,7 @@ function CreateInputs {
     $labelBtn1Duration = New-Object System.Windows.Forms.Label
     $labelBtn1Duration.AutoSize = $true
     $labelBtn1Duration.Text = "duration (sec):"
-    $labelBtn1Duration.Location = [System.Drawing.Point]::new($txtBoxBtn1DestY.Location.X + $txtBoxBtn1DestY.Width, $labelBtn1.Location.Y)
+    $labelBtn1Duration.Location = [System.Drawing.Point]::new($txtBoxBtn1DestY.Location.X + $txtBoxBtn1DestY.Width + 20, $labelBtn1.Location.Y)
     $grBoxSettings.Controls.Add($labelBtn1Duration)
 
     $Script:txtBoxBtn1Duration = New-Object System.Windows.Forms.TextBox
@@ -224,7 +303,7 @@ function CreateInputs {
     $labelBtn1Easing = New-Object System.Windows.Forms.Label
     $labelBtn1Easing.AutoSize = $true
     $labelBtn1Easing.Text = "Easing:"
-    $labelBtn1Easing.Location = [System.Drawing.Point]::new($Script:txtBoxBtn1Duration.Location.X + $Script:txtBoxBtn1Duration.Width, $labelBtn1.Location.Y)
+    $labelBtn1Easing.Location = [System.Drawing.Point]::new($Script:txtBoxBtn1Duration.Location.X + $Script:txtBoxBtn1Duration.Width + 20, $labelBtn1.Location.Y)
     $grBoxSettings.Controls.Add($labelBtn1Easing)
 
     $Script:cBoxBtn1Easing = New-Object System.Windows.Forms.ComboBox
@@ -243,7 +322,7 @@ function CreateInputs {
     $labelLabel = New-Object System.Windows.Forms.Label
     $labelLabel.AutoSize = $true
     $labelLabel.Text = "`"Animated Label`":"
-    $labelLabel.Location = [System.Drawing.Point]::new(5, 80)
+    $labelLabel.Location = [System.Drawing.Point]::new(5, 110)
     $grBoxSettings.Controls.Add($labelLabel)  
 
     [System.Windows.Forms.Label]$labelLabelDest | Out-Null # Out-Null to avoid messages in the console
@@ -283,7 +362,7 @@ function CreateInputs {
     $labelLabelDuration = New-Object System.Windows.Forms.Label
     $labelLabelDuration.AutoSize = $true
     $labelLabelDuration.Text = "duration (sec):"
-    $labelLabelDuration.Location = [System.Drawing.Point]::new($txtBoxLabelDestY.Location.X + $txtBoxLabelDestY.Width, $labelLabel.Location.Y)
+    $labelLabelDuration.Location = [System.Drawing.Point]::new($txtBoxLabelDestY.Location.X + $txtBoxLabelDestY.Width + 20, $labelLabel.Location.Y)
     $grBoxSettings.Controls.Add($labelLabelDuration)
 
     $Script:txtBoxLabelDuration = New-Object System.Windows.Forms.TextBox
@@ -296,7 +375,7 @@ function CreateInputs {
     $labelLabelEasing = New-Object System.Windows.Forms.Label
     $labelLabelEasing.AutoSize = $true
     $labelLabelEasing.Text = "Easing:"
-    $labelLabelEasing.Location = [System.Drawing.Point]::new($Script:txtBoxLabelDuration.Location.X + $Script:txtBoxLabelDuration.Width, $labelLabel.Location.Y)
+    $labelLabelEasing.Location = [System.Drawing.Point]::new($Script:txtBoxLabelDuration.Location.X + $Script:txtBoxLabelDuration.Width + 20, $labelLabel.Location.Y)
     $grBoxSettings.Controls.Add($labelLabelEasing)
 
     $Script:cBoxLabelEasing = New-Object System.Windows.Forms.ComboBox
@@ -392,16 +471,19 @@ function onClickBtnStart {
         Reads user input, creates new Tween objects for the value label, button, and text label, and adds them to the animation queue.
     #>
 
-    $tweenValue = [TweenNumericVal]::new($Script:animatedValue, "numeric", $Script:cBoxValueType.SelectedItem, [double]$Script:txtBoxValueFrom.Text, [double]$Script:txtBoxValueTo.Text, [double]$Script:txtBoxValueDuration.Text, $Script:cBoxValueEasing.SelectedItem)
-    $Script:listToAnimate.Add($tweenValue)
+    # $tweenValue = [TweenNumericVal]::new($Script:animatedValue, "numeric", $Script:cBoxValueType.SelectedItem, [double]$Script:txtBoxValueFrom.Text, [double]$Script:txtBoxValueTo.Text, [double]$Script:txtBoxValueDuration.Text, $Script:cBoxValueEasing.SelectedItem)
+    # $Script:listToAnimate.Add($tweenValue)
 
-    $destPos = [System.Drawing.Point]::new([int]$Script:txtBoxBtn1DestX.Text, [int]$Script:TxtBoxBtn1DestY.Text)
-    $tweenBtn1 = [TweenMoveTo]::new($Script:animatedBtn, "moveTo", $destPos, [Double]$Script:txtBoxBtn1Duration.Text, $Script:cBoxBtn1Easing.SelectedItem)
-    $Script:listToAnimate.Add($tweenBtn1)
+    $tweenProgressBar = [TweenNumericVal]::new($Script:animatedProgressBar, "progressBar", "double", [double]$Script:txtBoxProgressBarStart.Text, [double]$Script:txtBoxProgressBarEnd.Text, [double]$Script:txtBoxProgressBarDuration.Text, $Script:cBoxProgressBarEasing.SelectedItem)
+    $Script:listToAnimate.Add($tweenProgressBar)
 
-    $destPos = [System.Drawing.Point]::new([int]$Script:txtBoxLabelDestX.Text, [int]$Script:TxtBoxLabelDestY.Text)
-    $tweenLabel = [TweenMoveTo]::new($Script:animatedLabel, "moveTo", $destPos, [Double]$Script:txtBoxLabelDuration.Text, $Script:cBoxLabelEasing.SelectedItem)
-    $Script:listToAnimate.Add($tweenLabel)
+    # $destPos = [System.Drawing.Point]::new([int]$Script:txtBoxBtn1DestX.Text, [int]$Script:TxtBoxBtn1DestY.Text)
+    # $tweenBtn1 = [TweenMoveTo]::new($Script:animatedBtn, "moveTo", $destPos, [Double]$Script:txtBoxBtn1Duration.Text, $Script:cBoxBtn1Easing.SelectedItem)
+    # $Script:listToAnimate.Add($tweenBtn1)
+
+    # $destPos = [System.Drawing.Point]::new([int]$Script:txtBoxLabelDestX.Text, [int]$Script:TxtBoxLabelDestY.Text)
+    # $tweenLabel = [TweenMoveTo]::new($Script:animatedLabel, "moveTo", $destPos, [Double]$Script:txtBoxLabelDuration.Text, $Script:cBoxLabelEasing.SelectedItem)
+    # $Script:listToAnimate.Add($tweenLabel)
 
     $Script:animationStartTime = Get-Date
     # Write-Host "Animations starts at :" $Script:animationStartTime.ToString()
@@ -415,8 +497,8 @@ function onClickBtnReset {
     .DESCRIPTION
         Manually moves the animated controls back to their original coordinates.
     #>
-    $Script:animatedBtn.Location = [System.Drawing.Point]::new(10, 40)
-    $Script:animatedLabel.Location = [System.Drawing.Point]::new(10, 80)
+    $Script:animatedBtn.Location = [System.Drawing.Point]::new(10, 80)
+    $Script:animatedLabel.Location = [System.Drawing.Point]::new(10, 130)
 }
 
 function onClickAnimatedButton {
@@ -444,6 +526,7 @@ function onClickAnimatedButton {
 
 # Animated objects :
 [System.Windows.Forms.Label]$Script:animatedValue | Out-Null # Out-Null to avoid messages in the console
+[System.Windows.Forms.progressBar]$Script:animatedProgressBar | Out-Null # Out-Null to avoid messages in the console
 [System.Windows.Forms.Button]$Script:animatedBtn | Out-Null # Out-Null to avoid messages in the console
 [System.Windows.Forms.Label]$Script:animatedLabel | Out-Null # Out-Null to avoid messages in the console
 
@@ -454,6 +537,11 @@ function onClickAnimatedButton {
 [System.Windows.Forms.ComboBox]$Script:cBoxValueType | Out-Null # Out-Null to avoid messages in the console
 [System.Windows.Forms.TextBox]$Script:txtBoxValueDuration | Out-Null # Out-Null to avoid messages in the console
 [System.Windows.Forms.ComboBox]$Script:cBoxValueEasing | Out-Null # Out-Null to avoid messages in the console
+# ProgressBar
+[System.Windows.Forms.TextBox]$Script:txtBoxProgressBarStart | Out-Null # Out-Null to avoid messages in the console
+[System.Windows.Forms.TextBox]$Script:txtBoxProgressBarEnd | Out-Null # Out-Null to avoid messages in the console
+[System.Windows.Forms.TextBox]$Script:txtBoxProgressBarDuration | Out-Null # Out-Null to avoid messages in the console
+[System.Windows.Forms.ComboBox]$Script:cBoxProgressBarEasing | Out-Null # Out-Null to avoid messages in the console
 # Button
 [System.Windows.Forms.TextBox]$Script:txtBoxBtn1DestX | Out-Null # Out-Null to avoid messages in the console
 [System.Windows.Forms.TextBox]$Script:txtBoxBtn1DestY | Out-Null # Out-Null to avoid messages in the console
