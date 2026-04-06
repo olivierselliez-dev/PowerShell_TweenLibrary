@@ -1,7 +1,7 @@
 Add-Type -AssemblyName System.Windows.Forms
 
 . .\Tweens\TweensVariables.ps1
-. .\Tweens\TweensClass.ps1
+. .\Tweens\Tweens.ps1
 . .\Tweens\TweensUpdater.ps1
 . .\Tweens\TweensMovement.ps1
 
