@@ -471,19 +471,19 @@ function onClickBtnStart {
         Reads user input, creates new Tween objects for the value label, button, and text label, and adds them to the animation queue.
     #>
 
-    # $tweenValue = [TweenNumericVal]::new($Script:animatedValue, "numeric", $Script:cBoxValueType.SelectedItem, [double]$Script:txtBoxValueFrom.Text, [double]$Script:txtBoxValueTo.Text, [double]$Script:txtBoxValueDuration.Text, $Script:cBoxValueEasing.SelectedItem)
-    # $Script:listToAnimate.Add($tweenValue)
+    $tweenValue = [TweenNumericVal]::new($Script:animatedValue, "numeric", $Script:cBoxValueType.SelectedItem, [double]$Script:txtBoxValueFrom.Text, [double]$Script:txtBoxValueTo.Text, [double]$Script:txtBoxValueDuration.Text, $Script:cBoxValueEasing.SelectedItem)
+    $Script:listToAnimate.Add($tweenValue)
 
     $tweenProgressBar = [TweenNumericVal]::new($Script:animatedProgressBar, "progressBar", "double", [double]$Script:txtBoxProgressBarStart.Text, [double]$Script:txtBoxProgressBarEnd.Text, [double]$Script:txtBoxProgressBarDuration.Text, $Script:cBoxProgressBarEasing.SelectedItem)
     $Script:listToAnimate.Add($tweenProgressBar)
 
-    # $destPos = [System.Drawing.Point]::new([int]$Script:txtBoxBtn1DestX.Text, [int]$Script:TxtBoxBtn1DestY.Text)
-    # $tweenBtn1 = [TweenMoveTo]::new($Script:animatedBtn, "moveTo", $destPos, [Double]$Script:txtBoxBtn1Duration.Text, $Script:cBoxBtn1Easing.SelectedItem)
-    # $Script:listToAnimate.Add($tweenBtn1)
+    $destPos = [System.Drawing.Point]::new([int]$Script:txtBoxBtn1DestX.Text, [int]$Script:TxtBoxBtn1DestY.Text)
+    $tweenBtn1 = [TweenMoveTo]::new($Script:animatedBtn, "moveTo", $destPos, [Double]$Script:txtBoxBtn1Duration.Text, $Script:cBoxBtn1Easing.SelectedItem)
+    $Script:listToAnimate.Add($tweenBtn1)
 
-    # $destPos = [System.Drawing.Point]::new([int]$Script:txtBoxLabelDestX.Text, [int]$Script:TxtBoxLabelDestY.Text)
-    # $tweenLabel = [TweenMoveTo]::new($Script:animatedLabel, "moveTo", $destPos, [Double]$Script:txtBoxLabelDuration.Text, $Script:cBoxLabelEasing.SelectedItem)
-    # $Script:listToAnimate.Add($tweenLabel)
+    $destPos = [System.Drawing.Point]::new([int]$Script:txtBoxLabelDestX.Text, [int]$Script:TxtBoxLabelDestY.Text)
+    $tweenLabel = [TweenMoveTo]::new($Script:animatedLabel, "moveTo", $destPos, [Double]$Script:txtBoxLabelDuration.Text, $Script:cBoxLabelEasing.SelectedItem)
+    $Script:listToAnimate.Add($tweenLabel)
 
     $Script:animationStartTime = Get-Date
     # Write-Host "Animations starts at :" $Script:animationStartTime.ToString()
