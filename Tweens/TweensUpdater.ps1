@@ -1,7 +1,7 @@
 $Script:refreshRate = 60
 
 [System.Windows.Forms.Timer]$timer = New-Object System.Windows.Forms.Timer
-$timer.Interval = $($(1 / $($Script:refreshRate * 2)) * 1000)
+$timer.Interval = 1 / $($Script:refreshRate * 2) * 1000 #TODO: understand why *2
 $timer.Add_Tick({ Update })
 
 function Update {
@@ -15,17 +15,19 @@ function Update {
 
     if ($Script:listToAnimate.Count -gt 0) {
         try {
-            foreach ($tw in $Script:listToAnimate) {
-
-                switch ($tw.animationType) {
-                    "numeric" {
-                        NumericDisplay $tw
+            foreach ($tweenObj in $Script:listToAnimate) {
+                switch ($tweenObj.GetType()) {
+                    "TweenNumericString" {
+                        NumericString $tweenObj
                     }
-                    "progressBar" {
-                        ProgressBar $tw
+                    "TweenProgressBar" {
+                        ProgressBar $tweenObj
                     }
-                    "moveTo" { 
-                        MoveTo $tw
+                    "TweenMoveTo" { 
+                        MoveTo $tweenObj
+                    }
+                    "TweenColorARGB"{
+                        ColorARGB $tweenObj
                     }
                     Default { Write-Host "AnimationType not handled." }
                 }

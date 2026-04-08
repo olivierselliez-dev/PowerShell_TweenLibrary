@@ -1,9 +1,9 @@
 Add-Type -AssemblyName System.Windows.Forms
 
-. .\Tweens\TweensVariables.ps1
-. .\Tweens\Tweens.ps1
-. .\Tweens\TweensUpdater.ps1
-. .\Tweens\TweensMovement.ps1
+. $PSScriptRoot\Tweens\TweensVariables.ps1
+. $PSScriptRoot\Tweens\Tweens.ps1
+. $PSScriptRoot\Tweens\TweensUpdater.ps1
+. $PSScriptRoot\Tweens\TweensMovement.ps1
 
 #region Display
 
@@ -49,16 +49,34 @@ function CreateAnimatedControls {
     #endregion
 
     #region animated progressBar
-
     $Script:animatedProgressBar = New-Object System.Windows.Forms.ProgressBar
     $Script:animatedProgressBar.Width = 200
     $Script:animatedProgressBar.Height = 25
     $Script:animatedProgressBar.Name = "'Animated ProgressBar'"
     $Script:animatedProgressBar.Value = 0
     $Script:animatedProgressBar.Style = [System.Windows.Forms.ProgressBarStyle]::Continuous
-    $Script:animatedProgressBar.Location = [System.Drawing.Point]::new(10, 40)
+    $Script:animatedProgressBar.Location = [System.Drawing.Point]::new(10, $labelAnimatedValue.Location.Y + $labelAnimatedValue.Height + 20)
     $Script:mainForm.Controls.Add($Script:animatedProgressBar)
+    #endregion
 
+    #region colored label
+    $Script:coloredLabel = New-Object System.Windows.Forms.Label
+    $Script:coloredLabel.AutoSize = $true
+    $Script:coloredLabel.Text = "This is a colored label"
+    $Script:coloredLabel.Name = "'Colored Label'"
+    $Script:coloredLabel.Location = [System.Drawing.Point]::new(10, $animatedProgressBar.Location.Y + $animatedProgressBar.Height + 20)
+    $Script:mainForm.Controls.Add($Script:coloredLabel)
+    #endregion
+
+    #region colored label background
+    $Script:coloredLabelBkg = New-Object System.Windows.Forms.Label
+    $Script:coloredLabelBkg.AutoSize = $true
+    $Script:coloredLabelBkg.Text = "This is a label with a colored background"
+    $Script:coloredLabelBkg.Name = "'Colored Label Background'"
+    $Script:coloredLabelBkg.ForeColor = [System.Drawing.Color]::White
+    $Script:coloredLabelBkg.BackColor = [System.Drawing.Color]::Black
+    $Script:coloredLabelBkg.Location = [System.Drawing.Point]::new($Script:coloredLabel.Location.X + $Script:coloredLabel.Width + 20, $animatedProgressBar.Location.Y + $animatedProgressBar.Height + 20)
+    $Script:mainForm.Controls.Add($Script:coloredLabelBkg)
     #endregion
 
     #region animated button
@@ -67,16 +85,16 @@ function CreateAnimatedControls {
     $Script:animatedBtn.Text = "Animated Button"
     $Script:animatedBtn.Name = "'Animated Button'"
     $Script:animatedBtn.Add_Click({ onClickAnimatedButton })
-    $Script:animatedBtn.Location = [System.Drawing.Point]::new(10, 80)
+    $Script:animatedBtn.Location = [System.Drawing.Point]::new(10, $coloredLabel.Location.Y + $coloredLabel.Height + 20)
     $Script:mainForm.Controls.Add($Script:animatedBtn)
     #endregion
 
     #region animated label
     $Script:animatedLabel = New-Object System.Windows.Forms.Label
     $Script:animatedLabel.AutoSize = $true
-    $Script:animatedLabel.Text = "This is an animated label"
+    $Script:animatedLabel.Text = "This is an animated label,`nbut any controls can be animated"
     $Script:animatedLabel.Name = "'Animated Label'"
-    $Script:animatedLabel.Location = [System.Drawing.Point]::new(10, 130)
+    $Script:animatedLabel.Location = [System.Drawing.Point]::new(10, $animatedBtn.Location.Y + $animatedBtn.Height + 20)
     $Script:mainForm.Controls.Add($Script:animatedLabel)
     #endregion
 
@@ -108,12 +126,12 @@ function CreateInputs {
     $labelValue.Location = [System.Drawing.Point]::new(5, 20)
     $grBoxSettings.Controls.Add($labelValue) 
 
-    [System.Windows.Forms.Label]$labelValueDest | Out-Null # Out-Null to avoid messages in the console
-    $labelValueDest = New-Object System.Windows.Forms.Label
-    $labelValueDest.AutoSize = $true
-    $labelValueDest.Text = "from:"
-    $labelValueDest.Location = [System.Drawing.Point]::new(162, $labelValue.Location.Y)
-    $grBoxSettings.Controls.Add($labelValueDest) 
+    [System.Windows.Forms.Label]$labelValueFrom | Out-Null # Out-Null to avoid messages in the console
+    $labelValueFrom = New-Object System.Windows.Forms.Label
+    $labelValueFrom.AutoSize = $true
+    $labelValueFrom.Text = "from:"
+    $labelValueFrom.Location = [System.Drawing.Point]::new(162, $labelValue.Location.Y)
+    $grBoxSettings.Controls.Add($labelValueFrom) 
 
     $Script:txtBoxValueFrom = New-Object System.Windows.Forms.TextBox
     $Script:txtBoxValueFrom.Width = 25
@@ -184,7 +202,7 @@ function CreateInputs {
     [System.Windows.Forms.Label]$labelProgressBar | Out-Null # Out-Null to avoid messages in the console
     $labelProgressBar = New-Object System.Windows.Forms.Label
     $labelProgressBar.AutoSize = $true
-    $labelProgressBar.Text = "`"Animated ProgressBar`":"
+    $labelProgressBar.Text = "`"ProgressBar`":"
     $labelProgressBar.Location = [System.Drawing.Point]::new(5, 50)
     $grBoxSettings.Controls.Add($labelProgressBar)
 
@@ -244,6 +262,80 @@ function CreateInputs {
 
     #endregion
 
+    #region color
+
+    [System.Windows.Forms.Label]$labelColor | Out-Null # Out-Null to avoid messages in the console
+    $labelColor = New-Object System.Windows.Forms.Label
+    $labelColor.AutoSize = $true
+    $labelColor.Text = "`"Color transition`":"
+    $labelColor.Location = [System.Drawing.Point]::new(5, 80)
+    $grBoxSettings.Controls.Add($labelColor)
+
+    [System.Windows.Forms.Label]$labelColorFrom | Out-Null # Out-Null to avoid messages in the console
+    $labelColorFrom = New-Object System.Windows.Forms.Label
+    $labelColorFrom.AutoSize = $true
+    $labelColorFrom.Text = "from:"
+    $labelColorFrom.Location = [System.Drawing.Point]::new(162, $labelColor.Location.Y)
+    $grBoxSettings.Controls.Add($labelColorFrom) 
+
+    [System.Windows.Forms.Button]$btnColorStart | Out-Null # Out-Null to avoid messages in the console
+    $btnColorStart = New-Object System.Windows.Forms.Button
+    $btnColorStart.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+    $btnColorStart.Width = 23
+    $btnColorStart.Height = 20
+    $btnColorStart.BackColor = [System.Drawing.Color]::Black
+    $btnColorStart.Name = "btnColorStart"
+    $btnColorStart.Location = [System.Drawing.Point]::new($labelColorFrom.Location.X + $labelColorFrom.Width, $labelColor.Location.Y - 2)
+    $btnColorStart.Add_Click({ onClickColorButton })
+    $grBoxSettings.Controls.Add($btnColorStart)
+    
+    [System.Windows.Forms.Label]$labelColorTo | Out-Null # Out-Null to avoid messages in the console
+    $labelColorTo = New-Object System.Windows.Forms.Label
+    $labelColorTo.AutoSize = $true
+    $labelColorTo.Text = "to:"
+    $labelColorTo.Location = [System.Drawing.Point]::new($btnColorStart.Location.X + $btnColorStart.Width + 1, $labelColor.Location.Y)
+    $grBoxSettings.Controls.Add($labelColorTo)
+
+    [System.Windows.Forms.Button]$btnColorEnd | Out-Null # Out-Null to avoid messages in the console
+    $btnColorEnd = New-Object System.Windows.Forms.Button
+    $btnColorEnd.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+    $btnColorEnd.Width = 23
+    $btnColorEnd.Height = 20
+    $btnColorEnd.BackColor = [System.Drawing.Color]::White
+    $btnColorEnd.Name = "btnColorEnd"
+    $btnColorEnd.Location = [System.Drawing.Point]::new($labelColorTo.Location.X + $labelColorTo.Width, $labelColor.Location.Y - 2)
+    $btnColorEnd.Add_Click({ onClickColorButton })
+    $grBoxSettings.Controls.Add($btnColorEnd)
+
+    [System.Windows.Forms.Label]$labelColorDuration | Out-Null # Out-Null to avoid messages in the console
+    $labelColorDuration = New-Object System.Windows.Forms.Label
+    $labelColorDuration.AutoSize = $true
+    $labelColorDuration.Text = "duration (sec):"
+    $labelColorDuration.Location = [System.Drawing.Point]::new($btnColorEnd.Location.X + $btnColorEnd.Width + 21, $labelColor.Location.Y)
+    $grBoxSettings.Controls.Add($labelColorDuration)
+
+    $Script:txtBoxColorDuration = New-Object System.Windows.Forms.TextBox
+    $Script:txtBoxColorDuration.Width = 25
+    $Script:txtBoxColorDuration.Text = 5
+    $Script:txtBoxColorDuration.Location = [System.Drawing.Point]::new($labelColorDuration.Location.X + $labelColorDuration.Width, $labelColor.Location.Y - 2)
+    $grBoxSettings.Controls.Add($Script:txtBoxColorDuration)
+
+    [System.Windows.Forms.Label]$labelColorEasing | Out-Null # Out-Null to avoid messages in the console
+    $labelColorEasing = New-Object System.Windows.Forms.Label
+    $labelColorEasing.AutoSize = $true
+    $labelColorEasing.Text = "Easing:"
+    $labelColorEasing.Location = [System.Drawing.Point]::new($Script:txtBoxColorDuration.Location.X + $Script:txtBoxColorDuration.Width + 21, $labelColor.Location.Y)
+    $grBoxSettings.Controls.Add($labelColorEasing)
+
+    $Script:cBoxColorEasing = New-Object System.Windows.Forms.ComboBox
+    $Script:cBoxColorEasing.DropDownStyle = 'DropDownList'
+    $Script:cBoxColorEasing.AutoSize = $true
+    $Script:cBoxColorEasing.Location = [System.Drawing.Point]::new($labelColorEasing.Location.X + $labelColorEasing.Width, $labelColor.Location.Y - 2)
+    PopulateComboBoxEasing $Script:cBoxColorEasing
+    $Script:cBoxColorEasing.SelectedIndex = 0
+    $grBoxSettings.Controls.Add($Script:cBoxColorEasing)
+
+    #endregion
 
     #region AnimatedButton
     
@@ -251,7 +343,7 @@ function CreateInputs {
     $labelBtn1 = New-Object System.Windows.Forms.Label
     $labelBtn1.AutoSize = $true
     $labelBtn1.Text = "`"Animated Button`":"
-    $labelBtn1.Location = [System.Drawing.Point]::new(5, 80)
+    $labelBtn1.Location = [System.Drawing.Point]::new(5, 110)
     $grBoxSettings.Controls.Add($labelBtn1) 
 
     [System.Windows.Forms.Label]$labelBtn1Dest | Out-Null # Out-Null to avoid messages in the console
@@ -273,6 +365,7 @@ function CreateInputs {
     $Script:txtBoxBtn1DestX.Text = $Script:animatedBtn.Location.X.ToString()
     $Script:txtBoxBtn1DestX.Location = [System.Drawing.Point]::new($labelBtn1DestX.Location.X + $labelBtn1DestX.Width, $labelBtn1.Location.Y - 2)
     $grBoxSettings.Controls.Add($Script:txtBoxBtn1DestX)
+
     [System.Windows.Forms.Label]$labelBtn1DestY | Out-Null # Out-Null to avoid messages in the console
     $labelBtn1DestY = New-Object System.Windows.Forms.Label
     $labelBtn1DestY.AutoSize = $true
@@ -322,7 +415,7 @@ function CreateInputs {
     $labelLabel = New-Object System.Windows.Forms.Label
     $labelLabel.AutoSize = $true
     $labelLabel.Text = "`"Animated Label`":"
-    $labelLabel.Location = [System.Drawing.Point]::new(5, 110)
+    $labelLabel.Location = [System.Drawing.Point]::new(5, 140)
     $grBoxSettings.Controls.Add($labelLabel)  
 
     [System.Windows.Forms.Label]$labelLabelDest | Out-Null # Out-Null to avoid messages in the console
@@ -468,21 +561,28 @@ function onClickBtnStart {
     .SYNOPSIS
         Event handler for the Start button click.
     .DESCRIPTION
-        Reads user input, creates new Tween objects for the value label, button, and text label, and adds them to the animation queue.
+        Reads configuration settings from the UI and creates Tween instances for numeric text, 
+        progress bar progress, color transitions, and control movement.
     #>
 
-    $tweenValue = [TweenNumericVal]::new($Script:animatedValue, "numeric", $Script:cBoxValueType.SelectedItem, [double]$Script:txtBoxValueFrom.Text, [double]$Script:txtBoxValueTo.Text, [double]$Script:txtBoxValueDuration.Text, $Script:cBoxValueEasing.SelectedItem)
+    $tweenValue = [TweenNumericString]::new($Script:animatedValue, $Script:cBoxValueType.SelectedItem, [double]$Script:txtBoxValueFrom.Text, [double]$Script:txtBoxValueTo.Text, [double]$Script:txtBoxValueDuration.Text, $Script:cBoxValueEasing.SelectedItem)
     $Script:listToAnimate.Add($tweenValue)
 
-    $tweenProgressBar = [TweenNumericVal]::new($Script:animatedProgressBar, "progressBar", "double", [double]$Script:txtBoxProgressBarStart.Text, [double]$Script:txtBoxProgressBarEnd.Text, [double]$Script:txtBoxProgressBarDuration.Text, $Script:cBoxProgressBarEasing.SelectedItem)
+    $tweenProgressBar = [TweenProgressBar]::new($Script:animatedProgressBar, [double]$Script:txtBoxProgressBarStart.Text, [double]$Script:txtBoxProgressBarEnd.Text, [double]$Script:txtBoxProgressBarDuration.Text, $Script:cBoxProgressBarEasing.SelectedItem)
     $Script:listToAnimate.Add($tweenProgressBar)
 
+    $tweenColorLabel = [TweenColorARGB]::new($Script:coloredLabel, "ForeColor", $Script:colorStart, $Script:colorEnd, $Script:txtBoxColorDuration.Text, $Script:cBoxColorEasing.SelectedItem)
+    $Script:listToAnimate.Add($tweenColorLabel)
+
+    $tweenColorLabelBkg = [TweenColorARGB]::new($Script:coloredLabelBkg, "BackColor", $Script:colorStart, $Script:colorEnd, $Script:txtBoxColorDuration.Text, $Script:cBoxColorEasing.SelectedItem)
+    $Script:listToAnimate.Add($tweenColorLabelBkg)
+
     $destPos = [System.Drawing.Point]::new([int]$Script:txtBoxBtn1DestX.Text, [int]$Script:TxtBoxBtn1DestY.Text)
-    $tweenBtn1 = [TweenMoveTo]::new($Script:animatedBtn, "moveTo", $destPos, [Double]$Script:txtBoxBtn1Duration.Text, $Script:cBoxBtn1Easing.SelectedItem)
+    $tweenBtn1 = [TweenMoveTo]::new($Script:animatedBtn, $destPos, [Double]$Script:txtBoxBtn1Duration.Text, $Script:cBoxBtn1Easing.SelectedItem)
     $Script:listToAnimate.Add($tweenBtn1)
 
     $destPos = [System.Drawing.Point]::new([int]$Script:txtBoxLabelDestX.Text, [int]$Script:TxtBoxLabelDestY.Text)
-    $tweenLabel = [TweenMoveTo]::new($Script:animatedLabel, "moveTo", $destPos, [Double]$Script:txtBoxLabelDuration.Text, $Script:cBoxLabelEasing.SelectedItem)
+    $tweenLabel = [TweenMoveTo]::new($Script:animatedLabel, $destPos, [Double]$Script:txtBoxLabelDuration.Text, $Script:cBoxLabelEasing.SelectedItem)
     $Script:listToAnimate.Add($tweenLabel)
 
     $Script:animationStartTime = Get-Date
@@ -495,10 +595,46 @@ function onClickBtnReset {
     .SYNOPSIS
         Event handler for the Reset button click.
     .DESCRIPTION
-        Manually moves the animated controls back to their original coordinates.
+        Resets the animated controls (button and label) to their initial UI coordinates.
     #>
-    $Script:animatedBtn.Location = [System.Drawing.Point]::new(10, 80)
-    $Script:animatedLabel.Location = [System.Drawing.Point]::new(10, 130)
+    $Script:animatedBtn.Location = [System.Drawing.Point]::new(10, $coloredLabel.Location.Y + $coloredLabel.Height + 20)
+    $Script:animatedLabel.Location = [System.Drawing.Point]::new(10, $animatedBtn.Location.Y + $animatedBtn.Height + 20)
+}
+
+function onClickColorButton {
+    <#
+    .SYNOPSIS
+        Event handler for color selection buttons.
+    .DESCRIPTION
+        Displays a ColorDialog to allow selecting a color. The chosen color is 
+        applied to the source button and stored as either the start or end color 
+        for the upcoming color transition animation.
+    #>
+
+    $clickedBtn = $this
+
+    [System.Windows.Forms.ColorDialog]$colorPicker
+    $colorPicker = New-Object System.Windows.Forms.ColorDialog
+    $colorPicker.AllowFullOpen = $true
+
+    if ($colorPicker.ShowDialog() -eq 'OK') {
+
+        $color = [System.Drawing.Color]::FromArgb(
+            $colorPicker.Color.A,
+            $colorPicker.Color.R,
+            $colorPicker.Color.G,
+            $colorPicker.Color.B
+        )
+
+        $clickedBtn.BackColor = $color
+        
+        if ($clickedBtn.Name -eq "btnColorStart") {
+            $Script:colorStart = $color
+        }
+        else {
+            $Script:colorEnd = $color
+        }
+    }
 }
 
 function onClickAnimatedButton {
@@ -526,7 +662,9 @@ function onClickAnimatedButton {
 
 # Animated objects :
 [System.Windows.Forms.Label]$Script:animatedValue | Out-Null # Out-Null to avoid messages in the console
-[System.Windows.Forms.progressBar]$Script:animatedProgressBar | Out-Null # Out-Null to avoid messages in the console
+[System.Windows.Forms.ProgressBar]$Script:animatedProgressBar | Out-Null # Out-Null to avoid messages in the console
+[System.Windows.Forms.Label]$Script:coloredLabel | Out-Null # Out-Null to avoid messages in the console
+[System.Windows.Forms.Label]$Script:coloredLabelBkg | Out-Null # Out-Null to avoid messages in the console
 [System.Windows.Forms.Button]$Script:animatedBtn | Out-Null # Out-Null to avoid messages in the console
 [System.Windows.Forms.Label]$Script:animatedLabel | Out-Null # Out-Null to avoid messages in the console
 
@@ -542,6 +680,11 @@ function onClickAnimatedButton {
 [System.Windows.Forms.TextBox]$Script:txtBoxProgressBarEnd | Out-Null # Out-Null to avoid messages in the console
 [System.Windows.Forms.TextBox]$Script:txtBoxProgressBarDuration | Out-Null # Out-Null to avoid messages in the console
 [System.Windows.Forms.ComboBox]$Script:cBoxProgressBarEasing | Out-Null # Out-Null to avoid messages in the console
+# Color label
+[System.Drawing.Color]$colorStart = [System.Drawing.Color]::Black
+[System.Drawing.Color]$colorEnd = [System.Drawing.Color]::White
+[System.Windows.Forms.TextBox]$Script:txtBoxColorDuration | Out-Null # Out-Null to avoid messages in the console
+[System.Windows.Forms.ComboBox]$Script:cBoxColorEasing | Out-Null # Out-Null to avoid messages in the console
 # Button
 [System.Windows.Forms.TextBox]$Script:txtBoxBtn1DestX | Out-Null # Out-Null to avoid messages in the console
 [System.Windows.Forms.TextBox]$Script:txtBoxBtn1DestY | Out-Null # Out-Null to avoid messages in the console
