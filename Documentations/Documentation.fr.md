@@ -42,6 +42,8 @@ Anime la progression d'une `ProgressBar`.
 ## Easing (Atténuation)
 
 Les variables d'atténuation sont accessibles via le scope `$Script:` (ex: `$Script:easeBounceOut`).
+Vous pouvez consulter des exemples visuels de ces courbes sur [easings.net](https://easings.net/).
+
 Principaux types :
 - `Linear`
 - `Expo`
