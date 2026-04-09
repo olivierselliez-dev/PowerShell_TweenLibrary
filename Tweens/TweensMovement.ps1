@@ -1,4 +1,4 @@
-function NumericDisplay {
+function NumericString {
     <#
     .SYNOPSIS
         Updates the text property of a control for numeric animations.
@@ -12,7 +12,7 @@ function NumericDisplay {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
-        [TweenNumericVal]
+        [TweenNumericString]
         $tweenObj
     )
 
@@ -39,6 +39,43 @@ function NumericDisplay {
         }
     }
     
+}
+
+function ProgressBar {
+    <#
+    .SYNOPSIS
+        Updates the value of a ProgressBar control during an animation.
+    .DESCRIPTION
+        Calculates the current progress value based on elapsed ticks and the easing function. 
+        Updates the target ProgressBar's Value property.
+    .PARAMETER tweenObj
+        The TweenNumericVal object containing the animation state and the ProgressBar control.
+    #>
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [TweenProgressBar]
+        $tweenObj
+    )
+
+    $tweenObj.nbTicks++
+    
+    if ($tweenObj.nbTicks -gt $tweenObj.duration) {
+        # animation ended
+
+        # Remove the tweenObject from the list of tweenObjects to animate
+        $Script:listToAnimate.Remove($tweenObj)
+
+        # Log some stuff
+        Write-Host $tweenObj.control.Name "animation ends. Duration :" $($(Get-Date) - $animationStartTime) "(supposed duration :" $($tweenObj.duration / $refreshRate) "sec.)"
+   
+    }
+    else {
+        $val = Ease $tweenObj.easing $tweenObj.startValue $tweenObj.delta $tweenObj.nbTicks $tweenObj.duration
+        $tweenObj.control.Value = $val
+    }
+
 }
 
 function MoveTo {
@@ -82,6 +119,56 @@ function MoveTo {
         $currentPos.Y = Ease $tweenObj.easing $tweenObj.startPos.Y $tweenObj.delta.Y $tweenObj.nbTicks $tweenObj.duration
 
         $tweenObj.control.Location = $currentPos
+    }
+
+}
+
+function ColorARGB {
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [TweenColorARGB]
+        $tweenObj
+    )
+
+    $tweenObj.nbTicks++
+    
+    if ($tweenObj.nbTicks -gt $tweenObj.duration) {
+        # animation ended
+        
+        # Remove the tweenObject from the list of tweenObjects to animate
+        $Script:listToAnimate.Remove($tweenObj)
+
+        # Log some stuff
+        Write-Host $tweenObj.control.Name "animation ends. Duration :" $($(Get-Date) - $animationStartTime) "(supposed duration :" $($tweenObj.duration / $refreshRate) "sec.)"
+   
+    }
+    else {
+        switch ($tweenObj.control.GetType()) {
+
+            "System.Windows.Forms.Label" { 
+
+                [System.Windows.Forms.Label]$label = $tweenObj.control
+
+                $A = Ease $tweenObj.easing $tweenObj.startColor.A $tweenObj.deltaA $tweenObj.nbTicks $tweenObj.duration
+                $R = Ease $tweenObj.easing $tweenObj.startColor.R $tweenObj.deltaR $tweenObj.nbTicks $tweenObj.duration
+                $G = Ease $tweenObj.easing $tweenObj.startColor.G $tweenObj.deltaG $tweenObj.nbTicks $tweenObj.duration
+                $B = Ease $tweenObj.easing $tweenObj.startColor.B $tweenObj.deltaB $tweenObj.nbTicks $tweenObj.duration
+
+                if ($tweenObj.type -eq "ForeColor") {
+                    $label.ForeColor = [System.Drawing.Color]::FromArgb($A, $R, $G, $B)
+                }
+                else { #BackColor
+                    $label.BackColor = [System.Drawing.Color]::FromArgb($A, $R, $G, $B)
+                }
+            }
+            
+            Default {
+                Write-Host "This type of control is not yet handled. Please implement it."
+            }
+
+        }
     }
 
 }
