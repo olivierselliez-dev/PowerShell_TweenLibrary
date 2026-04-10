@@ -488,7 +488,7 @@ function CreateInputs {
     $grBoxInstructions.Margin = 0
     $grBoxInstructions.Location = [System.Drawing.Point]::new($Script:cBoxBtn1Easing.Location.X + $Script:cBoxBtn1Easing.Width + 5, $Script:cBoxBtn1Easing.Location.Y - 6)
     $grBoxInstructions.Width = $grBoxSettings.Width - $grBoxInstructions.Location.X - 5
-    $grBoxInstructions.Height = $Script:cBoxLabelEasing.Location.Y + $Script:cBoxLabelEasing.Height - $Script:cBoxBtn1Easing.Location.Y + 5
+    $grBoxInstructions.Height = $Script:cBoxLabelEasing.Location.Y + $Script:cBoxLabelEasing.Height - $Script:cBoxBtn1Easing.Location.Y + 7
     $grBoxSettings.Controls.Add($grBoxInstructions)
 
     [System.Windows.Forms.Label]$labelInstructions
@@ -497,6 +497,7 @@ function CreateInputs {
     $labelInstructions.Height = $grBoxInstructions.Height - 10
     $labelInstructions.Location = [System.Drawing.Point]::new(5, 10)
     $labelInstructions.Text = "Try to stay in the approx. aera:`nTop Left [0, 120]`nBottom Right [600, 300]"
+    $labelInstructions.BackColor = [System.Drawing.Color]::FromArgb(0, 0, 0, 0)
     $grBoxInstructions.Controls.Add($labelInstructions)
 
     #endregion
