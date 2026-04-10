@@ -84,7 +84,7 @@ class TweenNumericString : Tween {
         The total change in value from startValue to endValue.
     #>
     
-    TweenNumericString([System.Windows.Forms.Control]$pControl, [string]$pType, [double]$pStartValue, [double]$pEndValue, [double]$pDuration, [string]$pEasing, [ScriptBlock]$pOnComplete = $null) {
+    TweenNumericString([System.Windows.Forms.Control]$pControl, [string]$pType, [double]$pStartValue, [double]$pEndValue, [double]$pDuration, [string]$pEasing, [ScriptBlock]$pOnComplete) {
         <#
         .SYNOPSIS
             Initializes a new instance of TweenNumericString.
@@ -143,7 +143,7 @@ class TweenMoveTo : Tween {
         The total change in position (X, Y coordinates) from startPos to destPos.
     #>
 
-    TweenMoveTo([System.Windows.Forms.Control]$pControl, [System.Drawing.Point]$pDestPos, [double]$pDururation, [string]$pEasing, [ScriptBlock]$pOnComplete = $null) {
+    TweenMoveTo([System.Windows.Forms.Control]$pControl, [System.Drawing.Point]$pDestPos, [double]$pDururation, [string]$pEasing, [ScriptBlock]$pOnComplete) {
         <#
         .SYNOPSIS
             Initializes a new instance of TweenMoveTo.
@@ -194,7 +194,7 @@ class TweenProgressBar : Tween {
         The total change in value from startValue to endValue for the ProgressBar.
     #>
 
-    TweenProgressBar([System.Windows.Forms.ProgressBar]$pProgressBar, [double]$pStartValue, [double]$pEndValue, [double]$pDuration, [string]$pEasing, [ScriptBlock]$pOnComplete = $null) {
+    TweenProgressBar([System.Windows.Forms.ProgressBar]$pProgressBar, [double]$pStartValue, [double]$pEndValue, [double]$pDuration, [string]$pEasing, [ScriptBlock]$pOnComplete) {
         <#
         .SYNOPSIS
             Initializes a new instance of TweenProgressBar.
@@ -263,7 +263,7 @@ class TweenColorARGB : Tween {
     #>
     [string]$type # "BackColor" or "ForeColor" (default)
 
-    TweenColorARGB([System.Windows.Forms.Control]$pControl, [string]$pType, [System.Drawing.Color]$pStartColor, [System.Drawing.Color]$pEndColor, [double]$pDuration, [string]$pEasing, [ScriptBlock]$pOnComplete = $null) {
+    TweenColorARGB([System.Windows.Forms.Control]$pControl, [string]$pType, [System.Drawing.Color]$pStartColor, [System.Drawing.Color]$pEndColor, [double]$pDuration, [string]$pEasing, [ScriptBlock]$pOnComplete) {
         <#
         .SYNOPSIS
             Initializes a new instance of TweenColorARGB.
