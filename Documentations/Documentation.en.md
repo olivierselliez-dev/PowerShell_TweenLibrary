@@ -36,7 +36,8 @@ To use the library, you must "dot-source" the files into your main script:
 2. **Creation**: Instantiate a Tween object and add it to the list.
    ```powershell
    $destination = New-Object System.Drawing.Point(100, 100)
-   $anim = [TweenMoveTo]::new($myControl, $destination, 0.5, $Script:easeOutExpo)
+   $callback = { Write-Host "Animation Done!" }
+   $anim = [TweenMoveTo]::new($myControl, $destination, 0.5, $Script:easeOutExpo, $callback)
    $Script:listToAnimate.Add($anim)
    ```
 
@@ -44,19 +45,19 @@ To use the library, you must "dot-source" the files into your main script:
 
 ### TweenMoveTo
 Animates the `Location` position of a control.
-- **Parameters**: `Control`, `Point` (Destination), `Double` (Duration), `String` (Easing).
+- **Parameters**: `Control`, `Point` (Destination), `Double` (Duration), `String` (Easing), `ScriptBlock` (Optional: Callback).
 
 ### TweenColorARGB
 Transitions between two colors (`ForeColor` or `BackColor`).
-- **Parameters**: `Control`, `String` (Property), `Color` (Start), `Color` (End), `Double` (Duration), `String` (Easing).
+- **Parameters**: `Control`, `String` (Property), `Color` (Start), `Color` (End), `Double` (Duration), `String` (Easing), `ScriptBlock` (Optional: Callback).
 
 ### TweenNumericString
 Animates a numeric value within a label's text.
-- **Parameters**: `Control`, `String` (Type: int/double), `Double` (Start), `Double` (End), `Double` (Duration), `String` (Easing).
+- **Parameters**: `Control`, `String` (Type: int/double), `Double` (Start), `Double` (End), `Double` (Duration), `String` (Easing), `ScriptBlock` (Optional: Callback).
 
 ### TweenProgressBar
 Animates the progress of a `ProgressBar`.
-- **Parameters**: `ProgressBar`, `Double` (Start), `Double` (End), `Double` (Duration), `String` (Easing).
+- **Parameters**: `ProgressBar`, `Double` (Start), `Double` (End), `Double` (Duration), `String` (Easing), `ScriptBlock` (Optional: Callback).
 
 ## Easing Functions
 
