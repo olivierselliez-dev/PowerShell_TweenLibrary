@@ -754,7 +754,10 @@ CreateInputs
 
 # Lauching the main form : 
 $Script:mainForm.Add_Shown({ $timer.Start() })
-$Script:mainForm.Add_Closing({ $timer.Dispose() }) # To be able debug within VSCode. Otherwise timers remains in the powershell session.
+$Script:mainForm.Add_Closing({ 
+    $timer.Stop()
+    $timer.Dispose() 
+})
 $Script:mainForm.ShowDialog()
 
 #endregion

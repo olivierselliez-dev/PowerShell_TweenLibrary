@@ -2,6 +2,16 @@
 
 A lightweight, class-based animation engine for **Windows Forms** in PowerShell. This library implements Robert Penner's easing equations to provide smooth, non-linear transitions for UI elements.
 
+## Summary
+- [1. Project Architecture](#1-project-architecture)
+- [2. Setup & Initialization](#2-setup--initialization)
+- [3. Tween Class Reference](#3-tween-class-reference)
+- [4. Easing Algorithms](#4-easing-algorithms)
+- [5. Technical Notes](#5-technical-notes)
+- [6. Practical Example](#6-practical-example)
+
+---
+
 ## 1. Project Architecture
 
 The library is modularized into four core components:
@@ -40,8 +50,11 @@ $Script:listToAnimate = New-Object System.Collections.ArrayList
 # Start the timer when the form is shown
 $mainForm.Add_Shown({ $timer.Start() })
 
-# CRITICAL: Dispose the timer on close to prevent memory leaks in the PowerShell session
-$mainForm.Add_Closing({ $timer.Dispose() })
+# CRITICAL: Stop and Dispose the timer on close to prevent memory leaks in the PowerShell session
+$mainForm.Add_Closing({ 
+    $timer.Stop()
+    $timer.Dispose() 
+})
 ```
 
 ---
