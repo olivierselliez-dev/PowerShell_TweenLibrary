@@ -516,6 +516,8 @@ function PopulateComboBoxEasing {
         Adds a predefined list of easing algorithm names (linear, bounce, elastic, etc.) to the provided ComboBox control.
     .PARAMETER cBox
         The Windows Forms ComboBox control to populate.
+    .EXAMPLE
+        PopulateComboBoxEasing $myComboBox
     #>
 
     [CmdletBinding()]
@@ -588,26 +590,29 @@ function onClickBtnStart {
     .DESCRIPTION
         Reads configuration settings from the UI and creates Tween instances for numeric text, 
         progress bar progress, color transitions, and control movement.
+    .NOTES
+        This function acts as the primary orchestrator for the demo, populating the $Script:listToAnimate collection 
+        with various Tween class instances defined in the library.
     #>
 
-    $tweenValue = [TweenNumericString]::new($Script:animatedValue, $Script:cBoxValueType.SelectedItem, [double]$Script:txtBoxValueFrom.Text, [double]$Script:txtBoxValueTo.Text, [double]$Script:txtBoxValueDuration.Text, $Script:cBoxValueEasing.SelectedItem)
+    $tweenValue = [TweenNumericString]::new($Script:animatedValue, $Script:cBoxValueType.SelectedItem, [double]$Script:txtBoxValueFrom.Text, [double]$Script:txtBoxValueTo.Text, [double]$Script:txtBoxValueDuration.Text, $Script:cBoxValueEasing.SelectedItem, { onCompleteAnimation })
     $Script:listToAnimate.Add($tweenValue)
 
-    $tweenProgressBar = [TweenProgressBar]::new($Script:animatedProgressBar, [double]$Script:txtBoxProgressBarStart.Text, [double]$Script:txtBoxProgressBarEnd.Text, [double]$Script:txtBoxProgressBarDuration.Text, $Script:cBoxProgressBarEasing.SelectedItem)
+    $tweenProgressBar = [TweenProgressBar]::new($Script:animatedProgressBar, [double]$Script:txtBoxProgressBarStart.Text, [double]$Script:txtBoxProgressBarEnd.Text, [double]$Script:txtBoxProgressBarDuration.Text, $Script:cBoxProgressBarEasing.SelectedItem, $null)
     $Script:listToAnimate.Add($tweenProgressBar)
 
-    $tweenColorLabel = [TweenColorARGB]::new($Script:coloredLabel, "ForeColor", $Script:colorStart, $Script:colorEnd, $Script:txtBoxColorDuration.Text, $Script:cBoxColorEasing.SelectedItem)
+    $tweenColorLabel = [TweenColorARGB]::new($Script:coloredLabel, "ForeColor", $Script:colorStart, $Script:colorEnd, $Script:txtBoxColorDuration.Text, $Script:cBoxColorEasing.SelectedItem, $null)
     $Script:listToAnimate.Add($tweenColorLabel)
 
-    $tweenColorLabelBkg = [TweenColorARGB]::new($Script:coloredLabelBkg, "BackColor", $Script:colorStart, $Script:colorEnd, $Script:txtBoxColorDuration.Text, $Script:cBoxColorEasing.SelectedItem)
+    $tweenColorLabelBkg = [TweenColorARGB]::new($Script:coloredLabelBkg, "BackColor", $Script:colorStart, $Script:colorEnd, $Script:txtBoxColorDuration.Text, $Script:cBoxColorEasing.SelectedItem, $null)
     $Script:listToAnimate.Add($tweenColorLabelBkg)
 
     $destPos = [System.Drawing.Point]::new([int]$Script:txtBoxBtn1DestX.Text, [int]$Script:TxtBoxBtn1DestY.Text)
-    $tweenBtn1 = [TweenMoveTo]::new($Script:animatedBtn, $destPos, [Double]$Script:txtBoxBtn1Duration.Text, $Script:cBoxBtn1Easing.SelectedItem)
+    $tweenBtn1 = [TweenMoveTo]::new($Script:animatedBtn, $destPos, [Double]$Script:txtBoxBtn1Duration.Text, $Script:cBoxBtn1Easing.SelectedItem, $null)
     $Script:listToAnimate.Add($tweenBtn1)
 
     $destPos = [System.Drawing.Point]::new([int]$Script:txtBoxLabelDestX.Text, [int]$Script:TxtBoxLabelDestY.Text)
-    $tweenLabel = [TweenMoveTo]::new($Script:animatedLabel, $destPos, [Double]$Script:txtBoxLabelDuration.Text, $Script:cBoxLabelEasing.SelectedItem)
+    $tweenLabel = [TweenMoveTo]::new($Script:animatedLabel, $destPos, [Double]$Script:txtBoxLabelDuration.Text, $Script:cBoxLabelEasing.SelectedItem, $null)
     $Script:listToAnimate.Add($tweenLabel)
 
     $Script:animationStartTime = Get-Date
@@ -670,6 +675,21 @@ function onClickAnimatedButton {
         Writes a message to the host to demonstrate that the button remains interactive while moving.
     #>
     Write-Host "Click on an animated button"
+}
+
+function onCompleteAnimation {
+    <#
+    .SYNOPSIS
+        Callback function executed when an animation completes.
+    .DESCRIPTION
+        This function is triggered by the tweening engine once an animation has finished its duration.
+        It serves as a placeholder for executing subsequent logic or chaining animations.
+    .EXAMPLE
+        # Used as a callback in a Tween constructor:
+        # [TweenNumericString]::new(..., { onCompleteAnimation })
+    #>
+
+    Write-Host "Animation completed. Now you can call another animation or whatever code you want"
 }
 
 #endregion

@@ -27,6 +27,11 @@ function NumericString {
         # Log some stuff
         Write-Host $tweenObj.control.Name "animation ends. Duration :" $($(Get-Date) - $animationStartTime) "(supposed duration :" $($tweenObj.duration / $refreshRate) "sec.)"
    
+        # Execute callback if defined
+        if ($null -ne $tweenObj.onComplete) {
+            & $tweenObj.onComplete
+        }
+
     }
     else {
         $val = Ease $tweenObj.easing $tweenObj.startValue $tweenObj.delta $tweenObj.nbTicks $tweenObj.duration
@@ -70,6 +75,11 @@ function ProgressBar {
         # Log some stuff
         Write-Host $tweenObj.control.Name "animation ends. Duration :" $($(Get-Date) - $animationStartTime) "(supposed duration :" $($tweenObj.duration / $refreshRate) "sec.)"
    
+        # Execute callback if defined
+        if ($null -ne $tweenObj.onComplete) {
+            & $tweenObj.onComplete
+        }
+
     }
     else {
         $val = Ease $tweenObj.easing $tweenObj.startValue $tweenObj.delta $tweenObj.nbTicks $tweenObj.duration
@@ -110,6 +120,11 @@ function MoveTo {
         # Log some stuff
         Write-Host $tweenObj.control.Name "animation ends. Duration :" $($(Get-Date) - $animationStartTime) "(supposed duration :" $($tweenObj.duration / $refreshRate) "sec.)"
    
+        # Execute callback if defined
+        if ($null -ne $tweenObj.onComplete) {
+            & $tweenObj.onComplete
+        }
+
     }
     else {
         # TODO Find a way to avoid the "new"
@@ -143,6 +158,11 @@ function ColorARGB {
         # Log some stuff
         Write-Host $tweenObj.control.Name "animation ends. Duration :" $($(Get-Date) - $animationStartTime) "(supposed duration :" $($tweenObj.duration / $refreshRate) "sec.)"
    
+        # Execute callback if defined
+        if ($null -ne $tweenObj.onComplete) {
+            & $tweenObj.onComplete
+        }
+
     }
     else {
         switch ($tweenObj.control.GetType()) {
