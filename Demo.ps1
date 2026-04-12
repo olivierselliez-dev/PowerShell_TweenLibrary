@@ -228,7 +228,7 @@ function CreateInputs {
 
     $Script:txtBoxProgressBarEnd = New-Object System.Windows.Forms.TextBox
     $Script:txtBoxProgressBarEnd.Width = 25
-    $Script:txtBoxProgressBarEnd.Text = "100"
+    $Script:txtBoxProgressBarEnd.Text = "0"
     $Script:txtBoxProgressBarEnd.Location = [System.Drawing.Point]::new($labelProgressBarEnd.Location.X + $labelProgressBarEnd.Width, $labelProgressBar.Location.Y - 2)
     $grBoxSettings.Controls.Add($Script:txtBoxProgressBarEnd)
 
@@ -301,7 +301,7 @@ function CreateInputs {
     $btnColorEnd.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
     $btnColorEnd.Width = 23
     $btnColorEnd.Height = 20
-    $btnColorEnd.BackColor = [System.Drawing.Color]::White
+    $btnColorEnd.BackColor = [System.Drawing.Color]::Black
     $btnColorEnd.Name = "btnColorEnd"
     $btnColorEnd.Location = [System.Drawing.Point]::new($labelColorTo.Location.X + $labelColorTo.Width, $labelColor.Location.Y - 2)
     $btnColorEnd.Add_Click({ onClickColorButton })
@@ -725,7 +725,7 @@ function onCompleteAnimation {
 [System.Windows.Forms.ComboBox]$Script:cBoxProgressBarEasing | Out-Null # Out-Null to avoid messages in the console
 # Color label
 [System.Drawing.Color]$colorStart = [System.Drawing.Color]::Black
-[System.Drawing.Color]$colorEnd = [System.Drawing.Color]::White
+[System.Drawing.Color]$colorEnd = [System.Drawing.Color]::Black
 [System.Windows.Forms.TextBox]$Script:txtBoxColorDuration | Out-Null # Out-Null to avoid messages in the console
 [System.Windows.Forms.ComboBox]$Script:cBoxColorEasing | Out-Null # Out-Null to avoid messages in the console
 # Button
