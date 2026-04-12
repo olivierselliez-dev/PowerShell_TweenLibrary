@@ -1,5 +1,7 @@
 # PowerShell Tweens Library Documentation
 
+*Created by **Olivier Selliez** | [olivier.selliez.dev@gmail.com](mailto:olivier.selliez.dev@gmail.com)*
+
 A lightweight, class-based animation engine for **Windows Forms** in PowerShell. This library implements Robert Penner's easing equations to provide smooth, non-linear transitions for UI elements.
 
 ## 1. Project Architecture
@@ -109,7 +111,8 @@ Since Windows Forms is single-threaded (STA), the animations run on the same thr
 ```powershell
 # Move a button to (200, 200) over 3 seconds with a bounce effect
 $destination = [System.Drawing.Point]::new(200, 200)
-$myTween = [TweenMoveTo]::new($btnSubmit, $destination, 3.0, $Script:easeBounceOut)
+# Passing a scriptblock as a callback
+$myTween = [TweenMoveTo]::new($btnSubmit, $destination, 3.0, $Script:easeBounceOut, { [System.Windows.Forms.MessageBox]::Show("Animation Done!") })
 
 # Add to the engine
 $Script:listToAnimate.Add($myTween)
