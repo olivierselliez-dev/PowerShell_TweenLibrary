@@ -52,23 +52,23 @@ All animations inherit from the base `Tween` class, which tracks `nbTicks` (prog
 
 ### `TweenMoveTo`
 Animates the `Location` property (X, Y) of a control.
-- **Constructor**: `[TweenMoveTo]::new($Control, $DestPoint, $DurationSec, $Easing)`
-- **Example**: `[TweenMoveTo]::new($btn, [System.Drawing.Point]::new(100, 100), 2.0, $easeExpoOut)`
+- **Constructor**: `[TweenMoveTo]::new($Control, $DestPoint, $DurationSec, $Easing, $Callback)`
+- **Example**: `[TweenMoveTo]::new($btn, [System.Drawing.Point]::new(100, 100), 2.0, $easeExpoOut, $null)`
 
 ### `TweenColorARGB`
 Transitions a control's color channels (Alpha, Red, Green, Blue).
-- **Constructor**: `[TweenColorARGB]::new($Control, $Property, $StartColor, $EndColor, $DurationSec, $Easing)`
+- **Constructor**: `[TweenColorARGB]::new($Control, $Property, $StartColor, $EndColor, $DurationSec, $Easing, $Callback)`
 - **Property**: Use `"ForeColor"` or `"BackColor"`.
-- **Example**: `[TweenColorARGB]::new($label, "ForeColor", [Color]::Black, [Color]::Red, 1.5, $easeLinear)`
+- **Example**: `[TweenColorARGB]::new($label, "ForeColor", [Color]::Black, [Color]::Red, 1.5, $easeLinear, $null)`
 
 ### `TweenNumericString`
 Animates a numeric value inside a control's `Text` property.
-- **Constructor**: `[TweenNumericString]::new($Control, $Type, $StartVal, $EndVal, $DurationSec, $Easing)`
+- **Constructor**: `[TweenNumericString]::new($Control, $Type, $StartVal, $EndVal, $DurationSec, $Easing, $Callback)`
 - **Type**: `"int"` (rounds down) or `"double"` (rounds to 2 decimals).
 
 ### `TweenProgressBar`
 Animates the `Value` property of a `System.Windows.Forms.ProgressBar`.
-- **Constructor**: `[TweenProgressBar]::new($ProgressBar, $StartVal, $EndVal, $DurationSec, $Easing)`
+- **Constructor**: `[TweenProgressBar]::new($ProgressBar, $StartVal, $EndVal, $DurationSec, $Easing, $Callback)`
 
 ---
 

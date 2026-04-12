@@ -1,5 +1,10 @@
+# The dynamic list of objets to animate :
+[System.Collections.ArrayList]$Script:tweensList = @()
+
+# Refresh rate per second
 $Script:refreshRate = 60
 
+# The timer object which call the Update funtion [refreshRate] per second
 [System.Windows.Forms.Timer]$timer = New-Object System.Windows.Forms.Timer
 $timer.Interval = 1 / $($Script:refreshRate * 2) * 1000 #TODO: understand why *2
 $timer.Add_Tick({ Update })
@@ -10,12 +15,12 @@ function Update {
         Processes active animations on each timer tick.
     .DESCRIPTION
         Iterates through the global list of tweens and dispatches each to its 
-        corresponding update function (NumericDisplay, ProgressBar, or MoveTo).
+        corresponding update function (NumericString, ProgressBar, MoveTo, or ColorARGB).
     #>
 
-    if ($Script:listToAnimate.Count -gt 0) {
+    if ($Script:tweensList.Count -gt 0) {
         try {
-            foreach ($tweenObj in $Script:listToAnimate) {
+            foreach ($tweenObj in $Script:tweensList) {
                 switch ($tweenObj.GetType()) {
                     "TweenNumericString" {
                         NumericString $tweenObj
@@ -32,7 +37,7 @@ function Update {
                     Default { Write-Host "AnimationType not handled." }
                 }
 
-                if ($Script:listToAnimate.Count -eq 0) {
+                if ($Script:tweensList.Count -eq 0) {
                     break
                 }
 

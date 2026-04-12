@@ -1,5 +1,7 @@
 # PowerShell Tweens Library Documentation
 
+*Created by **Olivier Selliez** | [olivier.selliez.dev@gmail.com](mailto:olivier.selliez.dev@gmail.com)*
+
 A lightweight, class-based animation engine for **Windows Forms** in PowerShell. This library implements Robert Penner's easing equations to provide smooth, non-linear transitions for UI elements.
 
 ## 1. Project Architecture
@@ -52,23 +54,23 @@ All animations inherit from the base `Tween` class, which tracks `nbTicks` (prog
 
 ### `TweenMoveTo`
 Animates the `Location` property (X, Y) of a control.
-- **Constructor**: `[TweenMoveTo]::new($Control, $DestPoint, $DurationSec, $Easing)`
-- **Example**: `[TweenMoveTo]::new($btn, [System.Drawing.Point]::new(100, 100), 2.0, $easeExpoOut)`
+- **Constructor**: `[TweenMoveTo]::new($Control, $DestPoint, $DurationSec, $Easing, $Callback)`
+- **Example**: `[TweenMoveTo]::new($btn, [System.Drawing.Point]::new(100, 100), 2.0, $easeExpoOut, $null)`
 
 ### `TweenColorARGB`
 Transitions a control's color channels (Alpha, Red, Green, Blue).
-- **Constructor**: `[TweenColorARGB]::new($Control, $Property, $StartColor, $EndColor, $DurationSec, $Easing)`
+- **Constructor**: `[TweenColorARGB]::new($Control, $Property, $StartColor, $EndColor, $DurationSec, $Easing, $Callback)`
 - **Property**: Use `"ForeColor"` or `"BackColor"`.
-- **Example**: `[TweenColorARGB]::new($label, "ForeColor", [Color]::Black, [Color]::Red, 1.5, $easeLinear)`
+- **Example**: `[TweenColorARGB]::new($label, "ForeColor", [Color]::Black, [Color]::Red, 1.5, $easeLinear, $null)`
 
 ### `TweenNumericString`
 Animates a numeric value inside a control's `Text` property.
-- **Constructor**: `[TweenNumericString]::new($Control, $Type, $StartVal, $EndVal, $DurationSec, $Easing)`
+- **Constructor**: `[TweenNumericString]::new($Control, $Type, $StartVal, $EndVal, $DurationSec, $Easing, $Callback)`
 - **Type**: `"int"` (rounds down) or `"double"` (rounds to 2 decimals).
 
 ### `TweenProgressBar`
 Animates the `Value` property of a `System.Windows.Forms.ProgressBar`.
-- **Constructor**: `[TweenProgressBar]::new($ProgressBar, $StartVal, $EndVal, $DurationSec, $Easing)`
+- **Constructor**: `[TweenProgressBar]::new($ProgressBar, $StartVal, $EndVal, $DurationSec, $Easing, $Callback)`
 
 ---
 
@@ -109,7 +111,8 @@ Since Windows Forms is single-threaded (STA), the animations run on the same thr
 ```powershell
 # Move a button to (200, 200) over 3 seconds with a bounce effect
 $destination = [System.Drawing.Point]::new(200, 200)
-$myTween = [TweenMoveTo]::new($btnSubmit, $destination, 3.0, $Script:easeBounceOut)
+# Passing a scriptblock as a callback
+$myTween = [TweenMoveTo]::new($btnSubmit, $destination, 3.0, $Script:easeBounceOut, { [System.Windows.Forms.MessageBox]::Show("Animation Done!") })
 
 # Add to the engine
 $Script:listToAnimate.Add($myTween)

@@ -15,10 +15,11 @@ function InitmainForm {
         Configures the base properties of the main form, including dimensions, title, and border style.
     #>
     $Script:mainForm = New-Object System.Windows.Forms.Form
-    $Script:mainForm.Text = "Test Animation"
+    $Script:mainForm.Text = "Demo PowerShell Tween Library"
     $Script:mainForm.Width = 800
     $Script:mainForm.Height = 600
-    $Script:mainForm.AutoSize = $true
+    $Script:mainForm.Margin = 0
+    $Script:mainForm.AutoSize = $false
     $Script:mainForm.MaximizeBox = $false
     $Script:mainForm.MinimizeBox = $true
     $Script:mainForm.ShowInTaskbar = $true
@@ -111,19 +112,18 @@ function CreateInputs {
     [System.Windows.Forms.GroupBox]$grBoxSettings
     $grBoxSettings = New-Object System.Windows.Forms.GroupBox
     $grBoxSettings.Text = "Settings:"
-    $grBoxSettings.Width = $Script:mainForm.ClientRectangle.Size.Width - 10
-    $grBoxSettings.AutoSize = $true
-    # $grBoxSettings.Location = [System.Drawing.Point]::new(5, $Script:btnStart.Location.Y - 5 - $grBoxSettings.Height - 25)
-    $grBoxSettings.Location = [System.Drawing.Point]::new(5, 350) 
+    $grBoxSettings.Margin = 0
+    $grBoxSettings.Width = $Script:mainForm.ClientSize.Width - 10
+     
     $Script:mainForm.Controls.Add($grBoxSettings)
-
+    
     #region AnimatedValue
 
     [System.Windows.Forms.Label]$labelValue | Out-Null # Out-Null to avoid messages in the console
     $labelValue = New-Object System.Windows.Forms.Label
     $labelValue.AutoSize = $true
     $labelValue.Text = "`"Animated value`":"
-    $labelValue.Location = [System.Drawing.Point]::new(5, 20)
+    $labelValue.Location = [System.Drawing.Point]::new(5, 25)
     $grBoxSettings.Controls.Add($labelValue) 
 
     [System.Windows.Forms.Label]$labelValueFrom | Out-Null # Out-Null to avoid messages in the console
@@ -203,7 +203,7 @@ function CreateInputs {
     $labelProgressBar = New-Object System.Windows.Forms.Label
     $labelProgressBar.AutoSize = $true
     $labelProgressBar.Text = "`"ProgressBar`":"
-    $labelProgressBar.Location = [System.Drawing.Point]::new(5, 50)
+    $labelProgressBar.Location = [System.Drawing.Point]::new(5, $labelValue.Location.Y + $labelValue.Height + 10)
     $grBoxSettings.Controls.Add($labelProgressBar)
 
     [System.Windows.Forms.Label]$labelProgressBarStart | Out-Null # Out-Null to avoid messages in the console
@@ -268,7 +268,7 @@ function CreateInputs {
     $labelColor = New-Object System.Windows.Forms.Label
     $labelColor.AutoSize = $true
     $labelColor.Text = "`"Color transition`":"
-    $labelColor.Location = [System.Drawing.Point]::new(5, 80)
+    $labelColor.Location = [System.Drawing.Point]::new(5, $labelProgressBar.Location.Y + $labelProgressBar.Height + 10)
     $grBoxSettings.Controls.Add($labelColor)
 
     [System.Windows.Forms.Label]$labelColorFrom | Out-Null # Out-Null to avoid messages in the console
@@ -343,7 +343,7 @@ function CreateInputs {
     $labelBtn1 = New-Object System.Windows.Forms.Label
     $labelBtn1.AutoSize = $true
     $labelBtn1.Text = "`"Animated Button`":"
-    $labelBtn1.Location = [System.Drawing.Point]::new(5, 110)
+    $labelBtn1.Location = [System.Drawing.Point]::new(5, $labelColor.Location.Y + $labelColor.Height + 10)
     $grBoxSettings.Controls.Add($labelBtn1) 
 
     [System.Windows.Forms.Label]$labelBtn1Dest | Out-Null # Out-Null to avoid messages in the console
@@ -415,7 +415,7 @@ function CreateInputs {
     $labelLabel = New-Object System.Windows.Forms.Label
     $labelLabel.AutoSize = $true
     $labelLabel.Text = "`"Animated Label`":"
-    $labelLabel.Location = [System.Drawing.Point]::new(5, 140)
+    $labelLabel.Location = [System.Drawing.Point]::new(5, $labelBtn1.Location.Y + $labelBtn1.Height + 10)
     $grBoxSettings.Controls.Add($labelLabel)  
 
     [System.Windows.Forms.Label]$labelLabelDest | Out-Null # Out-Null to avoid messages in the console
@@ -480,6 +480,32 @@ function CreateInputs {
     $grBoxSettings.Controls.Add($Script:cBoxLabelEasing)
     
     #endregion
+
+    #region instructions
+
+    [System.Windows.Forms.GroupBox]$grBoxInstructions
+    $grBoxInstructions = New-Object System.Windows.Forms.GroupBox
+    $grBoxInstructions.Margin = 0
+    $grBoxInstructions.Location = [System.Drawing.Point]::new($Script:cBoxBtn1Easing.Location.X + $Script:cBoxBtn1Easing.Width + 5, $Script:cBoxBtn1Easing.Location.Y - 6)
+    $grBoxInstructions.Width = $grBoxSettings.Width - $grBoxInstructions.Location.X - 5
+    $grBoxInstructions.Height = $Script:cBoxLabelEasing.Location.Y + $Script:cBoxLabelEasing.Height - $Script:cBoxBtn1Easing.Location.Y + 7
+    $grBoxSettings.Controls.Add($grBoxInstructions)
+
+    [System.Windows.Forms.Label]$labelInstructions
+    $labelInstructions = New-Object System.Windows.Forms.Label
+    $labelInstructions.Width = $grBoxInstructions.Width - 10
+    $labelInstructions.Height = $grBoxInstructions.Height - 10
+    $labelInstructions.Location = [System.Drawing.Point]::new(5, 10)
+    $labelInstructions.Text = "Try to stay in the approx. aera:`nTop Left [0, 120]`nBottom Right [600, 300]"
+    $labelInstructions.BackColor = [System.Drawing.Color]::FromArgb(0, 0, 0, 0)
+    $grBoxInstructions.Controls.Add($labelInstructions)
+
+    #endregion
+
+    # Manual adjsutement of the grBox Height
+    $grBoxSettings.Height = $labelLabel.Location.Y + $labelLabel.Height + 10
+    # Place the grBox after setting the Height according to content
+    $grBoxSettings.Location = [System.Drawing.Point]::new(5, $Script:btnStart.Location.Y - $grBoxSettings.Height - 5)
 }
 
 function PopulateComboBoxEasing {
@@ -490,6 +516,8 @@ function PopulateComboBoxEasing {
         Adds a predefined list of easing algorithm names (linear, bounce, elastic, etc.) to the provided ComboBox control.
     .PARAMETER cBox
         The Windows Forms ComboBox control to populate.
+    .EXAMPLE
+        PopulateComboBoxEasing $myComboBox
     #>
 
     [CmdletBinding()]
@@ -527,11 +555,10 @@ function CreateBtnStart {
     $Script:btnStart.AutoSize = $true
     $Script:btnStart.Text = "Start"
     $Script:btnStart.Add_Click({ onClickBtnStart })
+
+    $Script:btnStart.Location = [System.Drawing.Point]::new($($Script:mainForm.ClientSize.Width - $Script:btnStart.Width) / 2, $($Script:mainForm.ClientSize.Height - $Script:btnStart.Height - 10))
     
-    $Script:btnStart.Location = [System.Drawing.Point]::new($($Script:mainForm.ClientRectangle.Size.Width - $Script:btnStart.Width) / 2, $($Script:mainForm.ClientRectangle.Size.Height - $Script:btnStart.Height - 5))
-   
     $Script:mainForm.Controls.Add($Script:btnStart)
-    
 }
 
 function CreateBtnReset {
@@ -547,7 +574,7 @@ function CreateBtnReset {
     $Script:btnReset.Text = "Reset"
     $Script:btnReset.Add_Click({ onClickBtnReset })
     
-    $Script:btnReset.Location = [System.Drawing.Point]::new($($Script:mainForm.ClientRectangle.Size.Width - $Script:btnReset.Width - 5), $($Script:mainForm.ClientRectangle.Size.Height - $Script:btnReset.Height - 5))
+    $Script:btnReset.Location = [System.Drawing.Point]::new($($Script:mainForm.Width - $Script:btnReset.Width - 20), $($Script:mainForm.ClientSize.Height - $Script:btnReset.Height - 10))
    
     $Script:mainForm.Controls.Add($Script:btnReset)
 }
@@ -563,27 +590,30 @@ function onClickBtnStart {
     .DESCRIPTION
         Reads configuration settings from the UI and creates Tween instances for numeric text, 
         progress bar progress, color transitions, and control movement.
+    .NOTES
+        This function acts as the primary orchestrator for the demo, populating the $Script:listToAnimate collection 
+        with various Tween class instances defined in the library.
     #>
 
-    $tweenValue = [TweenNumericString]::new($Script:animatedValue, $Script:cBoxValueType.SelectedItem, [double]$Script:txtBoxValueFrom.Text, [double]$Script:txtBoxValueTo.Text, [double]$Script:txtBoxValueDuration.Text, $Script:cBoxValueEasing.SelectedItem)
-    $Script:listToAnimate.Add($tweenValue)
+    $tweenValue = [TweenNumericString]::new($Script:animatedValue, $Script:cBoxValueType.SelectedItem, [double]$Script:txtBoxValueFrom.Text, [double]$Script:txtBoxValueTo.Text, [double]$Script:txtBoxValueDuration.Text, $Script:cBoxValueEasing.SelectedItem, { onCompleteAnimation })
+    $Script:tweensList.Add($tweenValue)
 
-    $tweenProgressBar = [TweenProgressBar]::new($Script:animatedProgressBar, [double]$Script:txtBoxProgressBarStart.Text, [double]$Script:txtBoxProgressBarEnd.Text, [double]$Script:txtBoxProgressBarDuration.Text, $Script:cBoxProgressBarEasing.SelectedItem)
-    $Script:listToAnimate.Add($tweenProgressBar)
+    $tweenProgressBar = [TweenProgressBar]::new($Script:animatedProgressBar, [double]$Script:txtBoxProgressBarStart.Text, [double]$Script:txtBoxProgressBarEnd.Text, [double]$Script:txtBoxProgressBarDuration.Text, $Script:cBoxProgressBarEasing.SelectedItem, $null)
+    $Script:tweensList.Add($tweenProgressBar)
 
-    $tweenColorLabel = [TweenColorARGB]::new($Script:coloredLabel, "ForeColor", $Script:colorStart, $Script:colorEnd, $Script:txtBoxColorDuration.Text, $Script:cBoxColorEasing.SelectedItem)
-    $Script:listToAnimate.Add($tweenColorLabel)
+    $tweenColorLabel = [TweenColorARGB]::new($Script:coloredLabel, "ForeColor", $Script:colorStart, $Script:colorEnd, $Script:txtBoxColorDuration.Text, $Script:cBoxColorEasing.SelectedItem, $null)
+    $Script:tweensList.Add($tweenColorLabel)
 
-    $tweenColorLabelBkg = [TweenColorARGB]::new($Script:coloredLabelBkg, "BackColor", $Script:colorStart, $Script:colorEnd, $Script:txtBoxColorDuration.Text, $Script:cBoxColorEasing.SelectedItem)
-    $Script:listToAnimate.Add($tweenColorLabelBkg)
+    $tweenColorLabelBkg = [TweenColorARGB]::new($Script:coloredLabelBkg, "BackColor", $Script:colorStart, $Script:colorEnd, $Script:txtBoxColorDuration.Text, $Script:cBoxColorEasing.SelectedItem, $null)
+    $Script:tweensList.Add($tweenColorLabelBkg)
 
     $destPos = [System.Drawing.Point]::new([int]$Script:txtBoxBtn1DestX.Text, [int]$Script:TxtBoxBtn1DestY.Text)
-    $tweenBtn1 = [TweenMoveTo]::new($Script:animatedBtn, $destPos, [Double]$Script:txtBoxBtn1Duration.Text, $Script:cBoxBtn1Easing.SelectedItem)
-    $Script:listToAnimate.Add($tweenBtn1)
+    $tweenBtn1 = [TweenMoveTo]::new($Script:animatedBtn, $destPos, [Double]$Script:txtBoxBtn1Duration.Text, $Script:cBoxBtn1Easing.SelectedItem, $null)
+    $Script:tweensList.Add($tweenBtn1)
 
     $destPos = [System.Drawing.Point]::new([int]$Script:txtBoxLabelDestX.Text, [int]$Script:TxtBoxLabelDestY.Text)
-    $tweenLabel = [TweenMoveTo]::new($Script:animatedLabel, $destPos, [Double]$Script:txtBoxLabelDuration.Text, $Script:cBoxLabelEasing.SelectedItem)
-    $Script:listToAnimate.Add($tweenLabel)
+    $tweenLabel = [TweenMoveTo]::new($Script:animatedLabel, $destPos, [Double]$Script:txtBoxLabelDuration.Text, $Script:cBoxLabelEasing.SelectedItem, $null)
+    $Script:tweensList.Add($tweenLabel)
 
     $Script:animationStartTime = Get-Date
     # Write-Host "Animations starts at :" $Script:animationStartTime.ToString()
@@ -647,6 +677,21 @@ function onClickAnimatedButton {
     Write-Host "Click on an animated button"
 }
 
+function onCompleteAnimation {
+    <#
+    .SYNOPSIS
+        Callback function executed when an animation completes.
+    .DESCRIPTION
+        This function is triggered by the tweening engine once an animation has finished its duration.
+        It serves as a placeholder for executing subsequent logic or chaining animations.
+    .EXAMPLE
+        # Used as a callback in a Tween constructor:
+        # [TweenNumericString]::new(..., { onCompleteAnimation })
+    #>
+
+    Write-Host "Animation completed. Now you can call another animation or whatever code you want"
+}
+
 #endregion
 
 #region Main
@@ -654,10 +699,8 @@ function onClickAnimatedButton {
 # The main form where are displayed the objects
 [System.Windows.Forms.Form]$Script:mainForm | Out-Null # Out-Null to avoid messages in the console
 
-# The dynamic list of objets to animate :
-[System.Collections.ArrayList]$Script:listToAnimate = @()
-
 # TimeStamp of the beginning of the animation
+# Just used to log the reel duration of the anmination
 [System.DateTime]$Script:animationStartTime = Get-Date
 
 # Animated objects :
@@ -702,13 +745,16 @@ function onClickAnimatedButton {
 # Actions :
 InitmainForm
 CreateAnimatedControls
-CreateInputs
 CreateBtnStart
 CreateBtnReset
+CreateInputs
 
 # Lauching the main form : 
 $Script:mainForm.Add_Shown({ $timer.Start() })
-$Script:mainForm.Add_Closing({ $timer.Dispose() }) # To be able debug within VSCode. Otherwise timers remains in the powershell session.
+$Script:mainForm.Add_Closing({ 
+    $timer.Stop()
+    $timer.Dispose() 
+})
 $Script:mainForm.ShowDialog()
 
 #endregion
