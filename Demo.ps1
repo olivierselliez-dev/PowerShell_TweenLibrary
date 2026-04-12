@@ -596,24 +596,24 @@ function onClickBtnStart {
     #>
 
     $tweenValue = [TweenNumericString]::new($Script:animatedValue, $Script:cBoxValueType.SelectedItem, [double]$Script:txtBoxValueFrom.Text, [double]$Script:txtBoxValueTo.Text, [double]$Script:txtBoxValueDuration.Text, $Script:cBoxValueEasing.SelectedItem, { onCompleteAnimation })
-    $Script:listToAnimate.Add($tweenValue)
+    $Script:tweensList.Add($tweenValue)
 
     $tweenProgressBar = [TweenProgressBar]::new($Script:animatedProgressBar, [double]$Script:txtBoxProgressBarStart.Text, [double]$Script:txtBoxProgressBarEnd.Text, [double]$Script:txtBoxProgressBarDuration.Text, $Script:cBoxProgressBarEasing.SelectedItem, $null)
-    $Script:listToAnimate.Add($tweenProgressBar)
+    $Script:tweensList.Add($tweenProgressBar)
 
     $tweenColorLabel = [TweenColorARGB]::new($Script:coloredLabel, "ForeColor", $Script:colorStart, $Script:colorEnd, $Script:txtBoxColorDuration.Text, $Script:cBoxColorEasing.SelectedItem, $null)
-    $Script:listToAnimate.Add($tweenColorLabel)
+    $Script:tweensList.Add($tweenColorLabel)
 
     $tweenColorLabelBkg = [TweenColorARGB]::new($Script:coloredLabelBkg, "BackColor", $Script:colorStart, $Script:colorEnd, $Script:txtBoxColorDuration.Text, $Script:cBoxColorEasing.SelectedItem, $null)
-    $Script:listToAnimate.Add($tweenColorLabelBkg)
+    $Script:tweensList.Add($tweenColorLabelBkg)
 
     $destPos = [System.Drawing.Point]::new([int]$Script:txtBoxBtn1DestX.Text, [int]$Script:TxtBoxBtn1DestY.Text)
     $tweenBtn1 = [TweenMoveTo]::new($Script:animatedBtn, $destPos, [Double]$Script:txtBoxBtn1Duration.Text, $Script:cBoxBtn1Easing.SelectedItem, $null)
-    $Script:listToAnimate.Add($tweenBtn1)
+    $Script:tweensList.Add($tweenBtn1)
 
     $destPos = [System.Drawing.Point]::new([int]$Script:txtBoxLabelDestX.Text, [int]$Script:TxtBoxLabelDestY.Text)
     $tweenLabel = [TweenMoveTo]::new($Script:animatedLabel, $destPos, [Double]$Script:txtBoxLabelDuration.Text, $Script:cBoxLabelEasing.SelectedItem, $null)
-    $Script:listToAnimate.Add($tweenLabel)
+    $Script:tweensList.Add($tweenLabel)
 
     $Script:animationStartTime = Get-Date
     # Write-Host "Animations starts at :" $Script:animationStartTime.ToString()
@@ -698,9 +698,6 @@ function onCompleteAnimation {
 
 # The main form where are displayed the objects
 [System.Windows.Forms.Form]$Script:mainForm | Out-Null # Out-Null to avoid messages in the console
-
-# The dynamic list of objets to animate :
-[System.Collections.ArrayList]$Script:listToAnimate = @()
 
 # TimeStamp of the beginning of the animation
 # Just used to log the reel duration of the anmination

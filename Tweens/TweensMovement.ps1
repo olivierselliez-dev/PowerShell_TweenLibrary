@@ -22,7 +22,7 @@ function NumericString {
         # animation ended
 
         # Remove the tweenObject from the list of tweenObjects to animate
-        $Script:listToAnimate.Remove($tweenObj)
+        $Script:tweensList.Remove($tweenObj)
 
         # Log some stuff
         Write-Host $tweenObj.control.Name "animation ends. Duration :" $($(Get-Date) - $animationStartTime) "(supposed duration :" $($tweenObj.duration / $refreshRate) "sec.)"
@@ -70,7 +70,7 @@ function ProgressBar {
         # animation ended
 
         # Remove the tweenObject from the list of tweenObjects to animate
-        $Script:listToAnimate.Remove($tweenObj)
+        $Script:tweensList.Remove($tweenObj)
 
         # Log some stuff
         Write-Host $tweenObj.control.Name "animation ends. Duration :" $($(Get-Date) - $animationStartTime) "(supposed duration :" $($tweenObj.duration / $refreshRate) "sec.)"
@@ -115,7 +115,7 @@ function MoveTo {
         $tweenObj.control.Location = [System.Drawing.Point]::new($tweenObj.destPos.X, $tweenObj.destPos.Y)
         
         # Remove the tweenObject from the list of tweenObjects to animate
-        $Script:listToAnimate.Remove($tweenObj)
+        $Script:tweensList.Remove($tweenObj)
 
         # Log some stuff
         Write-Host $tweenObj.control.Name "animation ends. Duration :" $($(Get-Date) - $animationStartTime) "(supposed duration :" $($tweenObj.duration / $refreshRate) "sec.)"
@@ -153,7 +153,7 @@ function ColorARGB {
         # animation ended
         
         # Remove the tweenObject from the list of tweenObjects to animate
-        $Script:listToAnimate.Remove($tweenObj)
+        $Script:tweensList.Remove($tweenObj)
 
         # Log some stuff
         Write-Host $tweenObj.control.Name "animation ends. Duration :" $($(Get-Date) - $animationStartTime) "(supposed duration :" $($tweenObj.duration / $refreshRate) "sec.)"
