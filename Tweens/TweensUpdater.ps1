@@ -15,7 +15,7 @@ function Update {
         Processes active animations on each timer tick.
     .DESCRIPTION
         Iterates through the global list of tweens and dispatches each to its 
-        corresponding update function (NumericDisplay, ProgressBar, or MoveTo).
+        corresponding update function (NumericString, ProgressBar, MoveTo, or ColorARGB).
     #>
 
     if ($Script:tweensList.Count -gt 0) {

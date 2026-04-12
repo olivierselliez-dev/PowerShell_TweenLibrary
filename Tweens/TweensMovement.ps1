@@ -6,7 +6,7 @@ function NumericString {
         Calculates the current numeric value based on the elapsed ticks and the chosen easing function. 
         Updates the target control's text property, formatting it as either an integer or a double.
     .PARAMETER tweenObj
-        The TweenNumericVal object containing the animation state and configuration.
+        The TweenNumericString object containing the animation state and configuration.
     #>
 
     [CmdletBinding()]
@@ -54,7 +54,7 @@ function ProgressBar {
         Calculates the current progress value based on elapsed ticks and the easing function. 
         Updates the target ProgressBar's Value property.
     .PARAMETER tweenObj
-        The TweenNumericVal object containing the animation state and the ProgressBar control.
+        The TweenProgressBar object containing the animation state and the ProgressBar control.
     #>
 
     [CmdletBinding()]
@@ -139,6 +139,15 @@ function MoveTo {
 }
 
 function ColorARGB {
+    <#
+    .SYNOPSIS
+        Updates the color of a control for color transition animations.
+    .DESCRIPTION
+        Calculates the current ARGB values using the specified easing algorithm and updates 
+        the control's ForeColor or BackColor property. Currently supports Label controls.
+    .PARAMETER tweenObj
+        The TweenColorARGB object containing the animation state, target color, and configuration.
+    #>
 
     [CmdletBinding()]
     param (
