@@ -18,7 +18,7 @@ function NumericString {
 
     $tweenObj.nbTicks++
     
-    if ($tweenObj.nbTicks -gt $tweenObj.duration) {
+    if (($tweenObj.nbTicks -gt $tweenObj.duration) -or ($tweenObj.endValue - [double]$tweenObj.control.Text -lt 0.1)) {
         # animation ended
 
         # Remove the tweenObject from the list of tweenObjects to animate
@@ -66,7 +66,7 @@ function ProgressBar {
 
     $tweenObj.nbTicks++
     
-    if ($tweenObj.nbTicks -gt $tweenObj.duration) {
+    if (($tweenObj.nbTicks -gt $tweenObj.duration) -or ($tweenObj.endValue - [double]$tweenObj.control.Value -lt 0.1)) {
         # animation ended
 
         # Remove the tweenObject from the list of tweenObjects to animate
@@ -108,7 +108,7 @@ function MoveTo {
 
     $tweenObj.nbTicks++
     
-    if ($tweenObj.nbTicks -gt $tweenObj.duration) {
+    if (($tweenObj.nbTicks -gt $tweenObj.duration) -or ($tweenObj.destPos -eq $tweenObj.control.Location)) {
         # animation ended
         
         # Fix the position to the destination

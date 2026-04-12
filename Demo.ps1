@@ -228,7 +228,7 @@ function CreateInputs {
 
     $Script:txtBoxProgressBarEnd = New-Object System.Windows.Forms.TextBox
     $Script:txtBoxProgressBarEnd.Width = 25
-    $Script:txtBoxProgressBarEnd.Text = "100"
+    $Script:txtBoxProgressBarEnd.Text = "0"
     $Script:txtBoxProgressBarEnd.Location = [System.Drawing.Point]::new($labelProgressBarEnd.Location.X + $labelProgressBarEnd.Width, $labelProgressBar.Location.Y - 2)
     $grBoxSettings.Controls.Add($Script:txtBoxProgressBarEnd)
 
@@ -278,16 +278,15 @@ function CreateInputs {
     $labelColorFrom.Location = [System.Drawing.Point]::new(162, $labelColor.Location.Y)
     $grBoxSettings.Controls.Add($labelColorFrom) 
 
-    [System.Windows.Forms.Button]$btnColorStart | Out-Null # Out-Null to avoid messages in the console
-    $btnColorStart = New-Object System.Windows.Forms.Button
-    $btnColorStart.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
-    $btnColorStart.Width = 23
-    $btnColorStart.Height = 20
-    $btnColorStart.BackColor = [System.Drawing.Color]::Black
-    $btnColorStart.Name = "btnColorStart"
-    $btnColorStart.Location = [System.Drawing.Point]::new($labelColorFrom.Location.X + $labelColorFrom.Width, $labelColor.Location.Y - 2)
-    $btnColorStart.Add_Click({ onClickColorButton })
-    $grBoxSettings.Controls.Add($btnColorStart)
+    $Script:btnColorStart = New-Object System.Windows.Forms.Button
+    $Script:btnColorStart.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+    $Script:btnColorStart.Width = 23
+    $Script:btnColorStart.Height = 20
+    $Script:btnColorStart.BackColor = [System.Drawing.Color]::Black
+    $Script:btnColorStart.Name = "btnColorStart"
+    $Script:btnColorStart.Location = [System.Drawing.Point]::new($labelColorFrom.Location.X + $labelColorFrom.Width, $labelColor.Location.Y - 2)
+    $Script:btnColorStart.Add_Click({ onClickColorButton })
+    $grBoxSettings.Controls.Add($Script:btnColorStart)
     
     [System.Windows.Forms.Label]$labelColorTo | Out-Null # Out-Null to avoid messages in the console
     $labelColorTo = New-Object System.Windows.Forms.Label
@@ -295,17 +294,16 @@ function CreateInputs {
     $labelColorTo.Text = "to:"
     $labelColorTo.Location = [System.Drawing.Point]::new($btnColorStart.Location.X + $btnColorStart.Width + 1, $labelColor.Location.Y)
     $grBoxSettings.Controls.Add($labelColorTo)
-
-    [System.Windows.Forms.Button]$btnColorEnd | Out-Null # Out-Null to avoid messages in the console
-    $btnColorEnd = New-Object System.Windows.Forms.Button
-    $btnColorEnd.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
-    $btnColorEnd.Width = 23
-    $btnColorEnd.Height = 20
-    $btnColorEnd.BackColor = [System.Drawing.Color]::White
-    $btnColorEnd.Name = "btnColorEnd"
-    $btnColorEnd.Location = [System.Drawing.Point]::new($labelColorTo.Location.X + $labelColorTo.Width, $labelColor.Location.Y - 2)
-    $btnColorEnd.Add_Click({ onClickColorButton })
-    $grBoxSettings.Controls.Add($btnColorEnd)
+    
+    $Script:btnColorEnd = New-Object System.Windows.Forms.Button
+    $Script:btnColorEnd.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+    $Script:btnColorEnd.Width = 23
+    $Script:btnColorEnd.Height = 20
+    $Script:btnColorEnd.BackColor = [System.Drawing.Color]::Black
+    $Script:btnColorEnd.Name = "btnColorEnd"
+    $Script:btnColorEnd.Location = [System.Drawing.Point]::new($labelColorTo.Location.X + $labelColorTo.Width, $labelColor.Location.Y - 2)
+    $Script:btnColorEnd.Add_Click({ onClickColorButton })
+    $grBoxSettings.Controls.Add($Script:btnColorEnd)
 
     [System.Windows.Forms.Label]$labelColorDuration | Out-Null # Out-Null to avoid messages in the console
     $labelColorDuration = New-Object System.Windows.Forms.Label
@@ -502,7 +500,7 @@ function CreateInputs {
 
     #endregion
 
-    # Manual adjsutement of the grBox Height
+    # Manual adjustment of the GroupBox height
     $grBoxSettings.Height = $labelLabel.Location.Y + $labelLabel.Height + 10
     # Place the grBox after setting the Height according to content
     $grBoxSettings.Location = [System.Drawing.Point]::new(5, $Script:btnStart.Location.Y - $grBoxSettings.Height - 5)
@@ -579,6 +577,24 @@ function CreateBtnReset {
     $Script:mainForm.Controls.Add($Script:btnReset)
 }
 
+function CreateBtnRandomize {
+    <#
+    .SYNOPSIS
+        Creates the Randomize button.
+    .DESCRIPTION
+        
+    #>
+
+    $Script:btnRandomize = New-Object System.Windows.Forms.Button
+    $Script:btnRandomize.AutoSize = $true
+    $Script:btnRandomize.Text = "Randomize"
+    $Script:btnRandomize.Add_Click({ onClickBtnRandomize })
+    
+    $Script:btnRandomize.Location = [System.Drawing.Point]::new($($Script:btnReset.Location.X - 5 - $Script:btnRandomize.Width), $($Script:mainForm.ClientSize.Height - $Script:btnRandomize.Height - 10))
+   
+    $Script:mainForm.Controls.Add($Script:btnRandomize)
+}
+
 #endregion
 
 #region Controllers
@@ -607,11 +623,11 @@ function onClickBtnStart {
     $tweenColorLabelBkg = [TweenColorARGB]::new($Script:coloredLabelBkg, "BackColor", $Script:colorStart, $Script:colorEnd, $Script:txtBoxColorDuration.Text, $Script:cBoxColorEasing.SelectedItem, $null)
     $Script:tweensList.Add($tweenColorLabelBkg)
 
-    $destPos = [System.Drawing.Point]::new([int]$Script:txtBoxBtn1DestX.Text, [int]$Script:TxtBoxBtn1DestY.Text)
+    $destPos = [System.Drawing.Point]::new([int]$Script:txtBoxBtn1DestX.Text, [int]$Script:txtBoxBtn1DestY.Text)
     $tweenBtn1 = [TweenMoveTo]::new($Script:animatedBtn, $destPos, [Double]$Script:txtBoxBtn1Duration.Text, $Script:cBoxBtn1Easing.SelectedItem, $null)
     $Script:tweensList.Add($tweenBtn1)
 
-    $destPos = [System.Drawing.Point]::new([int]$Script:txtBoxLabelDestX.Text, [int]$Script:TxtBoxLabelDestY.Text)
+    $destPos = [System.Drawing.Point]::new([int]$Script:txtBoxLabelDestX.Text, [int]$Script:txtBoxLabelDestY.Text)
     $tweenLabel = [TweenMoveTo]::new($Script:animatedLabel, $destPos, [Double]$Script:txtBoxLabelDuration.Text, $Script:cBoxLabelEasing.SelectedItem, $null)
     $Script:tweensList.Add($tweenLabel)
 
@@ -627,8 +643,95 @@ function onClickBtnReset {
     .DESCRIPTION
         Resets the animated controls (button and label) to their initial UI coordinates.
     #>
-    $Script:animatedBtn.Location = [System.Drawing.Point]::new(10, $coloredLabel.Location.Y + $coloredLabel.Height + 20)
-    $Script:animatedLabel.Location = [System.Drawing.Point]::new(10, $animatedBtn.Location.Y + $animatedBtn.Height + 20)
+
+    $Script:animatedBtn.Location = [System.Drawing.Point]::new(10, $Script:coloredLabel.Location.Y + $Script:coloredLabel.Height + 20)
+    $Script:animatedLabel.Location = [System.Drawing.Point]::new(10, $Script:animatedBtn.Location.Y + $Script:animatedBtn.Height + 20)
+
+    # Reset "Animated Value" inputs
+    $Script:txtBoxValueFrom.Text = "0"
+    $Script:txtBoxValueTo.Text = "0"
+    $Script:txtBoxValueDuration.Text = "5"
+    $Script:cBoxValueEasing.SelectedIndex = 0
+    $Script:cBoxValueType.SelectedIndex = 0
+
+    # Reset "ProgressBar" inputs
+    $Script:txtBoxProgressBarStart.Text = "0"
+    $Script:txtBoxProgressBarEnd.Text = "0"
+    $Script:txtBoxProgressBarDuration.Text = "5"
+    $Script:cBoxProgressBarEasing.SelectedIndex = 0
+
+    # Reset "Color Transition" inputs
+    $Script:colorStart = [System.Drawing.Color]::Black
+    $Script:colorEnd = [System.Drawing.Color]::Black
+    $Script:btnColorStart.BackColor = $Script:colorStart
+    $Script:btnColorEnd.BackColor = $Script:colorEnd
+    $Script:txtBoxColorDuration.Text = "5"
+    $Script:cBoxColorEasing.SelectedIndex = 0
+
+    # Reset "Animated Button" inputs
+    $Script:txtBoxBtn1DestX.Text = $Script:animatedBtn.Location.X.ToString()
+    $Script:txtBoxBtn1DestY.Text = $Script:animatedBtn.Location.Y.ToString()
+    $Script:txtBoxBtn1Duration.Text = "5"
+    $Script:cBoxBtn1Easing.SelectedIndex = 0
+
+    # Reset "Animated Label" inputs
+    $Script:txtBoxLabelDestX.Text = $Script:animatedLabel.Location.X.ToString()
+    $Script:txtBoxLabelDestY.Text = $Script:animatedLabel.Location.Y.ToString()
+    $Script:txtBoxLabelDuration.Text = "5"
+    $Script:cBoxLabelEasing.SelectedIndex = 0
+
+    # Reset animated objects
+    $Script:animatedValue.Text = "0"
+    $Script:animatedProgressBar.Value = 0
+    $Script:coloredLabel.ForeColor = $Script:colorStart
+    $Script:coloredLabelBkg.BackColor = $Script:colorStart
+
+}
+
+function onClickBtnRandomize {
+    <#
+    .SYNOPSIS
+        Event handler for the Randomize button click.
+    .DESCRIPTION
+        Populates all configuration inputs (values, durations, colors, and easing functions) 
+        with random data to facilitate quick testing of different animation effects.
+    #>
+
+    $Script:txtBoxValueTo.Text = $Script:Random.Next(50, 150).ToString()
+    $Script:txtBoxValueDuration.Text = $Script:Random.Next(5, 15).ToString()
+    $Script:cBoxValueEasing.SelectedIndex = $Script:Random.Next(0, $Script:cBoxValueEasing.Items.Count)
+
+    $Script:txtBoxProgressBarEnd.Text = $Script:Random.Next(50, 150).ToString()
+    $Script:txtBoxProgressBarDuration.Text = $Script:Random.Next(5, 15 ).ToString()
+    $Script:cBoxProgressBarEasing.SelectedIndex = $Script:Random.Next(0, $Script:cBoxProgressBarEasing.Items.Count)
+
+    $Script:colorStart = [System.Drawing.Color]::FromArgb(
+        255,
+        $Script:Random.Next(0, 255),
+        $Script:Random.Next(0, 255),
+        $Script:Random.Next(0, 255)
+    )
+    $Script:colorEnd = [System.Drawing.Color]::FromArgb(
+        255,
+        $Script:Random.Next(0, 255),
+        $Script:Random.Next(0, 255),   
+        $Script:Random.Next(0, 255)
+    )
+    $Script:btnColorStart.BackColor = $Script:colorStart
+    $Script:btnColorEnd.BackColor = $Script:colorEnd
+    $Script:txtBoxColorDuration.Text = $Script:Random.Next(5, 20).ToString()
+    $Script:cBoxColorEasing.SelectedIndex = $Script:Random.Next(0, $Script:cBoxColorEasing.Items.Count)
+    
+    $Script:txtBoxBtn1DestX.Text = $Script:Random.Next(0, 600).ToString()
+    $Script:txtBoxBtn1DestY.Text = $Script:Random.Next(0, 300).ToString()
+    $Script:txtBoxBtn1Duration.Text = $Script:Random.Next(5, 15).ToString()
+    $Script:cBoxBtn1Easing.SelectedIndex = $Script:Random.Next(0, $Script:cBoxBtn1Easing.Items.Count)
+
+    $Script:txtBoxLabelDestX.Text = $Script:Random.Next(0, 600).ToString()
+    $Script:txtBoxLabelDestY.Text = $Script:Random.Next(0, 300).ToString()
+    $Script:txtBoxLabelDuration.Text = $Script:Random.Next(5, 15).ToString()
+    $Script:cBoxLabelEasing.SelectedIndex = $Script:Random.Next(0, $Script:cBoxLabelEasing.Items.Count)
+    
 }
 
 function onClickColorButton {
@@ -696,12 +799,15 @@ function onCompleteAnimation {
 
 #region Main
 
-# The main form where are displayed the objects
+# The main form where objects are displayed
 [System.Windows.Forms.Form]$Script:mainForm | Out-Null # Out-Null to avoid messages in the console
 
 # TimeStamp of the beginning of the animation
-# Just used to log the reel duration of the anmination
+# Just used to log the real duration of the animation
 [System.DateTime]$Script:animationStartTime = Get-Date
+
+# Initialize Random object
+$Script:Random = New-Object System.Random
 
 # Animated objects :
 [System.Windows.Forms.Label]$Script:animatedValue | Out-Null # Out-Null to avoid messages in the console
@@ -725,7 +831,9 @@ function onCompleteAnimation {
 [System.Windows.Forms.ComboBox]$Script:cBoxProgressBarEasing | Out-Null # Out-Null to avoid messages in the console
 # Color label
 [System.Drawing.Color]$colorStart = [System.Drawing.Color]::Black
-[System.Drawing.Color]$colorEnd = [System.Drawing.Color]::White
+[System.Drawing.Color]$colorEnd = [System.Drawing.Color]::Black
+[System.Windows.Forms.Button]$Script:btnColorStart | Out-Null # Out-Null to avoid messages in the console
+[System.Windows.Forms.Button]$Script:btnColorEnd | Out-Null # Out-Null to avoid messages in the console
 [System.Windows.Forms.TextBox]$Script:txtBoxColorDuration | Out-Null # Out-Null to avoid messages in the console
 [System.Windows.Forms.ComboBox]$Script:cBoxColorEasing | Out-Null # Out-Null to avoid messages in the console
 # Button
@@ -741,20 +849,22 @@ function onCompleteAnimation {
 # Start/Reset buttons :
 [System.Windows.Forms.Button]$Script:btnStart | Out-Null # Out-Null to avoid messages in the console
 [System.Windows.Forms.Button]$Script:btnReset | Out-Null # Out-Null to avoid messages in the console
+[System.Windows.Forms.Button]$Script:btnRandomize | Out-Null # Out-Null to avoid messages in the console
 
 # Actions :
 InitmainForm
 CreateAnimatedControls
 CreateBtnStart
 CreateBtnReset
+CreateBtnRandomize
 CreateInputs
 
-# Lauching the main form : 
+# Launching the main form : 
 $Script:mainForm.Add_Shown({ $timer.Start() })
 $Script:mainForm.Add_Closing({ 
-    $timer.Stop()
-    $timer.Dispose() 
-})
+        $timer.Stop()
+        $timer.Dispose() 
+    })
 $Script:mainForm.ShowDialog()
 
 #endregion
