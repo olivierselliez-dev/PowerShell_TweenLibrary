@@ -692,6 +692,9 @@ function onClickBtnRandomize {
     <#
     .SYNOPSIS
         Event handler for the Randomize button click.
+    .DESCRIPTION
+        Populates all configuration inputs (values, durations, colors, and easing functions) 
+        with random data to facilitate quick testing of different animation effects.
     #>
 
     $Script:txtBoxValueTo.Text = $Script:Random.Next(50, 150).ToString()
