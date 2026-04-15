@@ -132,8 +132,6 @@ class TweenNumericString : Tween {
             The duration of the animation in seconds.
         .PARAMETER pEasing
             The name of the easing function to apply.
-        .PARAMETER pOnComplete
-            Optional scriptblock to execute on completion.
         #>
         if ($pType -notin @('int', 'double')) {
             throw "Invalid numeric type '$pType'. Supported values are 'int' or 'double'."
