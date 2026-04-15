@@ -34,12 +34,21 @@ class Tween {
     # The total duration of the animation in seconds.
     [double]$duration
 
+<<<<<<< HEAD
     # ScriptBlock to execute when the animation completes.
     [ScriptBlock]$onComplete
 
     # The delay before the animation starts, in seconds.
     [int]$delay
 
+=======
+    <#
+    .NOTES
+        ScriptBlock to execute when the animation completes.
+    #>
+    [ScriptBlock]$onComplete
+
+>>>>>>> 384737f29283d1224556776a473fb5e8b177c883
     Tween () {
         <#
         .SYNOPSIS
@@ -103,6 +112,7 @@ class TweenNumericString : Tween {
     # The type of value to display: "double" (rounds to 2 decimal places) or "int" (default).
     [string]$type # double or int (default)
     
+<<<<<<< HEAD
     # The starting numeric value for the animation.
     [double]$startValue
     
@@ -113,6 +123,9 @@ class TweenNumericString : Tween {
     [double]$delta
         
     TweenNumericString([System.Windows.Forms.Control]$pControl, [string]$pType, [double]$pStartValue, [double]$pEndValue, [double]$pDuration, [string]$pEasing) {
+=======
+    TweenNumericString([System.Windows.Forms.Control]$pControl, [string]$pType, [double]$pStartValue, [double]$pEndValue, [double]$pDuration, [string]$pEasing, [ScriptBlock]$pOnComplete) {
+>>>>>>> 384737f29283d1224556776a473fb5e8b177c883
         <#
         .SYNOPSIS
             Initializes a new instance of TweenNumericString.
@@ -132,8 +145,13 @@ class TweenNumericString : Tween {
             The duration of the animation in seconds.
         .PARAMETER pEasing
             The name of the easing function to apply.
+        .PARAMETER pOnComplete
+            Optional scriptblock to execute on completion.
         #>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 384737f29283d1224556776a473fb5e8b177c883
         if ($pType -notin @('int', 'double')) {
             throw "Invalid numeric type '$pType'. Supported values are 'int' or 'double'."
         }
@@ -144,6 +162,7 @@ class TweenNumericString : Tween {
         $this.startValue = $pStartValue
         $this.endValue = $pEndValue
         $this.duration = $pDuration * $Script:refreshRate
+        $this.onComplete = $pOnComplete
 
         $this.delta = $this.endValue - $this.startValue
     }
@@ -166,8 +185,17 @@ class TweenMoveTo : Tween {
     
     # The total change in position (X, Y coordinates) from startPos to destPos.
     [System.Drawing.Point]$delta
+<<<<<<< HEAD
     
     TweenMoveTo([System.Windows.Forms.Control]$pControl, [System.Drawing.Point]$pDestPos, [double]$pDururation, [string]$pEasing) {
+=======
+    <#
+    .NOTES
+        The total change in position (X, Y coordinates) from startPos to destPos.
+    #>
+
+    TweenMoveTo([System.Windows.Forms.Control]$pControl, [System.Drawing.Point]$pDestPos, [double]$pDururation, [string]$pEasing, [ScriptBlock]$pOnComplete) {
+>>>>>>> 384737f29283d1224556776a473fb5e8b177c883
         <#
         .SYNOPSIS
             Initializes a new instance of TweenMoveTo.
@@ -183,11 +211,14 @@ class TweenMoveTo : Tween {
             The duration of the movement in seconds.
         .PARAMETER pEasing
             The name of the easing function to apply.
+        .PARAMETER pOnComplete
+            Optional scriptblock to execute on completion.
         #>
         $this.control = $pControl
         $this.easing = $pEasing
         $this.destPos = $pDestPos
         $this.duration = $pDururation * $Script:refreshRate
+        $this.onComplete = $pOnComplete
 
         $this.startPos = [System.Drawing.Point]::new($pControl.Location.X, $pControl.Location.Y)
         $this.delta = [System.Drawing.Point]::new($this.destPos.X - $this.startPos.X, $this.destPos.Y - $this.startPos.Y)
@@ -212,7 +243,7 @@ class TweenProgressBar : Tween {
     # The total change in value from startValue to endValue for the ProgressBar.
     [double]$delta
 
-    TweenProgressBar([System.Windows.Forms.ProgressBar]$pProgressBar, [double]$pStartValue, [double]$pEndValue, [double]$pDuration, [string]$pEasing) {
+    TweenProgressBar([System.Windows.Forms.ProgressBar]$pProgressBar, [double]$pStartValue, [double]$pEndValue, [double]$pDuration, [string]$pEasing, [ScriptBlock]$pOnComplete) {
         <#
         .SYNOPSIS
             Initializes a new instance of TweenProgressBar.
@@ -230,12 +261,15 @@ class TweenProgressBar : Tween {
             The duration in seconds.
         .PARAMETER pEasing
             The name of the easing function to apply.
+        .PARAMETER pOnComplete
+            Optional scriptblock to execute on completion.
         #>
         $this.control = $pProgressBar
         $this.startValue = $pStartValue
         $this.endValue = $pEndValue
         $this.duration = $pDuration * $Script:refreshRate
         $this.easing = $pEasing
+        $this.onComplete = $pOnComplete
 
         $this.delta = $pEndValue - $pStartValue
     }
@@ -271,7 +305,11 @@ class TweenColorARGB : Tween {
     # The property name of the color to change (e.g., "BackColor" or "ForeColor").
     [string]$type # "BackColor" or "ForeColor" (default)
 
+<<<<<<< HEAD
     TweenColorARGB([System.Windows.Forms.Control]$pControl, [string]$pType, [System.Drawing.Color]$pStartColor, [System.Drawing.Color]$pEndColor, [double]$pDuration, [string]$pEasing) {
+=======
+    TweenColorARGB([System.Windows.Forms.Control]$pControl, [string]$pType, [System.Drawing.Color]$pStartColor, [System.Drawing.Color]$pEndColor, [double]$pDuration, [string]$pEasing, [ScriptBlock]$pOnComplete) {
+>>>>>>> 384737f29283d1224556776a473fb5e8b177c883
         <#
         .SYNOPSIS
             Initializes a new instance of TweenColorARGB.
@@ -291,6 +329,8 @@ class TweenColorARGB : Tween {
             The duration in seconds.
         .PARAMETER pEasing
             The name of the easing function to apply.
+        .PARAMETER pOnComplete
+            Optional scriptblock to execute on completion.
         #>
         
         $this.control = $pControl
@@ -299,6 +339,7 @@ class TweenColorARGB : Tween {
         $this.endColor = $pEndColor
         $this.duration = $pDuration * $Script:refreshRate
         $this.easing = $pEasing
+        $this.onComplete = $pOnComplete
         
         $this.deltaA = $pEndColor.A - $pStartColor.A
         $this.deltaR = $pEndColor.R - $pStartColor.R
