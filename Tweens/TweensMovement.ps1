@@ -35,24 +35,12 @@ function NumericString {
 
         # Remove the tweenObject from the list of tweenObjects to animate
         $Script:tweensList.Remove($tweenObj)
-<<<<<<< HEAD
 
         # Execute callback if defined
         if ($null -ne $tweenObj.onComplete) {
             & $tweenObj.onComplete
         }
 
-=======
-
-        # Log some stuff
-        Write-Host $tweenObj.control.Name "animation ends. Duration :" $($(Get-Date) - $animationStartTime) "(supposed duration :" $($tweenObj.duration / $refreshRate) "sec.)"
-   
-        # Execute callback if defined
-        if ($null -ne $tweenObj.onComplete) {
-            & $tweenObj.onComplete
-        }
-
->>>>>>> 384737f29283d1224556776a473fb5e8b177c883
     }
     else {
         $val = Ease $tweenObj.easing $tweenObj.startValue $tweenObj.delta $tweenObj.nbTicks $tweenObj.duration
@@ -92,24 +80,12 @@ function ProgressBar {
 
         # Remove the tweenObject from the list of tweenObjects to animate
         $Script:tweensList.Remove($tweenObj)
-<<<<<<< HEAD
 
         # Execute callback if defined
         if ($null -ne $tweenObj.onComplete) {
             & $tweenObj.onComplete
         }
 
-=======
-
-        # Log some stuff
-        Write-Host $tweenObj.control.Name "animation ends. Duration :" $($(Get-Date) - $animationStartTime) "(supposed duration :" $($tweenObj.duration / $refreshRate) "sec.)"
-   
-        # Execute callback if defined
-        if ($null -ne $tweenObj.onComplete) {
-            & $tweenObj.onComplete
-        }
-
->>>>>>> 384737f29283d1224556776a473fb5e8b177c883
     }
     else {
         $val = Ease $tweenObj.easing $tweenObj.startValue $tweenObj.delta $tweenObj.nbTicks $tweenObj.duration
@@ -146,24 +122,12 @@ function MoveTo {
         
         # Remove the tweenObject from the list of tweenObjects to animate
         $Script:tweensList.Remove($tweenObj)
-<<<<<<< HEAD
 
         # Execute callback if defined
         if ($null -ne $tweenObj.onComplete) {
             & $tweenObj.onComplete
         }
 
-=======
-
-        # Log some stuff
-        Write-Host $tweenObj.control.Name "animation ends. Duration :" $($(Get-Date) - $animationStartTime) "(supposed duration :" $($tweenObj.duration / $refreshRate) "sec.)"
-   
-        # Execute callback if defined
-        if ($null -ne $tweenObj.onComplete) {
-            & $tweenObj.onComplete
-        }
-
->>>>>>> 384737f29283d1224556776a473fb5e8b177c883
     }
     else {
         # TODO Find a way to avoid the "new"
@@ -182,11 +146,7 @@ function ColorARGB {
     .SYNOPSIS
         Updates the color of a control for color transition animations.
     .DESCRIPTION
-<<<<<<< HEAD
         Calculates interpolated ARGB values using the specified easing algorithm and updates 
-=======
-        Calculates the current ARGB values using the specified easing algorithm and updates 
->>>>>>> 384737f29283d1224556776a473fb5e8b177c883
         the control's ForeColor or BackColor property. Currently supports Label controls.
     .PARAMETER tweenObj
         The TweenColorARGB object containing the animation state, target color, and configuration.
@@ -203,20 +163,10 @@ function ColorARGB {
     
     if ($tweenObj.nbTicks -gt $tweenObj.duration) {
         # animation ended
-<<<<<<< HEAD
 
         # Remove the tweenObject from the list of tweenObjects to animate
         $Script:tweensList.Remove($tweenObj)
 
-=======
-        
-        # Remove the tweenObject from the list of tweenObjects to animate
-        $Script:tweensList.Remove($tweenObj)
-
-        # Log some stuff
-        Write-Host $tweenObj.control.Name "animation ends. Duration :" $($(Get-Date) - $animationStartTime) "(supposed duration :" $($tweenObj.duration / $refreshRate) "sec.)"
-   
->>>>>>> 384737f29283d1224556776a473fb5e8b177c883
         # Execute callback if defined
         if ($null -ne $tweenObj.onComplete) {
             & $tweenObj.onComplete
