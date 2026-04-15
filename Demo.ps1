@@ -911,6 +911,63 @@ function onClickBtnRandomize {
     
 }
 
+function onClickBtnPreset {
+    <#
+    .SYNOPSIS
+        Event handler for the Preset button click.
+    .DESCRIPTION
+        Populates all configuration inputs (values, durations, colors, and easing functions) 
+        with default data to facilitate quick testing of different animation effects.
+    #>
+
+    # Reset animated objects
+    $Script:animatedValue.Text = "0"
+    $Script:animatedProgressBar.Value = 0
+    $Script:coloredLabel.ForeColor = $Script:colorStart
+    $Script:coloredLabelBkg.BackColor = $Script:colorStart
+    $Script:animatedBtn.Location = [System.Drawing.Point]::new(10, $coloredLabel.Location.Y + $coloredLabel.Height + 20)
+    $Script:animatedLabel.Location = [System.Drawing.Point]::new(10, $animatedBtn.Location.Y + $animatedBtn.Height + 20)
+
+    # Reset "Animated Value" inputs
+    $Script:txtBoxValueFrom.Text = "0"
+    $Script:txtBoxValueTo.Text = "100"
+    $Script:txtBoxValueDuration.Text = "5"
+    $Script:cBoxValueEasing.SelectedIndex = 0
+    $Script:cBoxValueType.SelectedIndex = 0
+    $Script:txtBoxValueDelay.Text = "0"
+
+    # Reset "ProgressBar" inputs
+    $Script:txtBoxProgressBarStart.Text = "0"
+    $Script:txtBoxProgressBarEnd.Text = "100"
+    $Script:txtBoxProgressBarDuration.Text = "5"
+    $Script:cBoxProgressBarEasing.SelectedIndex = 6
+    $Script:txtBoxProgressBarDelay.Text = "5"
+
+    # Reset "Color Transition" inputs
+    $Script:colorStart = [System.Drawing.Color]::Black
+    $Script:colorEnd = [System.Drawing.Color]::Red
+    $Script:btnColorStart.BackColor = $Script:colorStart
+    $Script:btnColorEnd.BackColor = $Script:colorEnd
+    $Script:txtBoxColorDuration.Text = "5"
+    $Script:cBoxColorEasing.SelectedIndex = 18
+    $Script:txtBoxColorDelay.Text = "10"
+
+    # Reset "Animated Button" inputs
+    $Script:txtBoxBtn1DestX.Text = "750"
+    $Script:txtBoxBtn1DestY.Text = $Script:animatedBtn.Location.Y.ToString()
+    $Script:txtBoxBtn1Duration.Text = "5"
+    $Script:cBoxBtn1Easing.SelectedIndex = 29
+    $Script:txtBoxBtn1Delay.Text = "15"
+
+    # Reset "Animated Label" inputs
+    $Script:txtBoxLabelDestX.Text = "750"
+    $Script:txtBoxLabelDestY.Text = "400"
+    $Script:txtBoxLabelDuration.Text = "5"
+    $Script:cBoxLabelEasing.SelectedIndex = 33
+    $Script:txtBoxLabelDelay.Text = "20"
+
+}
+
 function onClickColorButton {
     <#
     .SYNOPSIS

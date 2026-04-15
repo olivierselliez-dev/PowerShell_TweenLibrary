@@ -215,7 +215,7 @@ class TweenProgressBar : Tween {
     # The total change in value from startValue to endValue for the ProgressBar.
     [double]$delta
 
-    TweenProgressBar([System.Windows.Forms.ProgressBar]$pProgressBar, [double]$pStartValue, [double]$pEndValue, [double]$pDuration, [string]$pEasing, [ScriptBlock]$pOnComplete) {
+    TweenProgressBar([System.Windows.Forms.ProgressBar]$pProgressBar, [double]$pStartValue, [double]$pEndValue, [double]$pDuration, [string]$pEasing) {
         <#
         .SYNOPSIS
             Initializes a new instance of TweenProgressBar.
@@ -233,15 +233,12 @@ class TweenProgressBar : Tween {
             The duration in seconds.
         .PARAMETER pEasing
             The name of the easing function to apply.
-        .PARAMETER pOnComplete
-            Optional scriptblock to execute on completion.
         #>
         $this.control = $pProgressBar
         $this.startValue = $pStartValue
         $this.endValue = $pEndValue
         $this.duration = $pDuration * $Script:refreshRate
         $this.easing = $pEasing
-        $this.onComplete = $pOnComplete
 
         $this.delta = $pEndValue - $pStartValue
     }
@@ -297,8 +294,6 @@ class TweenColorARGB : Tween {
             The duration in seconds.
         .PARAMETER pEasing
             The name of the easing function to apply.
-        .PARAMETER pOnComplete
-            Optional scriptblock to execute on completion.
         #>
         
         $this.control = $pControl
