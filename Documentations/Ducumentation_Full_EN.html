@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PowerShell Tweens Library Documentation</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 0 20px;
+            background-color: #f9f9f9;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            color: #222;
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+        }
+        h1 { font-size: 2.5em; }
+        h2 { font-size: 2em; border-bottom: 1px solid #eee; padding-bottom: 0.3em; }
+        h3 { font-size: 1.5em; }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        code, pre {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            background-color: #eef;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        pre {
+            background-color: #eef;
+            padding: 1em;
+            overflow-x: auto;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background: #eee;
+            margin: 2em 0;
+        }
+        .author-info {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 1em;
+        }
+    </style>
+</head>
+<body>
+    <h1>PowerShell Tweens Library Documentation</h1>
+
+    <p class="author-info"><em>Created by <strong>Olivier Selliez</strong> | <a href="mailto:olivier.selliez.dev@gmail.com">olivier.selliez.dev@gmail.com</a></em></p>
+
+    <p>A lightweight, class-based animation engine for <strong>Windows Forms</strong> in PowerShell. This library implements Robert Penner's easing equations to provide smooth, non-linear transitions for UI elements.</p>
+
+    <p><strong>And yes, it's quite useless but it's funny :)</strong></p>
+
+    <h2>1. Project Architecture</h2>
+
+    <p>The library is modularized into four core components:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>File</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>Tweens.ps1</code></td>
+                <td><strong>Data Models</strong>: Defines the PowerShel 5.1 classes for different animation types.</td>
+            </tr>
+            <tr>
+                <td><code>TweensVariables.ps1</code></td>
+                <td><strong>Constants</strong>: Defines the string identifiers for the easing algorithms (e.g., <code>$easeBounceOut</code>).</td>
+            </tr>
+            <tr>
+                <td><code>TweensMovement.ps1</code></td>
+                <td><strong>Logic</strong>: Contains the mathematical functions (Easing) and the specific property update logic.</td>
+            </tr>
+            <tr>
+                <td><code>TweensUpdater.ps1</code></td>
+                <td><strong>Engine</strong>: Manages the <code>System.Windows.Forms.Timer</code> and the global update loop.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr>
+
+    <h2>2. Setup &amp; Initialization</h2>
+
+    <p>To integrate the library into your project, follow these steps:</p>
+
+    <h3>Dot-Sourcing</h3>
+    <p>Import the library files at the start of your script:</p>
+    <pre><code class="language-powershell">. "$PSScriptRoot\Tweens\TweensVariables.ps1"
+. "$PSScriptRoot\Tweens\Tweens.ps1"
+. "$PSScriptRoot\Tweens\TweensUpdater.ps1"
+. "$PSScriptRoot\Tweens\TweensMovement.ps1"
+</code></pre>
+
+    <h3>Engine Configuration</h3>
+    <pre><code class="language-powershell"># Start the timer when the form is shown
+$mainForm.Add_Shown({ 
+        $Script:tweensTimer.Start()
+    })
+
+# CRITICAL: Dispose the timer on close to prevent memory leaks in the PowerShell session
+$mainForm.Add_Closing({ 
+        $Script:tweensTimer.Stop()
+        $Script:tweensTimer.Dispose() 
+    })
+</code></pre>
+    <h2>Remarks</h2>
+    <p>You can change the refresh rate in the: \Tweens\TweensUpdater.ps1 file (var:<code>$Script:refreshRate = 60</code>, line 5). By default the view is refreshed 60 times per second.
+    The global list used to store active animations is <code>$Script:tweensList</code> (defined in <code>TweensUpdater.ps1</code>).</p>
+
+    <hr>
+
+    <h2>3. Tween Class Reference</h2>
+
+    <p>All animations inherit from the base <code>Tween</code> class, which tracks <code>nbTicks</code> (progress) and <code>duration</code> in seconds (converted to internal ticks).</p>
+
+    <h3><code>TweenMoveTo</code></h3>
+    <p>Animates the <code>Location</code> property (X, Y) of a control.</p>
+    <ul>
+        <li><strong>Constructor</strong>: <code>[TweenMoveTo]::new($Control, $DestPoint, $DurationSec, $Easing, $Callback)</code></li>
+        <li><strong>Example</strong>: <code>[TweenMoveTo]::new($btn, [System.Drawing.Point]::new(100, 100), 2.0, $easeExpoOut, $null)</code></li>
+    </ul>
+
+    <h3><code>TweenColorARGB</code></h3>
+    <p>Transitions a control's color channels (Alpha, Red, Green, Blue).</p>
+    <ul>
+        <li><strong>Constructor</strong>: <code>[TweenColorARGB]::new($Control, $Property, $StartColor, $EndColor, $DurationSec, $Easing, $Callback)</code></li>
+        <li><strong>Property</strong>: Use <code>"ForeColor"</code> or <code>"BackColor"</code>.</li>
+        <li><strong>Example</strong>: <code>[TweenColorARGB]::new($label, "ForeColor", [Color]::Black, [Color]::Red, 1.5, $easeLinear, $null)</code></li>
+    </ul>
+
+    <h3><code>TweenNumericString</code></h3>
+    <p>Animates a numeric value inside a control's <code>Text</code> property.</p>
+    <ul>
+        <li><strong>Constructor</strong>: <code>[TweenNumericString]::new($Control, $Type, $StartVal, $EndVal, $DurationSec, $Easing, $Callback)</code></li>
+        <li><strong>Type</strong>: Supports <code>"int"</code> (floored) or <code>"double"</code> (rounded to 2 decimals).</li>
+        <li><strong>Example</strong>: <code>$t = [TweenNumericString]::new($label, "int", 0, 100, 5.0, $easeQuadIn, { code block })</code></li>
+    </ul>
+
+    <h3><code>TweenProgressBar</code></h3>
+    <p>Animates the <code>Value</code> property of a <code>System.Windows.Forms.ProgressBar</code>.</p>
+    <ul>
+        <li><strong>Constructor</strong>: <code>[TweenProgressBar]::new($ProgressBar, $StartVal, $EndVal, $DurationSec, $Easing, $Callback)</code></li>
+    </ul>
+
+    <hr>
+
+    <h2>4. Easing Algorithms</h2>
+
+    <p>Easing functions determine the "feel" of the animation. Each algorithm (except Linear) supports four modes: <code>In</code>, <code>Out</code>, <code>InOut</code>, and <code>OutIn</code>. For visual demonstrations and previews of these curves, visit <a href="https://easings.net/">easings.net</a>.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Linear</strong></td>
+                <td>Constant speed transition.</td>
+            </tr>
+            <tr>
+                <td><strong>Quad / Cubic / Quart / Quint</strong></td>
+                <td>Increasingly aggressive power-based curves.</td>
+            </tr>
+            <tr>
+                <td><strong>Expo</strong></td>
+                <td>Exponential growth/decay; very snappy.</td>
+            </tr>
+            <tr>
+                <td><strong>Sine</strong></td>
+                <td>Smooth, organic sinusoidal transition.</td>
+            </tr>
+            <tr>
+                <td><strong>Circ</strong></td>
+                <td>Circular curve transition.</td>
+            </tr>
+            <tr>
+                <td><strong>Back</strong></td>
+                <td>Retracts slightly before moving or overshoots the target at the end.</td>
+            </tr>
+            <tr>
+                <td><strong>Elastic</strong></td>
+                <td>An oscillating "spring" effect.</td>
+            </tr>
+            <tr>
+                <td><strong>Bounce</strong></td>
+                <td>A realistic bouncing effect at the start or end.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>Access these using the script-scoped variables: <code>$Script:easeBounceOut</code>, <code>$Script:easeElasticInOut</code>, etc.</p>
+
+    <hr>
+
+    <h2>5. Technical Notes</h2>
+
+    <h3>The Update Loop</h3>
+    <p>The <code>TweensUpdate</code> function in <code>TweensUpdater.ps1</code> runs every tick. It iterates through <code>$Script:tweensList</code>. When a tween reaches its duration or target value, it is automatically removed from the list.</p>
+
+    <h3>Frame Rate vs. Real Time</h3>
+    <p>The duration is calculated as <code>$DurationInSeconds * $refreshRate</code>. If the UI thread is heavily blocked, the animation might appear slower because ticks are skipped, but the library ensures the final destination is reached.</p>
+
+    <h3>Threading</h3>
+    <p>Since Windows Forms is single-threaded (STA), the animations run on the same thread as the UI. Avoid long-running synchronous tasks during animations to prevent stuttering.</p>
+
+    <hr>
+
+    <h2>6. Practical Example</h2>
+
+    <pre><code class="language-powershell"># Move a button to (200, 200) over 3 seconds with a bounce effect
+$destination = [System.Drawing.Point]::new(200, 200)
+# Passing a scriptblock as a callback
+$myTween = [TweenMoveTo]::new($btnSubmit, $destination, 3.0, $Script:easeBounceOut, { [System.Windows.Forms.MessageBox]::Show("Animation Done!") })
+
+# Add to the engine
+$Script:listToAnimate.Add($myTween)
+</code></pre>
+
+    <hr>
+    <p><em>Documentation generated for the PowerShell Tweens project.</em></p>
+</body>
+</html>

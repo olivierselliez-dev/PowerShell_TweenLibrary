@@ -1,3 +1,15 @@
+<#
+.SYNOPSIS
+    Update logic and mathematical easing engine for the Tweening library.
+.DESCRIPTION
+    This file provides the per-frame update functions for specific tween implementations
+    (Numeric strings, ProgressBars, Movement, and Colors) and the central easing 
+    function that computes interpolated values based on Penner's equations.
+.NOTES
+    Author: Olivier Selliez
+    Email: olivier.selliez.dev@gmail.com
+#>
+
 function NumericString {
     <#
     .SYNOPSIS
@@ -6,7 +18,7 @@ function NumericString {
         Calculates the current numeric value based on the elapsed ticks and the chosen easing function. 
         Updates the target control's text property, formatting it as either an integer or a double.
     .PARAMETER tweenObj
-        The TweenNumericVal object containing the animation state and configuration.
+        The TweenNumericString object containing the animation state and configuration.
     #>
 
     [CmdletBinding()]
@@ -18,15 +30,17 @@ function NumericString {
 
     $tweenObj.nbTicks++
     
-    if ($tweenObj.nbTicks -gt $tweenObj.duration) {
+    if (($tweenObj.nbTicks -gt $tweenObj.duration) -or ($tweenObj.endValue - [double]$tweenObj.control.Text -lt 0.1)) {
         # animation ended
 
         # Remove the tweenObject from the list of tweenObjects to animate
-        $Script:listToAnimate.Remove($tweenObj)
+        $Script:tweensList.Remove($tweenObj)
 
-        # Log some stuff
-        Write-Host $tweenObj.control.Name "animation ends. Duration :" $($(Get-Date) - $animationStartTime) "(supposed duration :" $($tweenObj.duration / $refreshRate) "sec.)"
-   
+        # Execute callback if defined
+        if ($null -ne $tweenObj.onComplete) {
+            & $tweenObj.onComplete
+        }
+
     }
     else {
         $val = Ease $tweenObj.easing $tweenObj.startValue $tweenObj.delta $tweenObj.nbTicks $tweenObj.duration
@@ -49,7 +63,7 @@ function ProgressBar {
         Calculates the current progress value based on elapsed ticks and the easing function. 
         Updates the target ProgressBar's Value property.
     .PARAMETER tweenObj
-        The TweenNumericVal object containing the animation state and the ProgressBar control.
+        The TweenProgressBar object containing the animation state and the ProgressBar control.
     #>
 
     [CmdletBinding()]
@@ -61,15 +75,17 @@ function ProgressBar {
 
     $tweenObj.nbTicks++
     
-    if ($tweenObj.nbTicks -gt $tweenObj.duration) {
+    if (($tweenObj.nbTicks -gt $tweenObj.duration) -or ($tweenObj.endValue - [double]$tweenObj.control.Value -lt 0.1)) {
         # animation ended
 
         # Remove the tweenObject from the list of tweenObjects to animate
-        $Script:listToAnimate.Remove($tweenObj)
+        $Script:tweensList.Remove($tweenObj)
 
-        # Log some stuff
-        Write-Host $tweenObj.control.Name "animation ends. Duration :" $($(Get-Date) - $animationStartTime) "(supposed duration :" $($tweenObj.duration / $refreshRate) "sec.)"
-   
+        # Execute callback if defined
+        if ($null -ne $tweenObj.onComplete) {
+            & $tweenObj.onComplete
+        }
+
     }
     else {
         $val = Ease $tweenObj.easing $tweenObj.startValue $tweenObj.delta $tweenObj.nbTicks $tweenObj.duration
@@ -98,18 +114,20 @@ function MoveTo {
 
     $tweenObj.nbTicks++
     
-    if ($tweenObj.nbTicks -gt $tweenObj.duration) {
+    if (($tweenObj.nbTicks -gt $tweenObj.duration) -or ($tweenObj.destPos -eq $tweenObj.control.Location)) {
         # animation ended
         
         # Fix the position to the destination
         $tweenObj.control.Location = [System.Drawing.Point]::new($tweenObj.destPos.X, $tweenObj.destPos.Y)
         
         # Remove the tweenObject from the list of tweenObjects to animate
-        $Script:listToAnimate.Remove($tweenObj)
+        $Script:tweensList.Remove($tweenObj)
 
-        # Log some stuff
-        Write-Host $tweenObj.control.Name "animation ends. Duration :" $($(Get-Date) - $animationStartTime) "(supposed duration :" $($tweenObj.duration / $refreshRate) "sec.)"
-   
+        # Execute callback if defined
+        if ($null -ne $tweenObj.onComplete) {
+            & $tweenObj.onComplete
+        }
+
     }
     else {
         # TODO Find a way to avoid the "new"
@@ -124,6 +142,15 @@ function MoveTo {
 }
 
 function ColorARGB {
+    <#
+    .SYNOPSIS
+        Updates the color of a control for color transition animations.
+    .DESCRIPTION
+        Calculates interpolated ARGB values using the specified easing algorithm and updates 
+        the control's ForeColor or BackColor property. Currently supports Label controls.
+    .PARAMETER tweenObj
+        The TweenColorARGB object containing the animation state, target color, and configuration.
+    #>
 
     [CmdletBinding()]
     param (
@@ -136,13 +163,15 @@ function ColorARGB {
     
     if ($tweenObj.nbTicks -gt $tweenObj.duration) {
         # animation ended
-        
-        # Remove the tweenObject from the list of tweenObjects to animate
-        $Script:listToAnimate.Remove($tweenObj)
 
-        # Log some stuff
-        Write-Host $tweenObj.control.Name "animation ends. Duration :" $($(Get-Date) - $animationStartTime) "(supposed duration :" $($tweenObj.duration / $refreshRate) "sec.)"
-   
+        # Remove the tweenObject from the list of tweenObjects to animate
+        $Script:tweensList.Remove($tweenObj)
+
+        # Execute callback if defined
+        if ($null -ne $tweenObj.onComplete) {
+            & $tweenObj.onComplete
+        }
+
     }
     else {
         switch ($tweenObj.control.GetType()) {
@@ -180,7 +209,8 @@ function Ease {
     .DESCRIPTION
         Calculates the intermediate value of a property at a specific point in time (tick) using 
         standard Robert Penner easing equations. Supports Linear, Expo, Circ, Quad, Sine, Cubic, 
-        Quart, Quint, Elastic, Bounce, and Back algorithms with In, Out, InOut, and OutIn variations.
+        Quart, Quint, Elastic, Bounce, and Back algorithms with In, Out, InOut, and OutIn 
+        variations.
     .PARAMETER type
         The string identifier of the easing function to use.
     .PARAMETER startValue
