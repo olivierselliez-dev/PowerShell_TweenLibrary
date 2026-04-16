@@ -30,8 +30,13 @@ function NumericString {
 
     $tweenObj.nbTicks++
     
-    if (($tweenObj.nbTicks -gt $tweenObj.duration) -or ($tweenObj.endValue - [double]$tweenObj.control.Text -lt 0.1)) {
+    $val = Ease $tweenObj.easing $tweenObj.startValue $tweenObj.delta $tweenObj.nbTicks $tweenObj.duration
+    
+    if (($tweenObj.nbTicks -gt $tweenObj.duration) -or ($tweenObj.endValue - $val -lt 0.05)) {
         # animation ended
+
+        # force end value
+        $tweenObj.control.Text = $tweenObj.endValue.ToString()
 
         # Remove the tweenObject from the list of tweenObjects to animate
         $Script:tweensList.Remove($tweenObj)
@@ -40,10 +45,8 @@ function NumericString {
         if ($null -ne $tweenObj.onComplete) {
             & $tweenObj.onComplete
         }
-
     }
-    else {
-        $val = Ease $tweenObj.easing $tweenObj.startValue $tweenObj.delta $tweenObj.nbTicks $tweenObj.duration
+    else {        
        
         if ($tweenObj.type -eq "double") {
             $tweenObj.control.Text = [Math]::Round($val, 2).ToString()
@@ -78,6 +81,9 @@ function ProgressBar {
     if (($tweenObj.nbTicks -gt $tweenObj.duration) -or ($tweenObj.endValue - [double]$tweenObj.control.Value -lt 0.1)) {
         # animation ended
 
+        # force end value
+        $tweenObj.control.Value = $tweenObj.endValue
+
         # Remove the tweenObject from the list of tweenObjects to animate
         $Script:tweensList.Remove($tweenObj)
 
@@ -85,7 +91,6 @@ function ProgressBar {
         if ($null -ne $tweenObj.onComplete) {
             & $tweenObj.onComplete
         }
-
     }
     else {
         $val = Ease $tweenObj.easing $tweenObj.startValue $tweenObj.delta $tweenObj.nbTicks $tweenObj.duration
@@ -117,7 +122,7 @@ function MoveTo {
     if (($tweenObj.nbTicks -gt $tweenObj.duration) -or ($tweenObj.destPos -eq $tweenObj.control.Location)) {
         # animation ended
         
-        # Fix the position to the destination
+        # force end value
         $tweenObj.control.Location = [System.Drawing.Point]::new($tweenObj.destPos.X, $tweenObj.destPos.Y)
         
         # Remove the tweenObject from the list of tweenObjects to animate
@@ -127,7 +132,6 @@ function MoveTo {
         if ($null -ne $tweenObj.onComplete) {
             & $tweenObj.onComplete
         }
-
     }
     else {
         # TODO Find a way to avoid the "new"
@@ -164,6 +168,14 @@ function ColorARGB {
     if ($tweenObj.nbTicks -gt $tweenObj.duration) {
         # animation ended
 
+        # force end value
+        if ($tweenObj.type -eq "ForeColor") {
+            $tweenObj.control.ForeColor = $tweenObj.endColor
+        }
+        else {
+            $tweenObj.control.BackColor = $tweenObj.endColor
+        }
+
         # Remove the tweenObject from the list of tweenObjects to animate
         $Script:tweensList.Remove($tweenObj)
 
@@ -171,7 +183,6 @@ function ColorARGB {
         if ($null -ne $tweenObj.onComplete) {
             & $tweenObj.onComplete
         }
-
     }
     else {
         switch ($tweenObj.control.GetType()) {
@@ -188,7 +199,8 @@ function ColorARGB {
                 if ($tweenObj.type -eq "ForeColor") {
                     $label.ForeColor = [System.Drawing.Color]::FromArgb($A, $R, $G, $B)
                 }
-                else { #BackColor
+                else {
+                    #BackColor
                     $label.BackColor = [System.Drawing.Color]::FromArgb($A, $R, $G, $B)
                 }
             }
