@@ -166,7 +166,7 @@ class TweenMoveTo : Tween {
     # The total change in position (X, Y coordinates) from startPos to destPos.
     [System.Drawing.Point]$delta
     
-    TweenMoveTo([System.Windows.Forms.Control]$pControl, [System.Drawing.Point]$pDestPos, [double]$pDururation, [string]$pEasing) {
+    TweenMoveTo([System.Windows.Forms.Control]$pControl, [System.Drawing.Point]$pDestPos, [double]$pDuration, [string]$pEasing) {
         <#
         .SYNOPSIS
             Initializes a new instance of TweenMoveTo.
@@ -178,17 +178,15 @@ class TweenMoveTo : Tween {
             The control to move.
         .PARAMETER pDestPos
             The destination Point.
-        .PARAMETER pDururation
+        .PARAMETER pDuration
             The duration of the movement in seconds.
         .PARAMETER pEasing
             The name of the easing function to apply.
-        .PARAMETER pOnComplete
-            Optional scriptblock to execute on completion.
         #>
         $this.control = $pControl
         $this.easing = $pEasing
         $this.destPos = $pDestPos
-        $this.duration = $pDururation * $Script:refreshRate
+        $this.duration = $pDuration * $Script:refreshRate
 
         $this.startPos = [System.Drawing.Point]::new($pControl.Location.X, $pControl.Location.Y)
         $this.delta = [System.Drawing.Point]::new($this.destPos.X - $this.startPos.X, $this.destPos.Y - $this.startPos.Y)
