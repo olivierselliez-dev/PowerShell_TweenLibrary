@@ -126,44 +126,43 @@ function CreateAnimatedControls {
 
     $dest = [System.Drawing.Point]::new(10 + $labelAnimatedValue.Width + 25, 10)
     $tween = [TweenMoveTo]::new($Script:animatedValue, $dest, $duration, $easing)
-    $tweensList.Add($tween)
+    $tweensList.Add($tween) | Out-Null
 
     $dest = [System.Drawing.Point]::new(10, 10)
     $tween = [TweenMoveTo]::new($labelAnimatedValue, $dest, $duration, $easing)
-    $tweensList.Add($tween)
-
+    $tweensList.Add($tween) | Out-Null
     $delay += $delayInc
 
     $dest = [System.Drawing.Point]::new(10, $labelAnimatedValue.Location.Y + $labelAnimatedValue.Height + 20)
     $tween = [TweenMoveTo]::new($animatedProgressBar, $dest, $duration, $easing)
     $tween.setDelay($delay)
-    $tweensList.Add($tween)
+    $tweensList.Add($tween) | Out-Null
 
     $delay += $delayInc
 
     $dest = [System.Drawing.Point]::new(10, $animatedProgressBar.Location.Y + $animatedProgressBar.Height + 20)
     $tween = [TweenMoveTo]::new($coloredLabel, $dest, $duration, $easing)
     $tween.setDelay($delay)
-    $tweensList.Add($tween)
+    $tweensList.Add($tween) | Out-Null
 
     $dest = [System.Drawing.Point]::new(10 + $coloredLabel.Width + 20, $animatedProgressBar.Location.Y + $animatedProgressBar.Height + 20)
     $tween = [TweenMoveTo]::new($coloredLabelBkg, $dest, $duration, $easing)
     $tween.setDelay($delay)
-    $tweensList.Add($tween)
+    $tweensList.Add($tween) | Out-Null
 
     $delay += $delayInc
 
     $dest = [System.Drawing.Point]::new(10, $coloredLabel.Location.Y + $coloredLabel.Height + 20)
     $tween = [TweenMoveTo]::new($animatedBtn, $dest, $duration, $easing)
     $tween.setDelay($delay)
-    $tweensList.Add($tween)
+    $tweensList.Add($tween) | Out-Null
 
     $delay += $delayInc
 
     $dest = [System.Drawing.Point]::new(10, $animatedBtn.Location.Y + $animatedBtn.Height + 20)
     $tween = [TweenMoveTo]::new($animatedLabel, $dest, $duration, $easing)
     $tween.setDelay($delay)
-    $tweensList.Add($tween)
+    $tweensList.Add($tween) | Out-Null
 }
 
 function CreateInputs {
