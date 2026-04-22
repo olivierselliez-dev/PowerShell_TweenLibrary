@@ -60,7 +60,6 @@ function CreateAnimatedControls {
     $Script:mainForm.Controls.Add($Script:animatedValue)
     $Script:animatedValue.Location = [System.Drawing.Point]::new($Script:animatedValue.Width * -1 - 10, 10)
 
-
     [System.Windows.Forms.Label]$labelAnimatedValue = New-Object System.Windows.Forms.Label
     $labelAnimatedValue.AutoSize = $true
     $labelAnimatedValue.Text = "Animated value:"
@@ -76,7 +75,7 @@ function CreateAnimatedControls {
     $Script:animatedProgressBar.Value = 0
     $Script:animatedProgressBar.Style = [System.Windows.Forms.ProgressBarStyle]::Continuous
     $Script:mainForm.Controls.Add($Script:animatedProgressBar)
-    $Script:animatedProgressBar.Location = [System.Drawing.Point]::new($($animatedProgressBar.Width * -1 - 10), $labelAnimatedValue.Location.Y + $labelAnimatedValue.Height + 20)
+    $Script:animatedProgressBar.Location = [System.Drawing.Point]::new($Script:animatedProgressBar.Width * -1 - 10 - 200, $labelAnimatedValue.Location.Y + $labelAnimatedValue.Height + 20)
     #endregion
 
     #region colored label background
@@ -96,7 +95,7 @@ function CreateAnimatedControls {
     $Script:coloredLabel.Text = "This is a colored label"
     $Script:coloredLabel.Name = "'Colored Label'"
     $Script:mainForm.Controls.Add($Script:coloredLabel)
-    $Script:coloredLabel.Location = [System.Drawing.Point]::new($($Script:coloredLabelBkg.Location.X - $Script:coloredLabel.Width - 20), $animatedProgressBar.Location.Y + $animatedProgressBar.Height + 20)
+    $Script:coloredLabel.Location = [System.Drawing.Point]::new($Script:coloredLabelBkg.Location.X - $Script:coloredLabel.Width - 20, $animatedProgressBar.Location.Y + $animatedProgressBar.Height + 20)
     #endregion
 
     #region animated button
@@ -112,57 +111,69 @@ function CreateAnimatedControls {
     #region animated label
     $Script:animatedLabel = New-Object System.Windows.Forms.Label
     $Script:animatedLabel.AutoSize = $true
-    $Script:animatedLabel.Text = "This is a moving label,`nbut any controls can be moved"
+    $Script:animatedLabel.Text = "This is a moving label,`nbut any controls can be moved`nand used while moving."
     $Script:animatedLabel.Name = "'Moving Label'"    
     $Script:animatedLabel.BorderStyle = 'FixedSingle'
     $Script:mainForm.Controls.Add($Script:animatedLabel)
     $Script:animatedLabel.Location = [System.Drawing.Point]::new($Script:animatedLabel.Width * -1 - 10, $animatedBtn.Location.Y + $animatedBtn.Height + 20)
     #endregion
 
-    $easing = $easeBounceOut
-    $duration = 2.0
-    $delay = 0
-    $delayInc = 0
-
+    # set twwens var for the apparence of elements
+    $easing = $easeCubicOut
+    $duration = 1.5
+    $delay = 0.0
+    $delayInc = 1
+    
+    # animatedValue
     $dest = [System.Drawing.Point]::new(10 + $labelAnimatedValue.Width + 25, 10)
     $tween = [TweenMoveTo]::new($Script:animatedValue, $dest, $duration, $easing)
-    $tweensList.Add($tween) | Out-Null
+    $tween.setDelay($delay)
+    $Script:tweensList.Add($tween) | Out-Null
 
+    # labelAnimatedValue
     $dest = [System.Drawing.Point]::new(10, 10)
     $tween = [TweenMoveTo]::new($labelAnimatedValue, $dest, $duration, $easing)
-    $tweensList.Add($tween) | Out-Null
+    $tween.setDelay($delay)
+    $Script:tweensList.Add($tween) | Out-Null
+    
     $delay += $delayInc
 
+    # progressBar
     $dest = [System.Drawing.Point]::new(10, $labelAnimatedValue.Location.Y + $labelAnimatedValue.Height + 20)
-    $tween = [TweenMoveTo]::new($animatedProgressBar, $dest, $duration, $easing)
+    $tween = [TweenMoveTo]::new($Script:animatedProgressBar, $dest, $duration, $easing)
     $tween.setDelay($delay)
-    $tweensList.Add($tween) | Out-Null
+    $Script:tweensList.Add($tween) | Out-Null
 
     $delay += $delayInc
 
-    $dest = [System.Drawing.Point]::new(10, $animatedProgressBar.Location.Y + $animatedProgressBar.Height + 20)
-    $tween = [TweenMoveTo]::new($coloredLabel, $dest, $duration, $easing)
+    # coloredLabel
+    $dest = [System.Drawing.Point]::new(10, $Script:animatedProgressBar.Location.Y + $Script:animatedProgressBar.Height + 20)
+    $tween = [TweenMoveTo]::new($Script:coloredLabel, $dest, $duration, $easing)
     $tween.setDelay($delay)
     $tweensList.Add($tween) | Out-Null
 
-    $dest = [System.Drawing.Point]::new(10 + $coloredLabel.Width + 20, $animatedProgressBar.Location.Y + $animatedProgressBar.Height + 20)
-    $tween = [TweenMoveTo]::new($coloredLabelBkg, $dest, $duration, $easing)
+    # coloredLabelBkg
+    $dest = [System.Drawing.Point]::new(10 + $Script:coloredLabel.Width + 20, $Script:animatedProgressBar.Location.Y + $Script:animatedProgressBar.Height + 20)
+    $tween = [TweenMoveTo]::new($Script:coloredLabelBkg, $dest, $duration, $easing)
     $tween.setDelay($delay)
-    $tweensList.Add($tween) | Out-Null
+    $Script:tweensList.Add($tween) | Out-Null
 
     $delay += $delayInc
 
-    $dest = [System.Drawing.Point]::new(10, $coloredLabel.Location.Y + $coloredLabel.Height + 20)
-    $tween = [TweenMoveTo]::new($animatedBtn, $dest, $duration, $easing)
+    # animatedBtn
+    $dest = [System.Drawing.Point]::new(10, $Script:coloredLabel.Location.Y + $Script:coloredLabel.Height + 20)
+    $tween = [TweenMoveTo]::new($Script:animatedBtn, $dest, $duration, $easing)
     $tween.setDelay($delay)
-    $tweensList.Add($tween) | Out-Null
+    $Script:tweensList.Add($tween) | Out-Null
 
     $delay += $delayInc
 
-    $dest = [System.Drawing.Point]::new(10, $animatedBtn.Location.Y + $animatedBtn.Height + 20)
-    $tween = [TweenMoveTo]::new($animatedLabel, $dest, $duration, $easing)
+    # animatedLabel
+    $dest = [System.Drawing.Point]::new(10, $Script:animatedBtn.Location.Y + $Script:animatedBtn.Height + 20)
+    $tween = [TweenMoveTo]::new($Script:animatedLabel, $dest, $duration, $easing)
     $tween.setDelay($delay)
-    $tweensList.Add($tween) | Out-Null
+    $Script:tweensList.Add($tween) | Out-Null
+    
 }
 
 function CreateInputs {
