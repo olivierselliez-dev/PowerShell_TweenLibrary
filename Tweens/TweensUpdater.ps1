@@ -51,6 +51,9 @@ function TweensUpdate {
                         "TweenColorARGB" {
                             ColorARGB $tween
                         }
+                        "TweenWaiter" {
+                            Wait $tween
+                        }
                         Default { Write-Host "AnimationType not handled." }
                     }
                 }

@@ -306,3 +306,15 @@ class TweenColorARGB : Tween {
     }
 
 }
+
+class TweenWaiter : Tween {
+
+    TweenWaiter([System.Object]$pControl, [double]$pDuration, [scriptblock]$pCallBack) {
+        $this.control = $pControl
+        $this.duration = $pDuration * $Script:refreshRate
+        $this.onComplete = $pCallBack
+
+        $Script:tweensList.Add($this) | Out-Null
+    }
+
+}

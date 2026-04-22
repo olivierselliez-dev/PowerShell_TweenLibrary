@@ -193,7 +193,8 @@ function ColorARGB {
         if ($tweenObj.type -eq "ForeColor") {
             $tweenObj.control.ForeColor = [System.Drawing.Color]::FromArgb($A, $R, $G, $B)
         }
-        else { # BackColor
+        else {
+            # BackColor
             $tweenObj.control.BackColor = [System.Drawing.Color]::FromArgb($A, $R, $G, $B)
         }
     }
@@ -217,7 +218,30 @@ function WaitDelay {
         $tweenObj.delay = 0
     }
     else {
-        Ease $easeLinear $tweenObj.delay $($tweenObj.delay*-1) $tweenObj.nbTicks $tweenObj.delay
+        Ease $easeLinear $tweenObj.delay $($tweenObj.delay * -1) $tweenObj.nbTicks $tweenObj.delay
+    }
+}
+
+function Wait {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [Tween]
+        $tweenObj
+    )
+
+    $tweenObj.nbTicks++
+    
+    if ($tweenObj.nbTicks -gt $tweenObj.duration) {
+        # animation ended
+
+        # Remove the tweenObject from the list of tweenObjects to animate
+        $Script:tweensList.Remove($tweenObj)
+
+        # Execute callback if defined
+        if ($null -ne $tweenObj.onComplete) {
+            & $tweenObj.onComplete
+        }
     }
 }
 
