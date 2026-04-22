@@ -34,9 +34,8 @@ function TweensUpdate {
     if ($Script:tweensList.Count -gt 0) {
         try {
             foreach ($tween in $Script:tweensList) {
-                # If a delay is set, decrement it and skip the update for this frame
                 if ($tween.delay -ne 0) {
-                    $tween.delay--
+                    WaitDelay $tween
                 }
                 else {
                     switch ($tween.GetType()) {

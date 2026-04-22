@@ -185,33 +185,40 @@ function ColorARGB {
         }
     }
     else {
-        switch ($tweenObj.control.GetType()) {
+        $A = Ease $tweenObj.easing $tweenObj.startColor.A $tweenObj.deltaA $tweenObj.nbTicks $tweenObj.duration
+        $R = Ease $tweenObj.easing $tweenObj.startColor.R $tweenObj.deltaR $tweenObj.nbTicks $tweenObj.duration
+        $G = Ease $tweenObj.easing $tweenObj.startColor.G $tweenObj.deltaG $tweenObj.nbTicks $tweenObj.duration
+        $B = Ease $tweenObj.easing $tweenObj.startColor.B $tweenObj.deltaB $tweenObj.nbTicks $tweenObj.duration
 
-            "System.Windows.Forms.Label" { 
-
-                [System.Windows.Forms.Label]$label = $tweenObj.control
-
-                $A = Ease $tweenObj.easing $tweenObj.startColor.A $tweenObj.deltaA $tweenObj.nbTicks $tweenObj.duration
-                $R = Ease $tweenObj.easing $tweenObj.startColor.R $tweenObj.deltaR $tweenObj.nbTicks $tweenObj.duration
-                $G = Ease $tweenObj.easing $tweenObj.startColor.G $tweenObj.deltaG $tweenObj.nbTicks $tweenObj.duration
-                $B = Ease $tweenObj.easing $tweenObj.startColor.B $tweenObj.deltaB $tweenObj.nbTicks $tweenObj.duration
-
-                if ($tweenObj.type -eq "ForeColor") {
-                    $label.ForeColor = [System.Drawing.Color]::FromArgb($A, $R, $G, $B)
-                }
-                else {
-                    #BackColor
-                    $label.BackColor = [System.Drawing.Color]::FromArgb($A, $R, $G, $B)
-                }
-            }
-            
-            Default {
-                Write-Host "This type of control is not yet handled. Please implement it."
-            }
-
+        if ($tweenObj.type -eq "ForeColor") {
+            $tweenObj.control.ForeColor = [System.Drawing.Color]::FromArgb($A, $R, $G, $B)
+        }
+        else { # BackColor
+            $tweenObj.control.BackColor = [System.Drawing.Color]::FromArgb($A, $R, $G, $B)
         }
     }
+}
 
+function WaitDelay {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [Tween]
+        $tweenObj
+    )
+
+    $tweenObj.nbTicks++
+    
+    if ($tweenObj.nbTicks -gt $tweenObj.delay) {
+        # animation ended
+
+        # force end value
+        $tweenObj.nbTicks = 0
+        $tweenObj.delay = 0
+    }
+    else {
+        Ease $easeLinear $tweenObj.delay $($tweenObj.delay*-1) $tweenObj.nbTicks $tweenObj.delay
+    }
 }
 
 function Ease {
