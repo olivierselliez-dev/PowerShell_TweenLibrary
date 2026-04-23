@@ -172,6 +172,7 @@ function CreateAnimatedControls {
     $dest = [System.Drawing.Point]::new(10, $Script:animatedBtn.Location.Y + $Script:animatedBtn.Height + 20)
     $tween = [TweenMoveTo]::new($Script:animatedLabel, $dest, $duration, $easing)
     $tween.setDelay($delay)
+    $tween.setOnComplete({ CreateInputs })
     $Script:tweensList.Add($tween) | Out-Null
     
 }
@@ -188,72 +189,77 @@ function CreateInputs {
     $Script:grBoxSettings.Text = "Settings:"
     $Script:grBoxSettings.Margin = 0
     $Script:grBoxSettings.Width = $Script:mainForm.ClientSize.Width - 10
-    # $Script:mainForm.Controls.Add($Script:grBoxSettings)
-    [TweenWaiter]::new($Script:grBoxSettings, 0.3, { addControlToMainForm })
     
     #region AnimatedValue
+
+    [System.Windows.Forms.Panel]$panelAnimatedValue = New-Object System.Windows.Forms.Panel
+    $panelAnimatedValue = New-Object System.Windows.Forms.Panel
+    $panelAnimatedValue.BackColor = [System.Drawing.Color]::FromArgb(0, 0, 0, 0)
+    $panelAnimatedValue.Margin = 0
+    $panelAnimatedValue.Width = $Script:grBoxSettings.Width
+    $panelAnimatedValue.Height = 23
+    $panelAnimatedValue.Location = [System.Drawing.Point]::new(0, 25)
 
     [System.Windows.Forms.Label]$labelValue | Out-Null # Out-Null to avoid messages in the console
     $labelValue = New-Object System.Windows.Forms.Label
     $labelValue.AutoSize = $true
     $labelValue.Text = "`"Animated value`":"
-    $labelValue.Location = [System.Drawing.Point]::new(5, 25)
-    # $grBoxSettings.Controls.Add($labelValue) 
-    [TweenWaiter]::new($labelValue, 0.5, { addControlToGrBoxSettings })
+    $labelValue.Location = [System.Drawing.Point]::new(5, 2)
+    # [TweenWaiter]::new($labelValue, 0.5, { addControlToGrBoxSettings })
+    $panelAnimatedValue.Controls.Add($labelValue)
 
     [System.Windows.Forms.Label]$labelValueFrom | Out-Null # Out-Null to avoid messages in the console
     $labelValueFrom = New-Object System.Windows.Forms.Label
     $labelValueFrom.AutoSize = $true
     $labelValueFrom.Text = "from:"
     $labelValueFrom.Location = [System.Drawing.Point]::new(162, $labelValue.Location.Y)
-    # $grBoxSettings.Controls.Add($labelValueFrom) 
-    [TweenWaiter]::new($labelValueFrom, 0.5, { addControlToGrBoxSettings })
-    # $Script:tweensList.Add($waiter) | Out-Null
+    # [TweenWaiter]::new($labelValueFrom, 0.5, { addControlToGrBoxSettings })
+    $panelAnimatedValue.Controls.Add($labelValueFrom)
 
     $Script:txtBoxValueFrom = New-Object System.Windows.Forms.TextBox
     $Script:txtBoxValueFrom.Width = 25
     $Script:txtBoxValueFrom.Text = "0"
     $Script:txtBoxValueFrom.Location = [System.Drawing.Point]::new(194, $labelValue.Location.Y - 2)
-    # $grBoxSettings.Controls.Add($Script:txtBoxValueFrom)
-    [TweenWaiter]::new($txtBoxValueFrom, 0.5, { addControlToGrBoxSettings })
+    # [TweenWaiter]::new($txtBoxValueFrom, 0.5, { addControlToGrBoxSettings })
+    $panelAnimatedValue.Controls.Add($txtBoxValueFrom)
     
     [System.Windows.Forms.Label]$labelValueTo | Out-Null # Out-Null to avoid messages in the console
     $labelValueTo = New-Object System.Windows.Forms.Label
     $labelValueTo.AutoSize = $true
     $labelValueTo.Text = "to:"
     $labelValueTo.Location = [System.Drawing.Point]::new($Script:txtBoxValueFrom.Location.X + $Script:txtBoxValueFrom.Width, $labelValue.Location.Y)
-    # $grBoxSettings.Controls.Add($labelValueTo)
-    [TweenWaiter]::new($labelValueTo, 0.5, { addControlToGrBoxSettings })
+    # [TweenWaiter]::new($labelValueTo, 0.5, { addControlToGrBoxSettings })
+    $panelAnimatedValue.Controls.Add($labelValueTo)
 
     $Script:txtBoxValueTo = New-Object System.Windows.Forms.TextBox
     $Script:txtBoxValueTo.Width = 25
     $Script:txtBoxValueTo.Text = "0"
     $Script:txtBoxValueTo.Location = [System.Drawing.Point]::new($labelValueTo.Location.X + 19, $labelValue.Location.Y - 2)
-    # $grBoxSettings.Controls.Add($Script:txtBoxValueTo)
-    [TweenWaiter]::new($txtBoxValueTo, 0.5, { addControlToGrBoxSettings })
+    # [TweenWaiter]::new($txtBoxValueTo, 0.5, { addControlToGrBoxSettings })
+    $panelAnimatedValue.Controls.Add($txtBoxValueTo)
 
     [System.Windows.Forms.Label]$labelValueDuration | Out-Null # Out-Null to avoid messages in the console
     $labelValueDuration = New-Object System.Windows.Forms.Label
     $labelValueDuration.AutoSize = $true
     $labelValueDuration.Text = "duration (sec):"
     $labelValueDuration.Location = [System.Drawing.Point]::new($Script:txtBoxValueTo.Location.X + $Script:txtBoxValueTo.Width + 20, $labelValue.Location.Y)
-    # $grBoxSettings.Controls.Add($labelValueDuration)
-    [TweenWaiter]::new($labelValueDuration, 0.5, { addControlToGrBoxSettings })
+    # [TweenWaiter]::new($labelValueDuration, 0.5, { addControlToGrBoxSettings })
+    $panelAnimatedValue.Controls.Add($labelValueDuration)
     
     $Script:txtBoxValueDuration = New-Object System.Windows.Forms.TextBox
     $Script:txtBoxValueDuration.Width = 25
     $Script:txtBoxValueDuration.Text = 5
     $Script:txtBoxValueDuration.Location = [System.Drawing.Point]::new($labelValueDuration.Location.X + 82, $labelValue.Location.Y - 2)
-    # $grBoxSettings.Controls.Add($Script:txtBoxValueDuration)
-    [TweenWaiter]::new($txtBoxValueDuration, 0.5, { addControlToGrBoxSettings })
+    # [TweenWaiter]::new($txtBoxValueDuration, 0.5, { addControlToGrBoxSettings })
+    $panelAnimatedValue.Controls.Add($txtBoxValueDuration)
 
     [System.Windows.Forms.Label]$labelValueEasing | Out-Null # Out-Null to avoid messages in the console
     $labelValueEasing = New-Object System.Windows.Forms.Label
     $labelValueEasing.AutoSize = $true
     $labelValueEasing.Text = "Easing:"
     $labelValueEasing.Location = [System.Drawing.Point]::new($Script:txtBoxValueDuration.Location.X + $Script:txtBoxValueDuration.Width + 20, $labelValue.Location.Y)
-    # $grBoxSettings.Controls.Add($labelValueEasing)
-    [TweenWaiter]::new($labelValueEasing, 0.5, { addControlToGrBoxSettings })
+    # [TweenWaiter]::new($labelValueEasing, 0.5, { addControlToGrBoxSettings })
+    $panelAnimatedValue.Controls.Add($labelValueEasing)
 
     $Script:cBoxValueEasing = New-Object System.Windows.Forms.ComboBox
     $Script:cBoxValueEasing.DropDownStyle = 'DropDownList'
@@ -261,31 +267,31 @@ function CreateInputs {
     $Script:cBoxValueEasing.Location = [System.Drawing.Point]::new($labelValueEasing.Location.X + 42, $labelValue.Location.Y - 2)
     PopulateComboBoxEasing $Script:cBoxValueEasing
     $Script:cBoxValueEasing.SelectedIndex = 0
-    # $grBoxSettings.Controls.Add($Script:cBoxValueEasing)
-    [TweenWaiter]::new($cBoxValueEasing, 0.5, { addControlToGrBoxSettings })
+    # [TweenWaiter]::new($cBoxValueEasing, 0.5, { addControlToGrBoxSettings })
+    $panelAnimatedValue.Controls.Add($cBoxValueEasing)
 
     [System.Windows.Forms.Label]$labelValueDelay | Out-Null # Out-Null to avoid messages in the console
     $labelValueDelay = New-Object System.Windows.Forms.Label
     $labelValueDelay.AutoSize = $true
     $labelValueDelay.Text = "delay:"
     $labelValueDelay.Location = [System.Drawing.Point]::new($Script:cBoxValueEasing.Location.X + $Script:cBoxValueEasing.Width, $labelValue.Location.Y)
-    # $grBoxSettings.Controls.Add($labelValueDelay)
-    [TweenWaiter]::new($labelValueDelay, 0.5, { addControlToGrBoxSettings })
+    # [TweenWaiter]::new($labelValueDelay, 0.5, { addControlToGrBoxSettings })
+    $panelAnimatedValue.Controls.Add($labelValueDelay)
 
     $Script:txtBoxValueDelay = New-Object System.Windows.Forms.TextBox
     $Script:txtBoxValueDelay.Width = 25
     $Script:txtBoxValueDelay.Text = "0"
     $Script:txtBoxValueDelay.Location = [System.Drawing.Point]::new($labelValueDelay.Location.X + 36, $labelValue.Location.Y - 2)
-    # $grBoxSettings.Controls.Add($Script:txtBoxValueDelay)
-    [TweenWaiter]::new($txtBoxValueDelay, 0.5, { addControlToGrBoxSettings })
+    # [TweenWaiter]::new($txtBoxValueDelay, 0.5, { addControlToGrBoxSettings })
+    $panelAnimatedValue.Controls.Add($txtBoxValueDelay)
 
     [System.Windows.Forms.Label]$labelValueType | Out-Null # Out-Null to avoid messages in the console
     $labelValueType = New-Object System.Windows.Forms.Label
     $labelValueType.AutoSize = $true
     $labelValueType.Text = "type:"
     $labelValueType.Location = [System.Drawing.Point]::new($Script:txtBoxValueDelay.Location.X + $Script:txtBoxValueDelay.Width, $labelValue.Location.Y)
-    # $grBoxSettings.Controls.Add($labelValueType)
-    [TweenWaiter]::new($labelValueType, 0.5, { addControlToGrBoxSettings })
+    # [TweenWaiter]::new($labelValueType, 0.5, { addControlToGrBoxSettings })
+    $panelAnimatedValue.Controls.Add($labelValueType)
 
     $Script:cBoxValueType = New-Object System.Windows.Forms.ComboBox
     $Script:cBoxValueType.DropDownStyle = 'DropDownList'
@@ -293,73 +299,73 @@ function CreateInputs {
     $Script:cBoxValueType.Location = [System.Drawing.Point]::new($labelValueType.Location.X + 31, $labelValue.Location.Y - 2)
     $Script:cBoxValueType.Items.AddRange(("int", "double"))
     $Script:cBoxValueType.SelectedIndex = 0
-    # $grBoxSettings.Controls.Add($Script:cBoxValueType)
-    [TweenWaiter]::new($cBoxValueType, 0.5, { addControlToGrBoxSettings })
+    # [TweenWaiter]::new($cBoxValueType, 0.5, { addControlToGrBoxSettings }) | Out-Null # Out-Null to avoid messages in the console
+    $panelAnimatedValue.Controls.Add($cBoxValueType)
 
     #endregion
 
     #region AnimatedProgressBar
 
+    [System.Windows.Forms.Panel]$panelProgressBar = New-Object System.Windows.Forms.Panel
+    $panelProgressBar = New-Object System.Windows.Forms.Panel
+    $panelProgressBar.BackColor = [System.Drawing.Color]::FromArgb(0, 0, 0, 0)
+    $panelProgressBar.Margin = 0
+    $panelProgressBar.Width = $Script:grBoxSettings.Width
+    $panelProgressBar.Height = 23
+    $panelProgressBar.Location = [System.Drawing.Point]::new(0, $panelAnimatedValue.Location.Y + $labelValue.Height + 10)
+
     [System.Windows.Forms.Label]$labelProgressBar | Out-Null # Out-Null to avoid messages in the console
     $labelProgressBar = New-Object System.Windows.Forms.Label
     $labelProgressBar.AutoSize = $true
     $labelProgressBar.Text = "`"ProgressBar`":"
-    $labelProgressBar.Location = [System.Drawing.Point]::new(5, $labelValue.Location.Y + $labelValue.Height + 10)
-    # $grBoxSettings.Controls.Add($labelProgressBar)
-    [TweenWaiter]::new($labelProgressBar, 0.7, { addControlToGrBoxSettings })
+    $labelProgressBar.Location = [System.Drawing.Point]::new(5, 2)
+    $panelProgressBar.Controls.Add($labelProgressBar)
 
     [System.Windows.Forms.Label]$labelProgressBarStart | Out-Null # Out-Null to avoid messages in the console
     $labelProgressBarStart = New-Object System.Windows.Forms.Label
     $labelProgressBarStart.AutoSize = $true
     $labelProgressBarStart.Text = "from (%):"
     $labelProgressBarStart.Location = [System.Drawing.Point]::new(141, $labelProgressBar.Location.Y)
-    # $grBoxSettings.Controls.Add($labelProgressBarStart)
-    [TweenWaiter]::new($labelProgressBarStart, 0.7, { addControlToGrBoxSettings })
+    $panelProgressBar.Controls.Add($labelProgressBarStart)
 
     $Script:txtBoxProgressBarStart = New-Object System.Windows.Forms.TextBox
     $Script:txtBoxProgressBarStart.Width = 25
     $Script:txtBoxProgressBarStart.Text = "0"
     $Script:txtBoxProgressBarStart.Location = [System.Drawing.Point]::new(194, $labelProgressBar.Location.Y - 2)
-    # $grBoxSettings.Controls.Add($Script:txtBoxProgressBarStart)
-    [TweenWaiter]::new($txtBoxProgressBarStart, 0.7, { addControlToGrBoxSettings })
+    $panelProgressBar.Controls.Add($txtBoxProgressBarStart)
 
     [System.Windows.Forms.Label]$labelProgressBarEnd | Out-Null # Out-Null to avoid messages in the console
     $labelProgressBarEnd = New-Object System.Windows.Forms.Label
     $labelProgressBarEnd.AutoSize = $true
     $labelProgressBarEnd.Text = "to:"
     $labelProgressBarEnd.Location = [System.Drawing.Point]::new($Script:txtBoxProgressBarStart.Location.X + $Script:txtBoxProgressBarStart.Width, $labelProgressBar.Location.Y)
-    # $grBoxSettings.Controls.Add($labelProgressBarEnd)
-    [TweenWaiter]::new($labelProgressBarEnd, 0.7, { addControlToGrBoxSettings })
+    $panelProgressBar.Controls.Add($labelProgressBarEnd)
 
     $Script:txtBoxProgressBarEnd = New-Object System.Windows.Forms.TextBox
     $Script:txtBoxProgressBarEnd.Width = 25
     $Script:txtBoxProgressBarEnd.Text = "0"
     $Script:txtBoxProgressBarEnd.Location = [System.Drawing.Point]::new($labelProgressBarEnd.Location.X + 19, $labelProgressBar.Location.Y - 2)
-    # $grBoxSettings.Controls.Add($Script:txtBoxProgressBarEnd)
-    [TweenWaiter]::new($txtBoxProgressBarEnd, 0.7, { addControlToGrBoxSettings })
+    $panelProgressBar.Controls.Add($txtBoxProgressBarEnd)
 
     [System.Windows.Forms.Label]$labelProgressBarDuration | Out-Null # Out-Null to avoid messages in the console
     $labelProgressBarDuration = New-Object System.Windows.Forms.Label
     $labelProgressBarDuration.AutoSize = $true
     $labelProgressBarDuration.Text = "duration (sec):"
     $labelProgressBarDuration.Location = [System.Drawing.Point]::new($Script:txtBoxProgressBarEnd.Location.X + $Script:txtBoxProgressBarEnd.Width + 20, $labelProgressBar.Location.Y)
-    # $grBoxSettings.Controls.Add($labelProgressBarDuration)
-    [TweenWaiter]::new($labelProgressBarDuration, 0.7, { addControlToGrBoxSettings })
+    $panelProgressBar.Controls.Add($labelProgressBarDuration)
 
     $Script:txtBoxProgressBarDuration = New-Object System.Windows.Forms.TextBox
     $Script:txtBoxProgressBarDuration.Width = 25
     $Script:txtBoxProgressBarDuration.Text = 5
     $Script:txtBoxProgressBarDuration.Location = [System.Drawing.Point]::new($labelProgressBarDuration.Location.X + 82, $labelProgressBar.Location.Y - 2)
-    # $grBoxSettings.Controls.Add($Script:txtBoxProgressBarDuration)
-    [TweenWaiter]::new($txtBoxProgressBarDuration, 0.7, { addControlToGrBoxSettings })
+    $panelProgressBar.Controls.Add($txtBoxProgressBarDuration)
 
     [System.Windows.Forms.Label]$labelProgressBarEasing | Out-Null # Out-Null to avoid messages in the console
     $labelProgressBarEasing = New-Object System.Windows.Forms.Label
     $labelProgressBarEasing.AutoSize = $true
     $labelProgressBarEasing.Text = "Easing:"
     $labelProgressBarEasing.Location = [System.Drawing.Point]::new($Script:txtBoxProgressBarDuration.Location.X + $Script:txtBoxProgressBarDuration.Width + 20, $labelProgressBar.Location.Y)
-    # $grBoxSettings.Controls.Add($labelProgressBarEasing)
-    [TweenWaiter]::new($labelProgressBarEasing, 0.7, { addControlToGrBoxSettings })
+    $panelProgressBar.Controls.Add($labelProgressBarEasing)
 
     $Script:cBoxProgressBarEasing = New-Object System.Windows.Forms.ComboBox
     $Script:cBoxProgressBarEasing.DropDownStyle = 'DropDownList'
@@ -367,41 +373,47 @@ function CreateInputs {
     $Script:cBoxProgressBarEasing.Location = [System.Drawing.Point]::new($labelProgressBarEasing.Location.X + 42, $labelProgressBar.Location.Y - 2)
     PopulateComboBoxEasing $Script:cBoxProgressBarEasing
     $Script:cBoxProgressBarEasing.SelectedIndex = 0
-    # $grBoxSettings.Controls.Add($Script:cBoxProgressBarEasing)
-    [TweenWaiter]::new($cBoxProgressBarEasing, 0.7, { addControlToGrBoxSettings })
+    $panelProgressBar.Controls.Add($cBoxProgressBarEasing)
 
     [System.Windows.Forms.Label]$labelProgressBarDelay | Out-Null # Out-Null to avoid messages in the console
     $labelProgressBarDelay = New-Object System.Windows.Forms.Label
     $labelProgressBarDelay.AutoSize = $true
     $labelProgressBarDelay.Text = "delay:"
     $labelProgressBarDelay.Location = [System.Drawing.Point]::new($Script:cBoxProgressBarEasing.Location.X + $Script:cBoxProgressBarEasing.Width, $labelProgressBar.Location.Y)
-    # $grBoxSettings.Controls.Add($labelProgressBarDelay)
-    [TweenWaiter]::new($labelProgressBarDelay, 0.7, { addControlToGrBoxSettings })
+    $panelProgressBar.Controls.Add($labelProgressBarDelay)
 
     $Script:txtBoxProgressBarDelay = New-Object System.Windows.Forms.TextBox
     $Script:txtBoxProgressBarDelay.Width = 25
     $Script:txtBoxProgressBarDelay.Text = "0"
     $Script:txtBoxProgressBarDelay.Location = [System.Drawing.Point]::new($labelProgressBarDelay.Location.X + 36, $labelProgressBar.Location.Y - 2)
-    # $grBoxSettings.Controls.Add($Script:txtBoxProgressBarDelay)
-    [TweenWaiter]::new($txtBoxProgressBarDelay, 0.7, { addControlToGrBoxSettings })
+    $panelProgressBar.Controls.Add($txtBoxProgressBarDelay)
 
     #endregion
 
     #region color
 
+    [System.Windows.Forms.Panel]$panelColor = New-Object System.Windows.Forms.Panel
+    $panelColor = New-Object System.Windows.Forms.Panel
+    $panelColor.BackColor = [System.Drawing.Color]::FromArgb(0, 0, 0, 0)
+    $panelColor.Margin = 0
+    $panelColor.Width = $Script:grBoxSettings.Width
+    $panelColor.Height = 23
+    $panelColor.Location = [System.Drawing.Point]::new(0, $panelProgressBar.Location.Y + $labelProgressBar.Height + 10)
+    
+
     [System.Windows.Forms.Label]$labelColor | Out-Null # Out-Null to avoid messages in the console
     $labelColor = New-Object System.Windows.Forms.Label
     $labelColor.AutoSize = $true
     $labelColor.Text = "`"Color transition`":"
-    $labelColor.Location = [System.Drawing.Point]::new(5, $labelProgressBar.Location.Y + $labelProgressBar.Height + 10)
-    # $grBoxSettings.Controls.Add($labelColor)
+    $labelColor.Location = [System.Drawing.Point]::new(5, 2)
+    $panelColor.Controls.Add($labelColor)
 
     [System.Windows.Forms.Label]$labelColorFrom | Out-Null # Out-Null to avoid messages in the console
     $labelColorFrom = New-Object System.Windows.Forms.Label
     $labelColorFrom.AutoSize = $true
     $labelColorFrom.Text = "from:"
     $labelColorFrom.Location = [System.Drawing.Point]::new(162, $labelColor.Location.Y)
-    # $grBoxSettings.Controls.Add($labelColorFrom) 
+    $panelColor.Controls.Add($labelColorFrom)
 
     $Script:btnColorStart = New-Object System.Windows.Forms.Button
     $Script:btnColorStart.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
@@ -409,239 +421,271 @@ function CreateInputs {
     $Script:btnColorStart.Height = 20
     $Script:btnColorStart.BackColor = [System.Drawing.Color]::Black
     $Script:btnColorStart.Name = "btnColorStart"
-    $Script:btnColorStart.Location = [System.Drawing.Point]::new($labelColorFrom.Location.X + $labelColorFrom.Width, $labelColor.Location.Y - 2)
+    $Script:btnColorStart.Location = [System.Drawing.Point]::new(194, $labelColor.Location.Y - 2)
     $Script:btnColorStart.Add_Click({ onClickColorButton })
-    # $grBoxSettings.Controls.Add($Script:btnColorStart)
-    
+    $panelColor.Controls.Add($btnColorStart)
+
     [System.Windows.Forms.Label]$labelColorTo | Out-Null # Out-Null to avoid messages in the console
     $labelColorTo = New-Object System.Windows.Forms.Label
     $labelColorTo.AutoSize = $true
     $labelColorTo.Text = "to:"
     $labelColorTo.Location = [System.Drawing.Point]::new($btnColorStart.Location.X + $btnColorStart.Width + 1, $labelColor.Location.Y)
-    # $grBoxSettings.Controls.Add($labelColorTo)
-    
+    $panelColor.Controls.Add($labelColorTo)
+
     $Script:btnColorEnd = New-Object System.Windows.Forms.Button
     $Script:btnColorEnd.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
     $Script:btnColorEnd.Width = 23
     $Script:btnColorEnd.Height = 20
     $Script:btnColorEnd.BackColor = [System.Drawing.Color]::Black
     $Script:btnColorEnd.Name = "btnColorEnd"
-    $Script:btnColorEnd.Location = [System.Drawing.Point]::new($labelColorTo.Location.X + $labelColorTo.Width, $labelColor.Location.Y - 2)
+    $Script:btnColorEnd.Location = [System.Drawing.Point]::new($labelColorTo.Location.X + 19, $labelColor.Location.Y - 2)
     $Script:btnColorEnd.Add_Click({ onClickColorButton })
-    # $grBoxSettings.Controls.Add($Script:btnColorEnd)
+    $panelColor.Controls.Add($btnColorEnd)
 
     [System.Windows.Forms.Label]$labelColorDuration | Out-Null # Out-Null to avoid messages in the console
     $labelColorDuration = New-Object System.Windows.Forms.Label
     $labelColorDuration.AutoSize = $true
     $labelColorDuration.Text = "duration (sec):"
     $labelColorDuration.Location = [System.Drawing.Point]::new($btnColorEnd.Location.X + $btnColorEnd.Width + 21, $labelColor.Location.Y)
-    # $grBoxSettings.Controls.Add($labelColorDuration)
+    $panelColor.Controls.Add($labelColorDuration)
 
     $Script:txtBoxColorDuration = New-Object System.Windows.Forms.TextBox
     $Script:txtBoxColorDuration.Width = 25
     $Script:txtBoxColorDuration.Text = 5
-    $Script:txtBoxColorDuration.Location = [System.Drawing.Point]::new($labelColorDuration.Location.X + $labelColorDuration.Width, $labelColor.Location.Y - 2)
-    # $grBoxSettings.Controls.Add($Script:txtBoxColorDuration)
+    $Script:txtBoxColorDuration.Location = [System.Drawing.Point]::new($labelColorDuration.Location.X + 82, $labelColor.Location.Y - 2)
+    $panelColor.Controls.Add($txtBoxColorDuration)
 
     [System.Windows.Forms.Label]$labelColorEasing | Out-Null # Out-Null to avoid messages in the console
     $labelColorEasing = New-Object System.Windows.Forms.Label
     $labelColorEasing.AutoSize = $true
     $labelColorEasing.Text = "Easing:"
     $labelColorEasing.Location = [System.Drawing.Point]::new($Script:txtBoxColorDuration.Location.X + $Script:txtBoxColorDuration.Width + 21, $labelColor.Location.Y)
-    # $grBoxSettings.Controls.Add($labelColorEasing)
+    $panelColor.Controls.Add($labelColorEasing)
 
     $Script:cBoxColorEasing = New-Object System.Windows.Forms.ComboBox
     $Script:cBoxColorEasing.DropDownStyle = 'DropDownList'
     $Script:cBoxColorEasing.AutoSize = $true
-    $Script:cBoxColorEasing.Location = [System.Drawing.Point]::new($labelColorEasing.Location.X + $labelColorEasing.Width, $labelColor.Location.Y - 2)
+    $Script:cBoxColorEasing.Location = [System.Drawing.Point]::new($labelColorEasing.Location.X + 42, $labelColor.Location.Y - 2)
     PopulateComboBoxEasing $Script:cBoxColorEasing
     $Script:cBoxColorEasing.SelectedIndex = 0
-    # $grBoxSettings.Controls.Add($Script:cBoxColorEasing)
+    $panelColor.Controls.Add($cBoxColorEasing)
 
     [System.Windows.Forms.Label]$labelColorDelay | Out-Null # Out-Null to avoid messages in the console
     $labelColorDelay = New-Object System.Windows.Forms.Label
     $labelColorDelay.AutoSize = $true
     $labelColorDelay.Text = "delay:"
     $labelColorDelay.Location = [System.Drawing.Point]::new($Script:cBoxColorEasing.Location.X + $Script:cBoxColorEasing.Width, $labelColor.Location.Y)
-    # $grBoxSettings.Controls.Add($labelColorDelay)
+    $panelColor.Controls.Add($labelColorDelay)
 
     $Script:txtBoxColorDelay = New-Object System.Windows.Forms.TextBox
     $Script:txtBoxColorDelay.Width = 25
     $Script:txtBoxColorDelay.Text = "0"
-    $Script:txtBoxColorDelay.Location = [System.Drawing.Point]::new($labelColorDelay.Location.X + $labelColorDelay.Width, $labelColor.Location.Y - 2)
-    # $grBoxSettings.Controls.Add($Script:txtBoxColorDelay)
+    $Script:txtBoxColorDelay.Location = [System.Drawing.Point]::new($labelColorDelay.Location.X + 36, $labelColor.Location.Y - 2)
+    $panelColor.Controls.Add($txtBoxColorDelay)
 
     #endregion
 
     #region AnimatedButton
     
+    [System.Windows.Forms.Panel]$panelAnimatedBtn = New-Object System.Windows.Forms.Panel
+    $panelAnimatedBtn = New-Object System.Windows.Forms.Panel
+    $panelAnimatedBtn.BackColor = [System.Drawing.Color]::FromArgb(0, 0, 0, 0)
+    $panelAnimatedBtn.Margin = 0
+    $panelAnimatedBtn.Width = $Script:grBoxSettings.Width
+    $panelAnimatedBtn.Height = 23
+    $panelAnimatedBtn.Location = [System.Drawing.Point]::new(0, $panelColor.Location.Y + $labelColor.Height + 10)
+
     [System.Windows.Forms.Label]$labelBtn1 | Out-Null # Out-Null to avoid messages in the console
     $labelBtn1 = New-Object System.Windows.Forms.Label
     $labelBtn1.AutoSize = $true
     $labelBtn1.Text = "`"Animated Button`":"
-    $labelBtn1.Location = [System.Drawing.Point]::new(5, $labelColor.Location.Y + $labelColor.Height + 10)
-    # $grBoxSettings.Controls.Add($labelBtn1) 
+    $labelBtn1.Location = [System.Drawing.Point]::new(5, 2)
+    $panelAnimatedBtn.Controls.Add($labelBtn1)
 
     [System.Windows.Forms.Label]$labelBtn1Dest | Out-Null # Out-Null to avoid messages in the console
     $labelBtn1Dest = New-Object System.Windows.Forms.Label
     $labelBtn1Dest.AutoSize = $true
     $labelBtn1Dest.Text = "destination:"
     $labelBtn1Dest.Location = [System.Drawing.Point]::new(112, $labelBtn1.Location.Y)
-    # $grBoxSettings.Controls.Add($labelBtn1Dest)    
+    $panelAnimatedBtn.Controls.Add($labelBtn1Dest)
 
     [System.Windows.Forms.Label]$labelBtn1DestX | Out-Null # Out-Null to avoid messages in the console
     $labelBtn1DestX = New-Object System.Windows.Forms.Label
     $labelBtn1DestX.AutoSize = $true
     $labelBtn1DestX.Text = "X:"
-    $labelBtn1DestX.Location = [System.Drawing.Point]::new($labelBtn1Dest.Location.x + $labelBtn1Dest.Width, $labelBtn1.Location.Y)
-    # $grBoxSettings.Controls.Add($labelBtn1DestX)
+    $labelBtn1DestX.Location = [System.Drawing.Point]::new($labelBtn1Dest.Location.x + 68, $labelBtn1.Location.Y)
+    $panelAnimatedBtn.Controls.Add($labelBtn1DestX)
 
     $Script:txtBoxBtn1DestX = New-Object System.Windows.Forms.TextBox
     $Script:txtBoxBtn1DestX.Width = 25
     $Script:txtBoxBtn1DestX.Text = $Script:animatedBtn.Location.X.ToString()
-    $Script:txtBoxBtn1DestX.Location = [System.Drawing.Point]::new($labelBtn1DestX.Location.X + $labelBtn1DestX.Width, $labelBtn1.Location.Y - 2)
-    # $grBoxSettings.Controls.Add($Script:txtBoxBtn1DestX)
+    $Script:txtBoxBtn1DestX.Location = [System.Drawing.Point]::new(194, $labelBtn1.Location.Y - 2)
+    $panelAnimatedBtn.Controls.Add($txtBoxBtn1DestX)
 
     [System.Windows.Forms.Label]$labelBtn1DestY | Out-Null # Out-Null to avoid messages in the console
     $labelBtn1DestY = New-Object System.Windows.Forms.Label
     $labelBtn1DestY.AutoSize = $true
     $labelBtn1DestY.Text = "Y:"
-    $labelBtn1DestY.Location = [System.Drawing.Point]::new($Script:txtBoxBtn1DestX.Location.X + $Script:txtBoxBtn1DestX.Width + 5, $labelBtn1.Location.Y)
-    # $grBoxSettings.Controls.Add($labelBtn1DestY)
+    $labelBtn1DestY.Location = [System.Drawing.Point]::new($Script:txtBoxBtn1DestX.Location.X + 25 + 5, $labelBtn1.Location.Y)
+    $panelAnimatedBtn.Controls.Add($labelBtn1DestY)
 
     $Script:txtBoxBtn1DestY = New-Object System.Windows.Forms.TextBox
     $Script:txtBoxBtn1DestY.Width = 25
     $Script:txtBoxBtn1DestY.Text = $Script:animatedBtn.Location.Y.ToString()
     $Script:txtBoxBtn1DestY.Location = [System.Drawing.Point]::new(238, $labelBtn1.Location.Y - 2)
-    # $grBoxSettings.Controls.Add($Script:txtBoxBtn1DestY)
+    $panelAnimatedBtn.Controls.Add($txtBoxBtn1DestY)
 
     [System.Windows.Forms.Label]$labelBtn1Duration | Out-Null # Out-Null to avoid messages in the console
     $labelBtn1Duration = New-Object System.Windows.Forms.Label
     $labelBtn1Duration.AutoSize = $true
     $labelBtn1Duration.Text = "duration (sec):"
     $labelBtn1Duration.Location = [System.Drawing.Point]::new($txtBoxBtn1DestY.Location.X + $txtBoxBtn1DestY.Width + 20, $labelBtn1.Location.Y)
-    # $grBoxSettings.Controls.Add($labelBtn1Duration)
+    $panelAnimatedBtn.Controls.Add($labelBtn1Duration)
 
     $Script:txtBoxBtn1Duration = New-Object System.Windows.Forms.TextBox
     $Script:txtBoxBtn1Duration.Width = 25
     $Script:txtBoxBtn1Duration.Text = 5
-    $Script:txtBoxBtn1Duration.Location = [System.Drawing.Point]::new($labelBtn1Duration.Location.X + $labelBtn1Duration.Width, $labelBtn1.Location.Y - 2)
-    # $grBoxSettings.Controls.Add($Script:txtBoxBtn1Duration)
+    $Script:txtBoxBtn1Duration.Location = [System.Drawing.Point]::new($labelBtn1Duration.Location.X + 82, $labelBtn1.Location.Y - 2)
+    $panelAnimatedBtn.Controls.Add($txtBoxBtn1Duration)
 
     [System.Windows.Forms.Label]$labelBtn1Easing | Out-Null # Out-Null to avoid messages in the console
     $labelBtn1Easing = New-Object System.Windows.Forms.Label
     $labelBtn1Easing.AutoSize = $true
     $labelBtn1Easing.Text = "Easing:"
     $labelBtn1Easing.Location = [System.Drawing.Point]::new($Script:txtBoxBtn1Duration.Location.X + $Script:txtBoxBtn1Duration.Width + 20, $labelBtn1.Location.Y)
-    # $grBoxSettings.Controls.Add($labelBtn1Easing)
+    $panelAnimatedBtn.Controls.Add($labelBtn1Easing)
 
     $Script:cBoxBtn1Easing = New-Object System.Windows.Forms.ComboBox
     $Script:cBoxBtn1Easing.DropDownStyle = 'DropDownList'
     $Script:cBoxBtn1Easing.AutoSize = $true
-    $Script:cBoxBtn1Easing.Location = [System.Drawing.Point]::new($labelBtn1Easing.Location.X + $labelBtn1Easing.Width, $labelBtn1.Location.Y - 2)
+    $Script:cBoxBtn1Easing.Location = [System.Drawing.Point]::new($labelBtn1Easing.Location.X + 42, $labelBtn1.Location.Y - 2)
     PopulateComboBoxEasing $Script:cBoxBtn1Easing
     $Script:cBoxBtn1Easing.SelectedIndex = 0
-    # $grBoxSettings.Controls.Add($Script:cBoxBtn1Easing)
+    $panelAnimatedBtn.Controls.Add($cBoxBtn1Easing)
 
     [System.Windows.Forms.Label]$labelBtn1Delay | Out-Null # Out-Null to avoid messages in the console
     $labelBtn1Delay = New-Object System.Windows.Forms.Label
     $labelBtn1Delay.AutoSize = $true
     $labelBtn1Delay.Text = "delay:"
     $labelBtn1Delay.Location = [System.Drawing.Point]::new($Script:cBoxBtn1Easing.Location.X + $Script:cBoxBtn1Easing.Width, $labelBtn1.Location.Y)
-    # $grBoxSettings.Controls.Add($labelBtn1Delay)
+    $panelAnimatedBtn.Controls.Add($labelBtn1Delay)
 
     $Script:txtBoxBtn1Delay = New-Object System.Windows.Forms.TextBox
     $Script:txtBoxBtn1Delay.Width = 25
     $Script:txtBoxBtn1Delay.Text = "0"
-    $Script:txtBoxBtn1Delay.Location = [System.Drawing.Point]::new($labelBtn1Delay.Location.X + $labelBtn1Delay.Width, $labelBtn1.Location.Y - 2)
-    # $grBoxSettings.Controls.Add($Script:txtBoxBtn1Delay)
-    
+    $Script:txtBoxBtn1Delay.Location = [System.Drawing.Point]::new($labelBtn1Delay.Location.X + 36, $labelBtn1.Location.Y - 2)
+    $panelAnimatedBtn.Controls.Add($txtBoxBtn1Delay)
+
     #endregion
 
     #region AnimatedLabel
     
+    [System.Windows.Forms.Panel]$panelAnimatedLabel = New-Object System.Windows.Forms.Panel
+    $panelAnimatedLabel = New-Object System.Windows.Forms.Panel
+    $panelAnimatedLabel.BackColor = [System.Drawing.Color]::FromArgb(0, 0, 0, 0)
+    $panelAnimatedLabel.Margin = 0
+    $panelAnimatedLabel.Width = $Script:grBoxSettings.Width
+    $panelAnimatedLabel.Height = 23
+    $panelAnimatedLabel.Location = [System.Drawing.Point]::new(0, $panelAnimatedBtn.Location.Y + $labelBtn1.Height + 10)
+
+
     [System.Windows.Forms.Label]$labelLabel | Out-Null # Out-Null to avoid messages in the console
     $labelLabel = New-Object System.Windows.Forms.Label
     $labelLabel.AutoSize = $true
     $labelLabel.Text = "`"Animated Label`":"
-    $labelLabel.Location = [System.Drawing.Point]::new(5, $labelBtn1.Location.Y + $labelBtn1.Height + 10)
-    # $grBoxSettings.Controls.Add($labelLabel)  
+    $labelLabel.Location = [System.Drawing.Point]::new(5, 2)
+    $panelAnimatedLabel.Controls.Add($labelLabel)
 
     [System.Windows.Forms.Label]$labelLabelDest | Out-Null # Out-Null to avoid messages in the console
     $labelLabelDest = New-Object System.Windows.Forms.Label
     $labelLabelDest.AutoSize = $true
     $labelLabelDest.Text = "destination:"
     $labelLabelDest.Location = [System.Drawing.Point]::new(112, $labelLabel.Location.Y)
-    # $grBoxSettings.Controls.Add($labelLabelDest)    
+    $panelAnimatedLabel.Controls.Add($labelLabelDest)
 
     [System.Windows.Forms.Label]$labelLabelDestX | Out-Null # Out-Null to avoid messages in the console
     $labelLabelDestX = New-Object System.Windows.Forms.Label
     $labelLabelDestX.AutoSize = $true
     $labelLabelDestX.Text = "X:"
-    $labelLabelDestX.Location = [System.Drawing.Point]::new($labelLabelDest.Location.X + $labelLabelDest.Width, $labelLabel.Location.Y)
-    # $grBoxSettings.Controls.Add($labelLabelDestX)
+    $labelLabelDestX.Location = [System.Drawing.Point]::new($labelLabelDest.Location.X + 68, $labelLabel.Location.Y)
+    $panelAnimatedLabel.Controls.Add($labelLabelDestX)
 
     $Script:txtBoxLabelDestX = New-Object System.Windows.Forms.TextBox
     $Script:txtBoxLabelDestX.Width = 25
     $Script:txtBoxLabelDestX.Text = $Script:animatedLabel.Location.X.ToString()
-    $Script:txtBoxLabelDestX.Location = [System.Drawing.Point]::new($labelLabelDestX.Location.X + $labelLabelDestX.Width, $labelLabel.Location.Y - 2)
-    # $grBoxSettings.Controls.Add($Script:txtBoxLabelDestX)
+    $Script:txtBoxLabelDestX.Location = [System.Drawing.Point]::new(194, $labelLabel.Location.Y - 2)
+    $panelAnimatedLabel.Controls.Add($txtBoxLabelDestX)
 
     [System.Windows.Forms.Label]$labelLabelDestY | Out-Null # Out-Null to avoid messages in the console
     $labelLabelDestY = New-Object System.Windows.Forms.Label
     $labelLabelDestY.AutoSize = $true
     $labelLabelDestY.Text = "Y:"
-    $labelLabelDestY.Location = [System.Drawing.Point]::new($Script:txtBoxLabelDestX.Location.X + $Script:txtBoxLabelDestX.Width + 5, $labelLabel.Location.Y)
-    # $grBoxSettings.Controls.Add($labelLabelDestY)
+    $labelLabelDestY.Location = [System.Drawing.Point]::new($Script:txtBoxLabelDestX.Location.X + 25 + 5, $labelLabel.Location.Y)
+    $panelAnimatedLabel.Controls.Add($labelLabelDestY)
 
     $Script:txtBoxLabelDestY = New-Object System.Windows.Forms.TextBox
     $Script:txtBoxLabelDestY.Width = 25
     $Script:txtBoxLabelDestY.Text = $Script:animatedLabel.Location.Y.ToString()
     $Script:txtBoxLabelDestY.Location = [System.Drawing.Point]::new(238, $labelLabel.Location.Y - 2)
-    # $grBoxSettings.Controls.Add($Script:txtBoxLabelDestY)
+    $panelAnimatedLabel.Controls.Add($txtBoxLabelDestY)
 
     [System.Windows.Forms.Label]$labelLabelDuration | Out-Null # Out-Null to avoid messages in the console
     $labelLabelDuration = New-Object System.Windows.Forms.Label
     $labelLabelDuration.AutoSize = $true
     $labelLabelDuration.Text = "duration (sec):"
     $labelLabelDuration.Location = [System.Drawing.Point]::new($txtBoxLabelDestY.Location.X + $txtBoxLabelDestY.Width + 20, $labelLabel.Location.Y)
-    # $grBoxSettings.Controls.Add($labelLabelDuration)
+    $panelAnimatedLabel.Controls.Add($labelLabelDuration)
 
     $Script:txtBoxLabelDuration = New-Object System.Windows.Forms.TextBox
     $Script:txtBoxLabelDuration.Width = 25
     $Script:txtBoxLabelDuration.Text = 5
-    $Script:txtBoxLabelDuration.Location = [System.Drawing.Point]::new($labelLabelDuration.Location.X + $labelLabelDuration.Width, $labelLabel.Location.Y - 2)
-    # $grBoxSettings.Controls.Add($Script:txtBoxLabelDuration)
+    $Script:txtBoxLabelDuration.Location = [System.Drawing.Point]::new($labelLabelDuration.Location.X + 82, $labelLabel.Location.Y - 2)
+    $panelAnimatedLabel.Controls.Add($txtBoxLabelDuration)
 
     [System.Windows.Forms.Label]$labelLabelEasing | Out-Null # Out-Null to avoid messages in the console
     $labelLabelEasing = New-Object System.Windows.Forms.Label
     $labelLabelEasing.AutoSize = $true
     $labelLabelEasing.Text = "Easing:"
     $labelLabelEasing.Location = [System.Drawing.Point]::new($Script:txtBoxLabelDuration.Location.X + $Script:txtBoxLabelDuration.Width + 20, $labelLabel.Location.Y)
-    # $grBoxSettings.Controls.Add($labelLabelEasing)
+    $panelAnimatedLabel.Controls.Add($labelLabelEasing)
 
     $Script:cBoxLabelEasing = New-Object System.Windows.Forms.ComboBox
     $Script:cBoxLabelEasing.DropDownStyle = 'DropDownList'
     $Script:cBoxLabelEasing.AutoSize = $true
-    $Script:cBoxLabelEasing.Location = [System.Drawing.Point]::new($labelLabelEasing.Location.X + $labelLabelEasing.Width, $labelLabel.Location.Y - 2)
+    $Script:cBoxLabelEasing.Location = [System.Drawing.Point]::new($labelLabelEasing.Location.X + 42, $labelLabel.Location.Y - 2)
     PopulateComboBoxEasing $Script:cBoxLabelEasing
     $Script:cBoxLabelEasing.SelectedIndex = 0
-    # $grBoxSettings.Controls.Add($Script:cBoxLabelEasing)
+    $panelAnimatedLabel.Controls.Add($cBoxLabelEasing)
 
     [System.Windows.Forms.Label]$labelLabelDelay | Out-Null # Out-Null to avoid messages in the console
     $labelLabelDelay = New-Object System.Windows.Forms.Label
     $labelLabelDelay.AutoSize = $true
     $labelLabelDelay.Text = "delay:"
     $labelLabelDelay.Location = [System.Drawing.Point]::new($Script:cBoxLabelEasing.Location.X + $Script:cBoxLabelEasing.Width, $labelLabel.Location.Y)
-    # $grBoxSettings.Controls.Add($labelLabelDelay)
+    $panelAnimatedLabel.Controls.Add($labelLabelDelay)
 
     $Script:txtBoxLabelDelay = New-Object System.Windows.Forms.TextBox
     $Script:txtBoxLabelDelay.Width = 25
     $Script:txtBoxLabelDelay.Text = "0"
-    $Script:txtBoxLabelDelay.Location = [System.Drawing.Point]::new($labelLabelDelay.Location.X + $labelLabelDelay.Width, $labelLabel.Location.Y - 2)
-    # $grBoxSettings.Controls.Add($Script:txtBoxLabelDelay)
-    
+    $Script:txtBoxLabelDelay.Location = [System.Drawing.Point]::new($labelLabelDelay.Location.X + 36, $labelLabel.Location.Y - 2)
+    $panelAnimatedLabel.Controls.Add($txtBoxLabelDelay)
+
     #endregion
+
+    [TweenWaiter]::new($Script:grBoxSettings, 0.00, { addControlToMainForm })
+    [TweenWaiter]::new($panelAnimatedValue, 0.3, { addControlToGrBoxSettings })
+    [TweenWaiter]::new($panelProgressBar, 0.4, { addControlToGrBoxSettings })
+    [TweenWaiter]::new($panelColor, 0.45, { addControlToGrBoxSettings })
+    [TweenWaiter]::new($panelAnimatedBtn, 0.47, { addControlToGrBoxSettings })
+    [TweenWaiter]::new($panelAnimatedLabel, 0.48, { addControlToGrBoxSettings })
+
+    $t = [TweenColorARGB]::new($labelValue, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, 1, $easeLinear)
+    $t.setDelay(0.3)
+    $Script:tweensList.Add($t)
+    $t = [TweenColorARGB]::new($txtBoxValueFrom, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, 5, $easeLinear)
+    $t2 = [TweenColorARGB]::new($txtBoxValueFrom, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, 5, $easeLinear)
+$Script:tweensList.Add($t)
+$Script:tweensList.Add($t2)
 
     #region instructions
     [System.Windows.Forms.Label]$labelInstructions
@@ -656,9 +700,10 @@ function CreateInputs {
     #endregion
 
     # Manual adjustment of the GroupBox height
-    $grBoxSettings.Height = $labelLabel.Location.Y + $labelLabel.Height + 10
+    $grBoxSettings.Height = $panelAnimatedLabel.Location.Y + $labelLabel.Height + 10
     # Place the grBox after setting the Height according to content
     $grBoxSettings.Location = [System.Drawing.Point]::new(5, $Script:btnStart.Location.Y - $grBoxSettings.Height - 5)
+   
 }
 
 function addControlToMainForm {
@@ -1201,7 +1246,7 @@ CreateBtnStart
 CreateBtnReset
 CreateBtnRandomize
 CreateBtnPreset
-CreateInputs
+# CreateInputs # Will be done after the last animation of animated controls
 
 $Script:mainForm.Controls.Add($Script:labelTooltip)
 
