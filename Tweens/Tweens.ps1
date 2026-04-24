@@ -53,7 +53,9 @@ class Tween {
         $this.nbTicks = 0
         $this.onComplete = $null
         $this.delay = 0
-        $this.startTime = Get-Date # just used for logs 
+        $this.startTime = Get-Date # just used for logs
+
+        $Script:tweensList.Add($this) | Out-Null
     }
 
     [void]setOnComplete([scriptblock]$pCallBack) {
@@ -133,6 +135,7 @@ class TweenNumericString : Tween {
         .PARAMETER pEasing
             The name of the easing function to apply.
         #>
+        
         if ($pType -notin @('int', 'double')) {
             throw "Invalid numeric type '$pType'. Supported values are 'int' or 'double'."
         }
@@ -145,6 +148,8 @@ class TweenNumericString : Tween {
         $this.duration = $pDuration * $Script:refreshRate
 
         $this.delta = $this.endValue - $this.startValue
+
+        # $Script:tweensList.Add($this) | Out-Null
     }
 
 }
@@ -190,6 +195,8 @@ class TweenMoveTo : Tween {
 
         $this.startPos = [System.Drawing.Point]::new($pControl.Location.X, $pControl.Location.Y)
         $this.delta = [System.Drawing.Point]::new($this.destPos.X - $this.startPos.X, $this.destPos.Y - $this.startPos.Y)
+
+        # $Script:tweensList.Add($this) | Out-Null
     }
 
 }
@@ -237,6 +244,8 @@ class TweenProgressBar : Tween {
         $this.easing = $pEasing
 
         $this.delta = $pEndValue - $pStartValue
+
+        # $Script:tweensList.Add($this) | Out-Null
     }
 
 }
@@ -303,6 +312,8 @@ class TweenColorARGB : Tween {
         $this.deltaR = $pEndColor.R - $pStartColor.R
         $this.deltaG = $pEndColor.G - $pStartColor.G
         $this.deltaB = $pEndColor.B - $pStartColor.B
+
+        # $Script:tweensList.Add($this) | Out-Null
     }
 
 }
@@ -314,7 +325,7 @@ class TweenWaiter : Tween {
         $this.duration = $pDuration * $Script:refreshRate
         $this.onComplete = $pCallBack
 
-        $Script:tweensList.Add($this) | Out-Null
+        # $Script:tweensList.Add($this) | Out-Null
     }
 
 }
