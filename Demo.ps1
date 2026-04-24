@@ -128,13 +128,11 @@ function CreateAnimatedControls {
     $dest = [System.Drawing.Point]::new(10 + $labelAnimatedValue.Width + 25, 10)
     $tween = [TweenMoveTo]::new($Script:animatedValue, $dest, $duration, $easing)
     $tween.setDelay($delay)
-    $Script:tweensList.Add($tween) | Out-Null
 
     # labelAnimatedValue
     $dest = [System.Drawing.Point]::new(10, 10)
     $tween = [TweenMoveTo]::new($labelAnimatedValue, $dest, $duration, $easing)
     $tween.setDelay($delay)
-    $Script:tweensList.Add($tween) | Out-Null
     
     $delay += $delayInc
 
@@ -142,21 +140,18 @@ function CreateAnimatedControls {
     $dest = [System.Drawing.Point]::new(10, $labelAnimatedValue.Location.Y + $labelAnimatedValue.Height + 20)
     $tween = [TweenMoveTo]::new($Script:animatedProgressBar, $dest, $duration, $easing)
     $tween.setDelay($delay)
-    $Script:tweensList.Add($tween) | Out-Null
-
+    
     $delay += $delayInc
 
     # coloredLabel
     $dest = [System.Drawing.Point]::new(10, $Script:animatedProgressBar.Location.Y + $Script:animatedProgressBar.Height + 20)
     $tween = [TweenMoveTo]::new($Script:coloredLabel, $dest, $duration, $easing)
     $tween.setDelay($delay)
-    $tweensList.Add($tween) | Out-Null
 
     # coloredLabelBkg
     $dest = [System.Drawing.Point]::new(10 + $Script:coloredLabel.Width + 20, $Script:animatedProgressBar.Location.Y + $Script:animatedProgressBar.Height + 20)
     $tween = [TweenMoveTo]::new($Script:coloredLabelBkg, $dest, $duration, $easing)
     $tween.setDelay($delay)
-    $Script:tweensList.Add($tween) | Out-Null
 
     $delay += $delayInc
 
@@ -164,7 +159,6 @@ function CreateAnimatedControls {
     $dest = [System.Drawing.Point]::new(10, $Script:coloredLabel.Location.Y + $Script:coloredLabel.Height + 20)
     $tween = [TweenMoveTo]::new($Script:animatedBtn, $dest, $duration, $easing)
     $tween.setDelay($delay)
-    $Script:tweensList.Add($tween) | Out-Null
 
     $delay += $delayInc
 
@@ -173,7 +167,6 @@ function CreateAnimatedControls {
     $tween = [TweenMoveTo]::new($Script:animatedLabel, $dest, $duration, $easing)
     $tween.setDelay($delay)
     $tween.setOnComplete({ CreateInputs })
-    $Script:tweensList.Add($tween) | Out-Null
     
 }
 
@@ -685,269 +678,186 @@ function CreateInputs {
     $delay = 0.3
     $t = [TweenColorARGB]::new($labelValue, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelValueFrom, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxValueFrom, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxValueFrom, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelValueTo, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxValueTo, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxValueTo, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelValueDuration, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxValueDuration, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxValueDuration, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelValueEasing, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($cBoxValueEasing, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($cBoxValueEasing, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelValueDelay, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxValueDelay, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxValueDelay, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelValueType, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($cBoxValueType, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($cBoxValueType, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     #endregion
 
     #region ProgressBar fade inputs
     $delay = 0.4
     $t = [TweenColorARGB]::new($labelProgressBar, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelProgressBarStart, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxProgressBarStart, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxProgressBarStart, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelProgressBarEnd, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxProgressBarEnd, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxProgressBarEnd, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelProgressBarDuration, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxProgressBarDuration, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxProgressBarDuration, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelProgressBarEasing, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($cBoxProgressBarEasing, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($cBoxProgressBarEasing, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelProgressBarDelay, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxProgressBarDelay, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxProgressBarDelay, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     #endregion
 
     #region Color fade inputs
     $delay = 0.45
     $t = [TweenColorARGB]::new($labelColor, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelColorFrom, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($btnColorStart, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelColorTo, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($btnColorEnd, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelColorDuration, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxColorDuration, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxColorDuration, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelColorEasing, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($cBoxColorEasing, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($cBoxColorEasing, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelColorDelay, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxColorDelay, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxColorDelay, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     #endregion
 
     #region AnimatedButton fade inputs
     $delay = 0.47
     $t = [TweenColorARGB]::new($labelBtn1, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelBtn1Dest, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelBtn1DestX, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxBtn1DestX, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxBtn1DestX, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelBtn1DestY, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxBtn1DestY, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxBtn1DestY, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelBtn1Duration, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxBtn1Duration, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxBtn1Duration, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelBtn1Easing, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($cBoxBtn1Easing, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($cBoxBtn1Easing, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelBtn1Delay, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxBtn1Delay, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxBtn1Delay, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     #endregion
 
     #region AnimatedLabel fade inputs
     $delay = 0.48
     $t = [TweenColorARGB]::new($labelLabel, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelLabelDest, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelLabelDestX, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxLabelDestX, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxLabelDestX, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelLabelDestY, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxLabelDestY, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxLabelDestY, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelLabelDuration, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxLabelDuration, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxLabelDuration, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelLabelEasing, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($cBoxLabelEasing, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($cBoxLabelEasing, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelLabelDelay, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxLabelDelay, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::White, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($txtBoxLabelDelay, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     #endregion
 
     #region instructions
@@ -962,10 +872,8 @@ function CreateInputs {
     [TweenWaiter]::new($labelInstructions, 0.6, { addControlToGrBoxSettings })
     $t = [TweenColorARGB]::new($labelInstructions, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::FromArgb(255, 235, 235, 235), $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     $t = [TweenColorARGB]::new($labelInstructions, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::FromArgb(255, 100, 100, 100), $duration, $easeSineIn)
     $t.setDelay($delay)
-    $Script:tweensList.Add($t)
     #endregion
 
     # Manual adjustment of the GroupBox height
@@ -1122,11 +1030,9 @@ function ShowTooltip {
     $Script:labelTooltip.Location = [System.Drawing.Point]::new($Script:btnPreset.Location.X, [int]$Script:btnPreset.Location.Y + ($Script:btnPreset.Height - $Script:labelTooltip.Height) / 2)
     $Script:labelTooltip.ForeColor = $Script:mainForm.BackColor
     $destPos = [System.Drawing.Point]::new([int]$Script:labelTooltip.Location.X - $Script:labelTooltip.Width, [int]$Script:btnPreset.Location.Y + ($Script:btnPreset.Height - $Script:labelTooltip.Height) / 2)
-    $tweenPos = [TweenMoveTo]::new($Script:labelTooltip, $destPos, 0.5, $Script:easeQuintOut)
-    $tweenColor = [TweenColorARGB]::new($Script:labelTooltip, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, 0.5, $Script:easeSineIn)
+    [TweenMoveTo]::new($Script:labelTooltip, $destPos, 0.5, $Script:easeQuintOut)
+    [TweenColorARGB]::new($Script:labelTooltip, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, 0.5, $Script:easeSineIn)
     CheckTweenOnTooltip
-    $Script:tweensList.Add($tweenPos)
-    $Script:tweensList.Add($tweenColor)
 }
 
 function HideTooltip {
@@ -1138,11 +1044,9 @@ function HideTooltip {
     #>
 
     $destPos = [System.Drawing.Point]::new($Script:btnPreset.Location.X, [int]$Script:btnPreset.Location.Y + ($Script:btnPreset.Height - $Script:labelTooltip.Height) / 2)
-    $tweenPos = [TweenMoveTo]::new($Script:labelTooltip, $destPos, 0.5, $Script:easeQuintIn)
-    $tweenColor = [TweenColorARGB]::new($Script:labelTooltip, "ForeColor", [System.Drawing.Color]::Black, $Script:mainForm.BackColor, 0.5, $Script:easeSineOut)
+    [TweenMoveTo]::new($Script:labelTooltip, $destPos, 0.5, $Script:easeQuintIn)
+    [TweenColorARGB]::new($Script:labelTooltip, "ForeColor", [System.Drawing.Color]::Black, $Script:mainForm.BackColor, 0.5, $Script:easeSineOut)
     CheckTweenOnTooltip
-    $Script:tweensList.Add($tweenPos)
-    $Script:tweensList.Add($tweenColor)
 }
 
 function CheckTweenOnTooltip {
@@ -1179,31 +1083,25 @@ function onClickBtnStart {
     $tweenValue = [TweenNumericString]::new($Script:animatedValue, $Script:cBoxValueType.SelectedItem, [double]$Script:txtBoxValueFrom.Text, [double]$Script:txtBoxValueTo.Text, [double]$Script:txtBoxValueDuration.Text, $Script:cBoxValueEasing.SelectedItem)
     $tweenValue.setDelay([int]$Script:txtBoxValueDelay.Text)
     $tweenValue.setOnComplete({ writeDuration })
-    $Script:tweensList.Add($tweenValue)
 
     $tweenProgressBar = [TweenProgressBar]::new($Script:animatedProgressBar, [double]$Script:txtBoxProgressBarStart.Text, [double]$Script:txtBoxProgressBarEnd.Text, [double]$Script:txtBoxProgressBarDuration.Text, $Script:cBoxProgressBarEasing.SelectedItem)
     $tweenProgressBar.setDelay([int]$Script:txtBoxProgressBarDelay.Text)
     $tweenProgressBar.setOnComplete({ writeDuration })
-    $Script:tweensList.Add($tweenProgressBar)
 
     $tweenColorLabel = [TweenColorARGB]::new($Script:coloredLabel, "ForeColor", $Script:colorStart, $Script:colorEnd, $Script:txtBoxColorDuration.Text, $Script:cBoxColorEasing.SelectedItem)
     $tweenColorLabel.setDelay([int]$Script:txtBoxColorDelay.Text)
-    $Script:tweensList.Add($tweenColorLabel)
 
     $tweenColorLabelBkg = [TweenColorARGB]::new($Script:coloredLabelBkg, "BackColor", $Script:colorStart, $Script:colorEnd, $Script:txtBoxColorDuration.Text, $Script:cBoxColorEasing.SelectedItem)
     $tweenColorLabelBkg.setDelay([int]$Script:txtBoxColorDelay.Text)
     $tweenColorLabelBkg.setOnComplete({ onCompleteAnimation })
-    $Script:tweensList.Add($tweenColorLabelBkg)
 
     $destPos = [System.Drawing.Point]::new([int]$Script:txtBoxBtn1DestX.Text, [int]$Script:txtBoxBtn1DestY.Text)
     $tweenBtn1 = [TweenMoveTo]::new($Script:animatedBtn, $destPos, [Double]$Script:txtBoxBtn1Duration.Text, $Script:cBoxBtn1Easing.SelectedItem)
     $tweenBtn1.setDelay([int]$Script:txtBoxBtn1Delay.Text)
-    $Script:tweensList.Add($tweenBtn1)
 
     $destPos = [System.Drawing.Point]::new([int]$Script:txtBoxLabelDestX.Text, [int]$Script:txtBoxLabelDestY.Text)
     $tweenLabel = [TweenMoveTo]::new($Script:animatedLabel, $destPos, [Double]$Script:txtBoxLabelDuration.Text, $Script:cBoxLabelEasing.SelectedItem)
     $tweenLabel.setDelay([int]$Script:txtBoxLabelDelay.Text)
-    $Script:tweensList.Add($tweenLabel)
 
     $Script:animationStartTime = Get-Date
     # Write-Host "Animations starts at :" $Script:animationStartTime.ToString()
