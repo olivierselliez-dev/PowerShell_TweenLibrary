@@ -318,9 +318,28 @@ class TweenColorARGB : Tween {
 
 }
 
+<#
+.SYNOPSIS
+    Tween class for executing a callback after a specified duration.
+.DESCRIPTION
+    Inherits from Tween to provide a simple timer mechanism that executes a ScriptBlock 
+    after a set amount of time. Useful for sequencing UI events or adding delayed elements.
+#>
 class TweenWaiter : Tween {
 
     TweenWaiter([System.Object]$pControl, [double]$pDuration, [scriptblock]$pCallBack) {
+        <#
+        .SYNOPSIS
+            Initializes a new instance of TweenWaiter.
+        .DESCRIPTION
+            Sets up a delay-only tween that will trigger a callback once the duration expires.
+        .PARAMETER pControl
+            The object associated with this waiter (can be $null or a specific control).
+        .PARAMETER pDuration
+            The time to wait in seconds before executing the callback.
+        .PARAMETER pCallBack
+            The ScriptBlock to run upon completion.
+        #>
         $this.control = $pControl
         $this.duration = $pDuration * $Script:refreshRate
         $this.onComplete = $pCallBack

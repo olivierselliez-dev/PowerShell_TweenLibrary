@@ -175,7 +175,8 @@ function CreateInputs {
     .SYNOPSIS
         Creates the configuration input controls.
     .DESCRIPTION
-        Sets up a GroupBox containing text boxes and combo boxes to allow users to define destination, duration, and easing functions for animations.
+        Sets up a GroupBox containing all configuration controls. 
+        In addition to instantiation, this function also triggers the entrance fade-in animations for each input group using TweenColorARGB.
     #>
     
     $Script:grBoxSettings = New-Object System.Windows.Forms.GroupBox
@@ -884,10 +885,22 @@ function CreateInputs {
 }
 
 function addControlToMainForm {
+    <#
+    .SYNOPSIS
+        Adds a control to the main application form.
+    .DESCRIPTION
+        Helper function used as a callback (typically by TweenWaiter). It relies on the `$tweenObj` variable automatically provided by the tweening engine to access the control to be added.
+    #>
     $Script:mainForm.Controls.Add($tweenObj.control)
 }
 
 function addControlToGrBoxSettings {
+    <#
+    .SYNOPSIS
+        Adds a control to the settings group box.
+    .DESCRIPTION
+        Helper function used as a callback. It uses the `$tweenObj` variable provided by the engine to inject the control into the grBoxSettings container.
+    #>
     $Script:grBoxSettings.Controls.Add($tweenObj.control)   
 }
 
@@ -1276,6 +1289,8 @@ function onClickColorButton {
         Displays a ColorDialog to allow selecting a color. The chosen color is 
         applied to the source button and stored as either the start or end color 
         for the upcoming color transition animation.
+    .NOTES
+        Uses the `$this` automatic variable to identify which button (Start or End) triggered the selection.
     #>
 
     $clickedBtn = $this
@@ -1319,7 +1334,7 @@ function writeDuration {
     .SYNOPSIS
         Logs the actual duration of an animation.
     .DESCRIPTION
-        Calculates the time elapsed since the animation sequence started and outputs the result to the console for debugging and performance verification.
+        Calculates the time elapsed since the animation sequence started. Accesses the target control and its properties via the `$tweenObj` variable injected by the callback mechanism.
     #>
 
     Write-Host $tweenObj.control.Name "animation ends. Duration :" $($(Get-Date) - $Script:animationStartTime) "(supposed duration :" $($tweenObj.duration / $Script:refreshRate) "sec.. Substract the delay if is one.)"
@@ -1332,6 +1347,8 @@ function onCompleteAnimation {
     .DESCRIPTION
         This function is triggered by the tweening engine once an animation has finished its duration.
         It serves as a placeholder for executing subsequent logic or chaining animations.
+    .NOTES
+        The target context is available through the `$tweenObj` variable.
     .EXAMPLE
         # Used as a callback in a Tween constructor:
         # [TweenNumericString]::new(..., { onCompleteAnimation })

@@ -151,7 +151,7 @@ function ColorARGB {
         Updates the color of a control for color transition animations.
     .DESCRIPTION
         Calculates interpolated ARGB values using the specified easing algorithm and updates 
-        the control's ForeColor or BackColor property. Currently supports Label controls.
+        the control's ForeColor or BackColor property.
     .PARAMETER tweenObj
         The TweenColorARGB object containing the animation state, target color, and configuration.
     #>
@@ -201,6 +201,15 @@ function ColorARGB {
 }
 
 function WaitDelay {
+    <#
+    .SYNOPSIS
+        Handles the delay period before an animation starts.
+    .DESCRIPTION
+        Increments the tick count and checks if the assigned delay has passed. 
+        Once the delay is over, it resets ticks to zero to allow the actual animation sequence to begin.
+    .PARAMETER tweenObj
+        The Tween object currently in its delay phase.
+    #>
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
@@ -223,6 +232,16 @@ function WaitDelay {
 }
 
 function Wait {
+    <#
+    .SYNOPSIS
+        Processes a simple time-based wait (TweenWaiter).
+    .DESCRIPTION
+        Increments ticks until the specified duration is reached, then triggers the 
+        onComplete callback. This is used for sequencing or delayed logic without 
+        modifying control properties.
+    .PARAMETER tweenObj
+        The TweenWaiter object to process.
+    #>
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
