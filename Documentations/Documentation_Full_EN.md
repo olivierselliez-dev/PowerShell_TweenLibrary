@@ -77,6 +77,11 @@ Animates a numeric value inside a control's `Text` property.
 Animates the `Value` property of a `System.Windows.Forms.ProgressBar`.
 - **Constructor**: `[TweenProgressBar]::new($ProgressBar, $StartVal, $EndVal, $DurationSec, $Easing, $Callback)`
 
+### `TweenWaiter`
+Executes a callback after a specified duration without modifying control properties. Useful for sequencing.
+- **Constructor**: `[TweenWaiter]::new($Control, $DurationSec, $Callback)`
+- **Example**: `[TweenWaiter]::new($null, 1.5, { Write-Host "Wait finished!" })`
+
 ---
 
 ## 4. Easing Algorithms
@@ -103,6 +108,12 @@ Access these using the script-scoped variables: `$Script:easeBounceOut`, `$Scrip
 ### The Update Loop
 The `TweensUpdate` function in `TweensUpdater.ps1` runs every tick. It iterates through `$Script:tweensList`. When a tween reaches its duration or target value, it is automatically removed from the list.
 
+### Common Methods
+All tween objects provide the following methods to refine animation behavior:
+- **`setDelay([double]$seconds)`**: Sets a delay period before the animation starts.
+- **`setOnComplete([scriptblock]$callback)`**: Defines a block of code to execute once the animation finishes.
+- **`forceEnd()`**: Immediately jumps to the final state and triggers the completion callback.
+
 ### Frame Rate vs. Real Time
 The duration is calculated as `$DurationInSeconds * $refreshRate`. If the UI thread is heavily blocked, the animation might appear slower because ticks are skipped, but the library ensures the final destination is reached.
 
@@ -119,8 +130,7 @@ $destination = [System.Drawing.Point]::new(200, 200)
 # Passing a scriptblock as a callback
 $myTween = [TweenMoveTo]::new($btnSubmit, $destination, 3.0, $Script:easeBounceOut, { [System.Windows.Forms.MessageBox]::Show("Animation Done!") })
 
-# Add to the engine
-$Script:listToAnimate.Add($myTween)
+# Note: The constructor automatically registers the tween to $Script:tweensList for processing.
 ```
 
 ---
