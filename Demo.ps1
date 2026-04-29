@@ -1029,10 +1029,11 @@ function ShowTooltip {
 
     $Script:labelTooltip.Location = [System.Drawing.Point]::new($Script:btnPreset.Location.X, [int]$Script:btnPreset.Location.Y + ($Script:btnPreset.Height - $Script:labelTooltip.Height) / 2)
     $Script:labelTooltip.ForeColor = $Script:mainForm.BackColor
+    CheckTweenOnTooltip    
     $destPos = [System.Drawing.Point]::new([int]$Script:labelTooltip.Location.X - $Script:labelTooltip.Width, [int]$Script:btnPreset.Location.Y + ($Script:btnPreset.Height - $Script:labelTooltip.Height) / 2)
     [TweenMoveTo]::new($Script:labelTooltip, $destPos, 0.5, $Script:easeQuintOut)
     [TweenColorARGB]::new($Script:labelTooltip, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::Black, 0.5, $Script:easeSineIn)
-    CheckTweenOnTooltip
+    
 }
 
 function HideTooltip {
@@ -1044,9 +1045,10 @@ function HideTooltip {
     #>
 
     $destPos = [System.Drawing.Point]::new($Script:btnPreset.Location.X, [int]$Script:btnPreset.Location.Y + ($Script:btnPreset.Height - $Script:labelTooltip.Height) / 2)
+    CheckTweenOnTooltip
     [TweenMoveTo]::new($Script:labelTooltip, $destPos, 0.5, $Script:easeQuintIn)
     [TweenColorARGB]::new($Script:labelTooltip, "ForeColor", [System.Drawing.Color]::Black, $Script:mainForm.BackColor, 0.5, $Script:easeSineOut)
-    CheckTweenOnTooltip
+    
 }
 
 function CheckTweenOnTooltip {
