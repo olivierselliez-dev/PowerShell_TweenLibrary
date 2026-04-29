@@ -190,7 +190,7 @@ function CreateInputs {
     $panelAnimatedValue.BackColor = [System.Drawing.Color]::FromArgb(0, 0, 0, 0)
     $panelAnimatedValue.Margin = 0
     $panelAnimatedValue.Height = 23
-    $panelAnimatedValue.Location = [System.Drawing.Point]::new(0, 25)
+    $panelAnimatedValue.Location = [System.Drawing.Point]::new(0, 20)
 
     [System.Windows.Forms.Label]$labelValue | Out-Null # Out-Null to avoid messages in the console
     $labelValue = New-Object System.Windows.Forms.Label
@@ -662,14 +662,21 @@ function CreateInputs {
 
     #endregion
 
-    [TweenWaiter]::new($Script:grBoxSettings, 0.00, { addControlToMainForm })
-    [TweenWaiter]::new($panelAnimatedValue, 0.3, { addControlToGrBoxSettings })
-    [TweenWaiter]::new($panelProgressBar, 0.4, { addControlToGrBoxSettings })
-    [TweenWaiter]::new($panelColor, 0.45, { addControlToGrBoxSettings })
-    [TweenWaiter]::new($panelAnimatedBtn, 0.47, { addControlToGrBoxSettings })
-    [TweenWaiter]::new($panelAnimatedLabel, 0.48, { addControlToGrBoxSettings })
+    # [TweenWaiter]::new($Script:grBoxSettings, 0.00, { addControlToMainForm })
+    # [TweenWaiter]::new($panelAnimatedValue, 0.15, { addControlToGrBoxSettings })
+    # [TweenWaiter]::new($panelProgressBar, 0.25, { addControlToGrBoxSettings })
+    # [TweenWaiter]::new($panelColor, 0.30, { addControlToGrBoxSettings })
+    # [TweenWaiter]::new($panelAnimatedBtn, 0.32, { addControlToGrBoxSettings })
+    # [TweenWaiter]::new($panelAnimatedLabel, 0.33, { addControlToGrBoxSettings })
 
-    [double]$duration = 0.7
+    [TweenWaiter]::new($Script:grBoxSettings, 0.00, { addControlToMainForm })
+    [TweenWaiter]::new($panelAnimatedValue, 0.05, { addControlToGrBoxSettings })
+    [TweenWaiter]::new($panelProgressBar, 0.10, { addControlToGrBoxSettings })
+    [TweenWaiter]::new($panelColor, 0.15, { addControlToGrBoxSettings })
+    [TweenWaiter]::new($panelAnimatedBtn, 0.20, { addControlToGrBoxSettings })
+    [TweenWaiter]::new($panelAnimatedLabel, 0.25, { addControlToGrBoxSettings })
+
+    [double]$duration = 0.4
 
     # I wish I could tween the alpha of a pannel
     # instead fading all element one by one...
@@ -869,7 +876,7 @@ function CreateInputs {
     $labelInstructions.Text = "Try to stay in the approximative aera:`nTop Left [0, 120]`nBottom Right [800, 450]"
     $labelInstructions.ForeColor = $Script:mainForm.BackColor
     $labelInstructions.BackColor = $Script:mainForm.BackColor
-    [TweenWaiter]::new($labelInstructions, 0.6, { addControlToGrBoxSettings })
+    [TweenWaiter]::new($labelInstructions, 0.1, { addControlToGrBoxSettings })
     $t = [TweenColorARGB]::new($labelInstructions, "BackColor", $Script:mainForm.BackColor, [System.Drawing.Color]::FromArgb(255, 235, 235, 235), $duration, $easeSineIn)
     $t.setDelay($delay)
     $t = [TweenColorARGB]::new($labelInstructions, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::FromArgb(255, 100, 100, 100), $duration, $easeSineIn)
