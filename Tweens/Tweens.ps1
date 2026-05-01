@@ -16,6 +16,8 @@
 .DESCRIPTION
     Provides the core structure for tracking animation progress, duration, and easing state.
 #>
+Add-Type -AssemblyName System.Windows.Forms
+
 class Tween {
 
     # The control object targeted by this tween animation.
