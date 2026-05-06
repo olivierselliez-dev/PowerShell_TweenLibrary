@@ -10,14 +10,14 @@
     Email: olivier.selliez.dev@gmail.com
 #>
 
+using namespace System.Windows.Forms
+
 <#
 .SYNOPSIS
     Base class for all tween animations.
 .DESCRIPTION
     Provides the core structure for tracking animation progress, duration, and easing state.
 #>
-Add-Type -AssemblyName System.Windows.Forms
-
 class Tween {
 
     # The control object targeted by this tween animation.
@@ -116,7 +116,7 @@ class TweenNumericString : Tween {
     # The total change in value from startValue to endValue.
     [double]$delta
         
-    TweenNumericString([System.Windows.Forms.Control]$pControl, [string]$pType, [double]$pStartValue, [double]$pEndValue, [double]$pDuration, [string]$pEasing) {
+    TweenNumericString([Control]$pControl, [string]$pType, [double]$pStartValue, [double]$pEndValue, [double]$pDuration, [string]$pEasing) {
         <#
         .SYNOPSIS
             Initializes a new instance of TweenNumericString.
@@ -173,7 +173,7 @@ class TweenMoveTo : Tween {
     # The total change in position (X, Y coordinates) from startPos to destPos.
     [System.Drawing.Point]$delta
     
-    TweenMoveTo([System.Windows.Forms.Control]$pControl, [System.Drawing.Point]$pDestPos, [double]$pDuration, [string]$pEasing) {
+    TweenMoveTo([Control]$pControl, [System.Drawing.Point]$pDestPos, [double]$pDuration, [string]$pEasing) {
         <#
         .SYNOPSIS
             Initializes a new instance of TweenMoveTo.
@@ -220,7 +220,7 @@ class TweenProgressBar : Tween {
     # The total change in value from startValue to endValue for the ProgressBar.
     [double]$delta
 
-    TweenProgressBar([System.Windows.Forms.ProgressBar]$pProgressBar, [double]$pStartValue, [double]$pEndValue, [double]$pDuration, [string]$pEasing) {
+    TweenProgressBar([ProgressBar]$pProgressBar, [double]$pStartValue, [double]$pEndValue, [double]$pDuration, [string]$pEasing) {
         <#
         .SYNOPSIS
             Initializes a new instance of TweenProgressBar.
@@ -281,7 +281,7 @@ class TweenColorARGB : Tween {
     # The property name of the color to change (e.g., "BackColor" or "ForeColor").
     [string]$type # "BackColor" or "ForeColor" (default)
 
-    TweenColorARGB([System.Windows.Forms.Control]$pControl, [string]$pType, [System.Drawing.Color]$pStartColor, [System.Drawing.Color]$pEndColor, [double]$pDuration, [string]$pEasing) {
+    TweenColorARGB([Control]$pControl, [string]$pType, [System.Drawing.Color]$pStartColor, [System.Drawing.Color]$pEndColor, [double]$pDuration, [string]$pEasing) {
         <#
         .SYNOPSIS
             Initializes a new instance of TweenColorARGB.
@@ -318,6 +318,45 @@ class TweenColorARGB : Tween {
         # $Script:tweensList.Add($this) | Out-Null
     }
 
+}
+
+<#
+.SYNOPSIS
+    Tween class for animating Form opacity.
+.DESCRIPTION
+    Inherits from Tween to transition a Form's Opacity property (0.0 to 1.0).
+#>
+class TweenOpacity : Tween {
+
+    # The starting opacity value.
+    [double]$startValue
+    
+    # The target opacity value.
+    [double]$endValue
+    
+    # The total change in opacity.
+    [double]$delta
+
+    TweenOpacity([Form]$pForm, [double]$pEndValue, [double]$pDuration, [string]$pEasing) {
+        <#
+        .SYNOPSIS
+            Initializes a new instance of TweenOpacity.
+        .PARAMETER pForm
+            The target Form.
+        .PARAMETER pEndValue
+            The target opacity (between 0.0 and 1.0).
+        .PARAMETER pDuration
+            The duration in seconds.
+        .PARAMETER pEasing
+            The name of the easing function to apply.
+        #>
+        $this.control = $pForm
+        $this.easing = $pEasing
+        $this.startValue = $pForm.Opacity
+        $this.endValue = $pEndValue
+        $this.duration = $pDuration * $Script:refreshRate
+        $this.delta = $this.endValue - $this.startValue
+    }
 }
 
 <#
