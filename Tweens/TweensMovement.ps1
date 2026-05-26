@@ -200,6 +200,45 @@ function ColorARGB {
     }
 }
 
+function Opacity {
+    <#
+    .SYNOPSIS
+        Updates the opacity of a Form during an animation.
+    .PARAMETER tweenObj
+        The TweenOpacity object.
+    #>
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [TweenOpacity]
+        $tweenObj
+    )
+
+    $tweenObj.nbTicks++
+    
+    if ($tweenObj.nbTicks -gt $tweenObj.duration) {
+        # animation ended
+
+        # force end value
+        $tweenObj.control.Opacity = $tweenObj.endValue
+
+        # Remove from list
+        $Script:tweensList.Remove($tweenObj)
+
+        # Execute callback
+        if ($null -ne $tweenObj.onComplete) {
+            & $tweenObj.onComplete
+        }
+    }
+    else {
+        $val = Ease $tweenObj.easing $tweenObj.startValue $tweenObj.delta $tweenObj.nbTicks $tweenObj.duration
+        
+        # Form Opacity must be between 0 and 1
+        $tweenObj.control.Opacity = [Math]::Max(0, [Math]::Min(1, $val))
+    }
+}
+
 function WaitDelay {
     <#
     .SYNOPSIS

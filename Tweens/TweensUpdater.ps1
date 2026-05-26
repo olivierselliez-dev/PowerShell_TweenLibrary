@@ -51,6 +51,9 @@ function TweensUpdate {
                         "TweenColorARGB" {
                             ColorARGB $tween
                         }
+                        "TweenOpacity" {
+                            Opacity $tween
+                        }
                         "TweenWaiter" {
                             Wait $tween
                         }
