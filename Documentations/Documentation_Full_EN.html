@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PowerShell Tween Library - Comprehensive Documentation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0b0f19;
+            --bg-secondary: #111827;
+            --bg-card: #1e293b;
+            --bg-card-hover: #24344d;
+            --bg-code: #0f172a;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-highlight: rgba(99, 102, 241, 0.3);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-primary: #6366f1;
+            --accent-secondary: #8b5cf6;
+            --accent-glow: rgba(99, 102, 241, 0.25);
+            --accent-cyan: #06b6d4;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-rose: #f43f5e;
+            --sidebar-width: 290px;
+            --header-height: 70px;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --shadow-subtle: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+            --transition-smooth: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: calc(var(--header-height) + 24px);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.65;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        /* Header / Navbar */
+        .top-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            z-index: 1000;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-cyan));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .brand-name {
+            font-size: 1.15rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .lang-switch {
+            display: flex;
+            align-items: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            padding: 3px;
+            gap: 2px;
+        }
+
+        .lang-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: var(--transition-smooth);
+        }
+
+        .lang-btn.active {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            box-shadow: 0 2px 10px rgba(99, 102, 241, 0.4);
+        }
+
+        .lang-btn:hover:not(.active) {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .github-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: var(--transition-smooth);
+        }
+
+        .github-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--border-highlight);
+            transform: translateY(-1px);
+        }
+
+        /* Main Container */
+        .layout-container {
+            display: flex;
+            margin-top: var(--header-height);
+            min-height: calc(100vh - var(--header-height));
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            top: var(--header-height);
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            z-index: 900;
+        }
+
+        .sidebar-search {
+            position: relative;
+        }
+
+        .sidebar-search input {
+            width: 100%;
+            background: var(--bg-code);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 10px 14px 10px 36px;
+            color: var(--text-primary);
+            font-size: 0.88rem;
+            outline: none;
+            transition: var(--transition-smooth);
+        }
+
+        .sidebar-search input:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .nav-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-group-title {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: var(--text-muted);
+            padding: 6px 12px;
+            margin-top: 6px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: var(--radius-sm);
+            transition: var(--transition-smooth);
+        }
+
+        .nav-item:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(3px);
+        }
+
+        .nav-item.active {
+            color: white;
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.25), rgba(99, 102, 241, 0.05));
+            border-left: 3px solid var(--accent-primary);
+            font-weight: 600;
+        }
+
+        /* Content Area */
+        .content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 2.5rem 3.5rem 6rem;
+            max-width: 1100px;
+        }
+
+        /* Hero Banner */
+        .hero {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.9));
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 3rem;
+            margin-bottom: 3.5rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -30%;
+            width: 160%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .hero-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        .badge-blue { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .badge-purple { background: rgba(139, 92, 246, 0.2); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); }
+        .badge-orange { background: rgba(249, 115, 22, 0.2); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.3); }
+        .badge-green { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 750px;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-quote {
+            font-style: italic;
+            color: var(--accent-cyan);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        /* Section Headings */
+        section {
+            margin-bottom: 4rem;
+        }
+
+        h2 {
+            font-size: 1.85rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h3 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin: 2rem 0 1rem;
+        }
+
+        h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            margin: 1.5rem 0 0.75rem;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 1.2rem;
+            font-size: 0.98rem;
+        }
+
+        ul, ol {
+            color: var(--text-secondary);
+            margin-left: 1.5rem;
+            margin-bottom: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        li strong {
+            color: var(--text-primary);
+        }
+
+        a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            transition: var(--transition-smooth);
+        }
+
+        a:hover {
+            color: #38bdf8;
+            text-decoration: underline;
+        }
+
+        /* Alert Callouts */
+        .callout {
+            border-radius: var(--radius-md);
+            padding: 1.2rem 1.5rem;
+            margin: 1.5rem 0;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            border-left: 4px solid;
+            background: var(--bg-card);
+        }
+
+        .callout-icon {
+            font-size: 1.4rem;
+            line-height: 1;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .callout-body {
+            font-size: 0.94rem;
+            color: var(--text-secondary);
+        }
+
+        .callout-body strong {
+            color: var(--text-primary);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .callout-tip {
+            background: rgba(16, 185, 129, 0.08);
+            border-color: var(--accent-emerald);
+        }
+        .callout-tip .callout-icon { color: var(--accent-emerald); }
+
+        .callout-note {
+            background: rgba(99, 102, 241, 0.08);
+            border-color: var(--accent-primary);
+        }
+        .callout-note .callout-icon { color: var(--accent-primary); }
+
+        .callout-warning {
+            background: rgba(245, 158, 11, 0.08);
+            border-color: var(--accent-amber);
+        }
+        .callout-warning .callout-icon { color: var(--accent-amber); }
+
+        .callout-important {
+            background: rgba(244, 63, 94, 0.08);
+            border-color: var(--accent-rose);
+        }
+        .callout-important .callout-icon { color: var(--accent-rose); }
+
+        /* Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.92rem;
+        }
+
+        th {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            padding: 12px 18px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 12px 18px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: var(--bg-code);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin: 1.5rem 0;
+            overflow: hidden;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid var(--border-color);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 4px 10px;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition-smooth);
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        pre {
+            padding: 1.2rem 1.5rem;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.88rem;
+            line-height: 1.6;
+            color: #e2e8f0;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.88em;
+            background: rgba(255, 255, 255, 0.08);
+            color: #38bdf8;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+
+        /* Syntax Highlighting Mockups */
+        .token-keyword { color: #f43f5e; font-weight: 600; }
+        .token-type { color: #38bdf8; }
+        .token-string { color: #34d399; }
+        .token-variable { color: #fbbf24; }
+        .token-comment { color: #64748b; font-style: italic; }
+        .token-number { color: #a78bfa; }
+        .token-function { color: #818cf8; font-weight: 600; }
+
+        /* Interactive Easing Explorer */
+        .interactive-explorer {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+            border: 1px solid var(--border-highlight);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 10px 30px -10px var(--accent-glow);
+        }
+
+        .explorer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .explorer-controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .explorer-select {
+            background: var(--bg-code);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 14px;
+            border-radius: var(--radius-sm);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .explorer-select:focus {
+            border-color: var(--accent-primary);
+        }
+
+        .btn-play {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-play:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 16px var(--accent-glow);
+        }
+
+        .explorer-stage {
+            background: var(--bg-code);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            height: 120px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+        }
+
+        .track-line {
+            position: absolute;
+            left: 40px;
+            right: 40px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .track-marker {
+            position: absolute;
+            width: 2px;
+            height: 16px;
+            background: var(--text-muted);
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .track-marker.start { left: 40px; }
+        .track-marker.end { right: 40px; }
+
+        .animated-orb {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-primary));
+            position: absolute;
+            left: 24px;
+            box-shadow: 0 0 20px var(--accent-cyan);
+            z-index: 10;
+            will-change: transform;
+        }
+
+        .explorer-code-preview {
+            margin-top: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            display: inline-block;
+        }
+
+        /* Filter Controls */
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-chip {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .filter-chip.active, .filter-chip:hover {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        /* Footer */
+        footer {
+            margin-top: auto;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            padding: 2.5rem 3.5rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Mobile */
+        @media (max-width: 900px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .content {
+                margin-left: 0;
+                padding: 1.5rem 1.2rem 4rem;
+            }
+            .top-navbar {
+                padding: 0 1rem;
+            }
+            .hero {
+                padding: 2rem 1.5rem;
+            }
+            .hero h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header class="top-navbar">
+        <a href="#top" class="nav-brand">
+            <div class="brand-icon">🎬</div>
+            <div class="brand-name">PowerShell Tween Library</div>
+        </a>
+        <div class="nav-actions">
+            <div class="lang-switch">
+                <a href="Documentation_Full_EN.html" class="lang-btn active">🇬🇧 EN</a>
+                <a href="Documentation_Full_FR.html" class="lang-btn">🇫🇷 FR</a>
+            </div>
+            <a href="https://github.com/olivierselliez-dev/PowerShell_TweenLibrary" target="_blank" rel="noopener noreferrer" class="github-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                GitHub
+            </a>
+        </div>
+    </header>
+
+    <div class="layout-container" id="top">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-search">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="docSearch" placeholder="Search documentation...">
+            </div>
+
+            <nav class="nav-group">
+                <div class="nav-group-title">Overview</div>
+                <a href="#features" class="nav-item">✨ Features</a>
+                <a href="#architecture" class="nav-item">🏛 Architecture</a>
+                <a href="#getting-started" class="nav-item">🚀 Getting Started</a>
+
+                <div class="nav-group-title">Tween Classes</div>
+                <a href="#class-tween" class="nav-item">Base Class: Tween</a>
+                <a href="#class-moveto" class="nav-item">1. TweenMoveTo</a>
+                <a href="#class-color" class="nav-item">2. TweenColorARGB</a>
+                <a href="#class-numeric" class="nav-item">3. TweenNumericString</a>
+                <a href="#class-progressbar" class="nav-item">4. TweenProgressBar</a>
+                <a href="#class-opacity" class="nav-item">5. TweenOpacity</a>
+                <a href="#class-waiter" class="nav-item">6. TweenWaiter</a>
+
+                <div class="nav-group-title">Easing Curves</div>
+                <a href="#easing-explorer" class="nav-item">🎮 Interactive Explorer</a>
+                <a href="#easing-table" class="nav-item">📐 41 Easing Equations</a>
+
+                <div class="nav-group-title">Advanced</div>
+                <a href="#advanced-patterns" class="nav-item">💡 Advanced Recipes</a>
+                <a href="#demo" class="nav-item">🎬 Interactive Demo</a>
+                <a href="#tech-notes" class="nav-item">⚙️ Technical Notes</a>
+                <a href="#license" class="nav-item">📄 License & Credits</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="content">
+
+            <!-- Hero Section -->
+            <section class="hero">
+                <div class="hero-badges">
+                    <span class="badge badge-blue">PowerShell 5.1 | 7+</span>
+                    <span class="badge badge-purple">WinForms Engine</span>
+                    <span class="badge badge-orange">41 Penner Curves</span>
+                    <span class="badge badge-green">MIT License</span>
+                </div>
+                <h1>PowerShell Tween Library</h1>
+                <p class="hero-subtitle">
+                    A lightweight, class-based animation and tweening engine for <strong>Windows Forms</strong> in PowerShell. 
+                    Implements Robert Penner's complete easing suite for smooth, non-linear transitions and dynamic desktop UI animations.
+                </p>
+                <div class="hero-quote">
+                    "And yes, it's quite useless but it's funny :)"
+                </div>
+            </section>
+
+            <!-- Features -->
+            <section id="features">
+                <h2>✨ Features</h2>
+                <ul>
+                    <li><strong>41 Robert Penner Easing Curves:</strong> Includes all standard algorithms (Linear, Quad, Cubic, Quart, Quint, Sine, Expo, Circ, Elastic, Bounce, Back) across <code>In</code>, <code>Out</code>, <code>InOut</code>, and <code>OutIn</code> modes.</li>
+                    <li><strong>Pure PowerShell 5.1+ OOP:</strong> Implemented natively with PowerShell classes for high performance and clean modular structure.</li>
+                    <li><strong>Zero Binary Dependencies:</strong> Runs out of the box on standard .NET <code>System.Windows.Forms</code> and <code>System.Drawing</code> assemblies.</li>
+                    <li><strong>Comprehensive Property Coverage:</strong> Animate positions (<code>Point</code>), ARGB colors (<code>ForeColor</code> / <code>BackColor</code>), numeric text strings, progress bars, and form opacity.</li>
+                    <li><strong>Event-Driven & Sequence-Ready:</strong> Native support for start delays, pause/resume, force-finish, and completion callbacks with arbitrary argument injection.</li>
+                    <li><strong>Self-Managing Lifecycle:</strong> Instantiated tweens automatically register to the global engine loop and cleanly unregister upon completion.</li>
+                </ul>
+            </section>
+
+            <!-- Architecture -->
+            <section id="architecture">
+                <h2>🏛 Project Architecture</h2>
+                <p>The library is modularized into four core files within the <code>Tweens/</code> directory:</p>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>File</th>
+                                <th>Role</th>
+                                <th>Primary Responsibilities</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>TweensVariables.ps1</code></td>
+                                <td><span class="badge badge-orange">Constants</span></td>
+                                <td>Declares 41 script-scoped string variables (e.g. <code>$Script:easeBounceOut</code>).</td>
+                            </tr>
+                            <tr>
+                                <td><code>Tweens.ps1</code></td>
+                                <td><span class="badge badge-blue">Data Models</span></td>
+                                <td>Defines the <code>Tween</code> base class and all derived animation models.</td>
+                            </tr>
+                            <tr>
+                                <td><code>TweensUpdater.ps1</code></td>
+                                <td><span class="badge badge-purple">Engine & Timer</span></td>
+                                <td>Manages the central <code>Timer</code>, active list <code>$Script:tweensList</code>, and frame updates.</td>
+                            </tr>
+                            <tr>
+                                <td><code>TweensMovement.ps1</code></td>
+                                <td><span class="badge badge-green">Math & Logic</span></td>
+                                <td>Executes the core <code>Ease</code> mathematical function and updates control properties.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Getting Started -->
+            <section id="getting-started">
+                <h2>🚀 Getting Started</h2>
+
+                <h3>Prerequisites</h3>
+                <p>Windows PowerShell 5.1 or PowerShell 7+ on Windows with WinForms assemblies available.</p>
+
+                <h3>Dot-Sourcing the Modules</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>POWERSHELL</span>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+                    </div>
+                    <pre><code><span class="token-comment"># Load assemblies</span>
+<span class="token-function">Add-Type</span> -AssemblyName System.Windows.Forms
+<span class="token-function">Add-Type</span> -AssemblyName System.Drawing
+
+<span class="token-comment"># Import the library in order</span>
+. <span class="token-string">"$PSScriptRoot\Tweens\TweensVariables.ps1"</span>
+. <span class="token-string">"$PSScriptRoot\Tweens\Tweens.ps1"</span>
+. <span class="token-string">"$PSScriptRoot\Tweens\TweensUpdater.ps1"</span>
+. <span class="token-string">"$PSScriptRoot\Tweens\TweensMovement.ps1"</span></code></pre>
+                </div>
+
+                <h3>Engine Lifecycle Management</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>POWERSHELL</span>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+                    </div>
+                    <pre><code><span class="token-comment"># 1. Start the animation loop when the window is shown</span>
+<span class="token-variable">$mainForm</span>.<span class="token-function">Add_Shown</span>({ 
+    <span class="token-variable">$Script:tweensTimer</span>.<span class="token-function">Start</span>()
+})
+
+<span class="token-comment"># 2. CRITICAL: Stop & Dispose the timer upon closing to prevent session memory leaks</span>
+<span class="token-variable">$mainForm</span>.<span class="token-function">Add_Closing</span>({ 
+    <span class="token-variable">$Script:tweensTimer</span>.<span class="token-function">Stop</span>()
+    <span class="token-variable">$Script:tweensTimer</span>.<span class="token-function">Dispose</span>() 
+})</code></pre>
+                </div>
+
+                <div class="callout callout-tip">
+                    <div class="callout-icon">💡</div>
+                    <div class="callout-body">
+                        <strong>Customizing Frame Rate</strong>
+                        The default refresh rate is 60 FPS (<code>$Script:refreshRate = 60</code> in <code>TweensUpdater.ps1</code>). You can customize this rate before starting the timer.
+                    </div>
+                </div>
+
+                <h3>Minimal Working Example</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>POWERSHELL (Complete Script)</span>
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+                    </div>
+                    <pre><code><span class="token-function">Add-Type</span> -AssemblyName System.Windows.Forms
+<span class="token-function">Add-Type</span> -AssemblyName System.Drawing
+
+. <span class="token-string">"$PSScriptRoot\Tweens\TweensVariables.ps1"</span>
+. <span class="token-string">"$PSScriptRoot\Tweens\Tweens.ps1"</span>
+. <span class="token-string">"$PSScriptRoot\Tweens\TweensUpdater.ps1"</span>
+. <span class="token-string">"$PSScriptRoot\Tweens\TweensMovement.ps1"</span>
+
+<span class="token-variable">$form</span> = [<span class="token-type">System.Windows.Forms.Form</span>]::new()
+<span class="token-variable">$form</span>.Text = <span class="token-string">"Tween Minimal Example"</span>
+<span class="token-variable">$form</span>.Size = [<span class="token-type">System.Drawing.Size</span>]::new(400, 300)
+<span class="token-variable">$form</span>.StartPosition = <span class="token-string">"CenterScreen"</span>
+
+<span class="token-variable">$btn</span> = [<span class="token-type">System.Windows.Forms.Button</span>]::new()
+<span class="token-variable">$btn</span>.Text = <span class="token-string">"Click Me!"</span>
+<span class="token-variable">$btn</span>.Size = [<span class="token-type">System.Drawing.Size</span>]::new(120, 40)
+<span class="token-variable">$btn</span>.Location = [<span class="token-type">System.Drawing.Point</span>]::new(20, 20)
+<span class="token-variable">$form</span>.Controls.Add(<span class="token-variable">$btn</span>)
+
+<span class="token-variable">$btn</span>.<span class="token-function">Add_Click</span>({
+    <span class="token-variable">$dest</span> = [<span class="token-type">System.Drawing.Point</span>]::new(220, 180)
+    <span class="token-variable">$t</span> = [<span class="token-type">TweenMoveTo</span>]::new(<span class="token-variable">$btn</span>, <span class="token-variable">$dest</span>, 1.5, <span class="token-variable">$Script:easeBounceOut</span>)
+    <span class="token-variable">$t</span>.<span class="token-function">setOnComplete</span>({ <span class="token-variable">$btn</span>.Text = <span class="token-string">"Arrived!"</span> })
+})
+
+<span class="token-variable">$form</span>.<span class="token-function">Add_Shown</span>({ <span class="token-variable">$Script:tweensTimer</span>.<span class="token-function">Start</span>() })
+<span class="token-variable">$form</span>.<span class="token-function">Add_Closing</span>({
+    <span class="token-variable">$Script:tweensTimer</span>.<span class="token-function">Stop</span>()
+    <span class="token-variable">$Script:tweensTimer</span>.<span class="token-function">Dispose</span>()
+})
+
+[<span class="token-type">System.Windows.Forms.Application</span>]::Run(<span class="token-variable">$form</span>)</code></pre>
+                </div>
+            </section>
+
+            <!-- Tween Class Reference -->
+            <section id="class-reference">
+                <h2>📚 Tween Class Reference</h2>
+
+                <div id="class-tween">
+                    <h3>Base Class: <code>Tween</code></h3>
+                    <p>The abstract root class for all animations. Instantiating any derived tween automatically pushes it into <code>$Script:tweensList</code>.</p>
+                    
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Method</th>
+                                    <th>Signature</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>setDelay</code></td>
+                                    <td><code>[void] setDelay([double]$seconds)</code></td>
+                                    <td>Sets a pre-animation delay in seconds.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>setOnComplete</code></td>
+                                    <td><code>[void] setOnComplete([scriptblock]$cb)</code></td>
+                                    <td>Registers a callback executed when the tween ends.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>setOnComplete</code></td>
+                                    <td><code>[void] setOnComplete([scriptblock]$cb, [object[]]$args)</code></td>
+                                    <td>Registers a callback with injected arguments.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>pause</code></td>
+                                    <td><code>[void] pause([bool]$isPaused)</code></td>
+                                    <td>Pauses (<code>$true</code>) or resumes (<code>$false</code>) the animation.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>stop</code></td>
+                                    <td><code>[void] stop()</code></td>
+                                    <td>Cancels and removes the tween from the active loop immediately.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>forceEnd</code></td>
+                                    <td><code>[void] forceEnd()</code></td>
+                                    <td>Clears remaining delay and jumps to completion on the next tick.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="class-moveto">
+                    <h3>1. <code>TweenMoveTo</code></h3>
+                    <p>Animates 2D <code>Location</code> (<code>Point(X, Y)</code>) of any Windows Forms control.</p>
+                    <div class="code-block">
+                        <div class="code-header"><span>CONSTRUCTOR & USAGE</span></div>
+                        <pre><code>[<span class="token-type">TweenMoveTo</span>]::new([<span class="token-type">Control</span>]<span class="token-variable">$pControl</span>, [<span class="token-type">System.Drawing.Point</span>]<span class="token-variable">$pDestPos</span>, [<span class="token-type">double</span>]<span class="token-variable">$pDuration</span>, [<span class="token-type">string</span>]<span class="token-variable">$pEasing</span>)
+
+<span class="token-comment"># Example: Move a button to (350, 120) in 1.2 seconds</span>
+<span class="token-variable">$target</span> = [<span class="token-type">System.Drawing.Point</span>]::new(350, 120)
+<span class="token-variable">$moveTween</span> = [<span class="token-type">TweenMoveTo</span>]::new(<span class="token-variable">$myButton</span>, <span class="token-variable">$target</span>, 1.2, <span class="token-variable">$Script:easeElasticOut</span>)</code></pre>
+                    </div>
+                </div>
+
+                <div id="class-color">
+                    <h3>2. <code>TweenColorARGB</code></h3>
+                    <p>Transitions <code>ForeColor</code> or <code>BackColor</code> by interpolating Alpha, Red, Green, and Blue channels independently.</p>
+                    <div class="code-block">
+                        <div class="code-header"><span>CONSTRUCTOR & USAGE</span></div>
+                        <pre><code>[<span class="token-type">TweenColorARGB</span>]::new([<span class="token-type">Control</span>]<span class="token-variable">$pControl</span>, [<span class="token-type">string</span>]<span class="token-variable">$pType</span>, [<span class="token-type">Color</span>]<span class="token-variable">$pStartColor</span>, [<span class="token-type">Color</span>]<span class="token-variable">$pEndColor</span>, [<span class="token-type">double</span>]<span class="token-variable">$pDuration</span>, [<span class="token-type">string</span>]<span class="token-variable">$pEasing</span>)
+
+<span class="token-comment"># Example: Blend background color to Royal Blue</span>
+<span class="token-variable">$startCol</span> = [<span class="token-type">System.Drawing.Color</span>]::FromArgb(255, 30, 30, 30)
+<span class="token-variable">$endCol</span>   = [<span class="token-type">System.Drawing.Color</span>]::FromArgb(255, 0, 122, 255)
+<span class="token-variable">$colorTween</span> = [<span class="token-type">TweenColorARGB</span>]::new(<span class="token-variable">$myLabel</span>, <span class="token-string">"BackColor"</span>, <span class="token-variable">$startCol</span>, <span class="token-variable">$endCol</span>, 0.8, <span class="token-variable">$Script:easeQuadInOut</span>)</code></pre>
+                    </div>
+                </div>
+
+                <div id="class-numeric">
+                    <h3>3. <code>TweenNumericString</code></h3>
+                    <p>Animates numeric text values in a control's <code>Text</code> property (score counters, statistics).</p>
+                    <div class="code-block">
+                        <div class="code-header"><span>CONSTRUCTOR & USAGE</span></div>
+                        <pre><code>[<span class="token-type">TweenNumericString</span>]::new([<span class="token-type">Control</span>]<span class="token-variable">$pControl</span>, [<span class="token-type">string</span>]<span class="token-variable">$pType</span>, [<span class="token-type">double</span>]<span class="token-variable">$pStartValue</span>, [<span class="token-type">double</span>]<span class="token-variable">$pEndValue</span>, [<span class="token-type">double</span>]<span class="token-variable">$pDuration</span>, [<span class="token-type">string</span>]<span class="token-variable">$pEasing</span>)
+
+<span class="token-comment"># Example: Animate counter from 0 to 1500 in 2.5s ("int" or "double")</span>
+<span class="token-variable">$numTween</span> = [<span class="token-type">TweenNumericString</span>]::new(<span class="token-variable">$lblScore</span>, <span class="token-string">"int"</span>, 0, 1500, 2.5, <span class="token-variable">$Script:easeExpoOut</span>)</code></pre>
+                    </div>
+                </div>
+
+                <div id="class-progressbar">
+                    <h3>4. <code>TweenProgressBar</code></h3>
+                    <p>Animates the <code>Value</code> property of a <code>System.Windows.Forms.ProgressBar</code>.</p>
+                    <div class="code-block">
+                        <div class="code-header"><span>CONSTRUCTOR & USAGE</span></div>
+                        <pre><code>[<span class="token-type">TweenProgressBar</span>]::new([<span class="token-type">ProgressBar</span>]<span class="token-variable">$pProgressBar</span>, [<span class="token-type">double</span>]<span class="token-variable">$pStartValue</span>, [<span class="token-type">double</span>]<span class="token-variable">$pEndValue</span>, [<span class="token-type">double</span>]<span class="token-variable">$pDuration</span>, [<span class="token-type">string</span>]<span class="token-variable">$pEasing</span>)
+
+<span class="token-comment"># Example: Fill progress bar from 0% to 100% in 3.0s</span>
+<span class="token-variable">$barTween</span> = [<span class="token-type">TweenProgressBar</span>]::new(<span class="token-variable">$progressBar1</span>, 0, 100, 3.0, <span class="token-variable">$Script:easeCubicInOut</span>)</code></pre>
+                    </div>
+                </div>
+
+                <div id="class-opacity">
+                    <h3>5. <code>TweenOpacity</code></h3>
+                    <p>Smoothly animates a Form's transparency (<code>Opacity</code> clamped between <code>0.0</code> and <code>1.0</code>).</p>
+                    <div class="code-block">
+                        <div class="code-header"><span>CONSTRUCTOR & USAGE</span></div>
+                        <pre><code>[<span class="token-type">TweenOpacity</span>]::new([<span class="token-type">Control</span>]<span class="token-variable">$pForm</span>, [<span class="token-type">double</span>]<span class="token-variable">$pEndValue</span>, [<span class="token-type">double</span>]<span class="token-variable">$pDuration</span>, [<span class="token-type">string</span>]<span class="token-variable">$pEasing</span>)
+
+<span class="token-comment"># Example: Fade in a window over 0.75s</span>
+<span class="token-variable">$fadeTween</span> = [<span class="token-type">TweenOpacity</span>]::new(<span class="token-variable">$myWindow</span>, 1.0, 0.75, <span class="token-variable">$Script:easeSineOut</span>)</code></pre>
+                    </div>
+                </div>
+
+                <div id="class-waiter">
+                    <h3>6. <code>TweenWaiter</code></h3>
+                    <p>A non-blocking delay timer that executes a callback upon completion without altering UI properties.</p>
+                    <div class="code-block">
+                        <div class="code-header"><span>CONSTRUCTOR & USAGE</span></div>
+                        <pre><code>[<span class="token-type">TweenWaiter</span>]::new([<span class="token-type">System.Object</span>]<span class="token-variable">$pControl</span>, [<span class="token-type">double</span>]<span class="token-variable">$pDuration</span>, [<span class="token-type">scriptblock</span>]<span class="token-variable">$pCallBack</span>)
+
+<span class="token-comment"># Example: Execute after 2.0 seconds</span>
+[<span class="token-type">TweenWaiter</span>]::new(<span class="token-variable">$null</span>, 2.0, {
+    [<span class="token-type">System.Windows.Forms.MessageBox</span>]::Show(<span class="token-string">"2 seconds have elapsed!"</span>)
+})</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Interactive Easing Explorer -->
+            <section id="easing-explorer">
+                <h2>🎮 Interactive Easing Explorer</h2>
+                <p>Test and preview any of the 41 Robert Penner easing equations in real-time in your browser:</p>
+
+                <div class="interactive-explorer">
+                    <div class="explorer-header">
+                        <div class="explorer-controls">
+                            <select id="easingSelect" class="explorer-select">
+                                <option value="BounceEaseOut">BounceEaseOut</option>
+                                <option value="ElasticEaseOut">ElasticEaseOut</option>
+                                <option value="BackEaseOut">BackEaseOut</option>
+                                <option value="ExpoEaseOut">ExpoEaseOut</option>
+                                <option value="CircEaseOut">CircEaseOut</option>
+                                <option value="QuadEaseOut">QuadEaseOut</option>
+                                <option value="CubicEaseOut">CubicEaseOut</option>
+                                <option value="QuartEaseOut">QuartEaseOut</option>
+                                <option value="QuintEaseOut">QuintEaseOut</option>
+                                <option value="SineEaseOut">SineEaseOut</option>
+                                <option value="Linear">Linear</option>
+                            </select>
+                            <button id="btnPlay" class="btn-play">▶ Play Animation</button>
+                        </div>
+                        <div class="explorer-code-preview" id="codePreview">$Script:easeBounceOut</div>
+                    </div>
+
+                    <div class="explorer-stage" id="stage">
+                        <div class="track-line"></div>
+                        <div class="track-marker start"></div>
+                        <div class="track-marker end"></div>
+                        <div class="animated-orb" id="orb"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 41 Easing Table -->
+            <section id="easing-table">
+                <h2>📐 41 Easing Equations Reference</h2>
+                <p>Filter by family or search any algorithm:</p>
+
+                <div class="filter-bar">
+                    <button class="filter-chip active" onclick="filterEasing('all')">All (41)</button>
+                    <button class="filter-chip" onclick="filterEasing('Bounce')">Bounce</button>
+                    <button class="filter-chip" onclick="filterEasing('Elastic')">Elastic</button>
+                    <button class="filter-chip" onclick="filterEasing('Back')">Back</button>
+                    <button class="filter-chip" onclick="filterEasing('Expo')">Expo</button>
+                    <button class="filter-chip" onclick="filterEasing('Circ')">Circ</button>
+                    <button class="filter-chip" onclick="filterEasing('Sine')">Sine</button>
+                    <button class="filter-chip" onclick="filterEasing('Power')">Quad / Cubic / Quart / Quint</button>
+                </div>
+
+                <div class="table-wrapper">
+                    <table id="easingListTable">
+                        <thead>
+                            <tr>
+                                <th>Family</th>
+                                <th>PowerShell Variable</th>
+                                <th>Identifier</th>
+                                <th>Behavior & Curve Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-family="Linear">
+                                <td><strong>Linear</strong></td>
+                                <td><code>$Script:easeLinear</code></td>
+                                <td><code>"Linear"</code></td>
+                                <td>Constant velocity throughout the animation.</td>
+                            </tr>
+                            <tr data-family="Bounce">
+                                <td><strong>Bounce</strong></td>
+                                <td><code>$Script:easeBounceOut</code><br><code>$Script:easeBounceIn</code><br><code>$Script:easeBounceInOut</code><br><code>$Script:easeBounceOutIn</code></td>
+                                <td><code>"BounceEaseOut"</code><br><code>"BounceEaseIn"</code><br><code>"BounceEaseInOut"</code><br><code>"BounceEaseOutIn"</code></td>
+                                <td>Decaying parabolic bouncing effect (like a dropped ball).</td>
+                            </tr>
+                            <tr data-family="Elastic">
+                                <td><strong>Elastic</strong></td>
+                                <td><code>$Script:easeElasticOut</code><br><code>$Script:easeElasticIn</code><br><code>$Script:easeElasticInOut</code><br><code>$Script:easeElasticOutIn</code></td>
+                                <td><code>"ElasticEaseOut"</code><br><code>"ElasticEaseIn"</code><br><code>"ElasticEaseInOut"</code><br><code>"ElasticEaseOutIn"</code></td>
+                                <td>Damped sinusoidal spring / rubber band oscillation.</td>
+                            </tr>
+                            <tr data-family="Back">
+                                <td><strong>Back</strong></td>
+                                <td><code>$Script:easeBackOut</code><br><code>$Script:easeBackIn</code><br><code>$Script:easeBackInOut</code><br><code>$Script:easeBackOutIn</code></td>
+                                <td><code>"BackEaseOut"</code><br><code>"BackEaseIn"</code><br><code>"BackEaseInOut"</code><br><code>"BackEaseOutIn"</code></td>
+                                <td>Pulls back slightly before moving or overshoots target before settling.</td>
+                            </tr>
+                            <tr data-family="Expo">
+                                <td><strong>Expo</strong></td>
+                                <td><code>$Script:easeExpoOut</code><br><code>$Script:easeExpoIn</code><br><code>$Script:easeExpoInOut</code><br><code>$Script:easeExpoOutIn</code></td>
+                                <td><code>"ExpoEaseOut"</code><br><code>"ExpoEaseIn"</code><br><code>"ExpoEaseInOut"</code><br><code>"ExpoEaseOutIn"</code></td>
+                                <td>Exponential curve (2^10). Highly snappy acceleration/deceleration.</td>
+                            </tr>
+                            <tr data-family="Circ">
+                                <td><strong>Circ</strong></td>
+                                <td><code>$Script:easeCircOut</code><br><code>$Script:easeCircIn</code><br><code>$Script:easeCircInOut</code><br><code>$Script:easeCircOutIn</code></td>
+                                <td><code>"CircEaseOut"</code><br><code>"CircEaseIn"</code><br><code>"CircEaseInOut"</code><br><code>"CircEaseOutIn"</code></td>
+                                <td>Circular arc curve (sqrt(1-t^2)). Sudden burst with sharp deceleration.</td>
+                            </tr>
+                            <tr data-family="Sine">
+                                <td><strong>Sine</strong></td>
+                                <td><code>$Script:easeSineOut</code><br><code>$Script:easeSineIn</code><br><code>$Script:easeSineInOut</code><br><code>$Script:easeSineOutIn</code></td>
+                                <td><code>"SineEaseOut"</code><br><code>"SineEaseIn"</code><br><code>"SineEaseInOut"</code><br><code>"SineEaseOutIn"</code></td>
+                                <td>Sinusoidal trigonometric curve. Gentle, organic transition.</td>
+                            </tr>
+                            <tr data-family="Power">
+                                <td><strong>Quad / Cubic / Quart / Quint</strong></td>
+                                <td><code>$Script:easeQuad*</code><br><code>$Script:easeCubic*</code><br><code>$Script:easeQuart*</code><br><code>$Script:easeQuint*</code></td>
+                                <td><code>"QuadEase*"</code><br><code>"CubicEase*"</code><br><code>"QuartEase*"</code><br><code>"QuintEase*"</code></td>
+                                <td>Polynomial power curves (t^2, t^3, t^4, t^5) providing progressively sharper curves.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Advanced Patterns -->
+            <section id="advanced-patterns">
+                <h2>💡 Advanced Recipes & Patterns</h2>
+
+                <h3>1. Chaining Multiple Animations</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>POWERSHELL</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div>
+                    <pre><code><span class="token-comment"># Move right, change color, then bounce down</span>
+<span class="token-variable">$t1</span> = [<span class="token-type">TweenMoveTo</span>]::new(<span class="token-variable">$btn</span>, [<span class="token-type">System.Drawing.Point</span>]::new(200, 50), 0.8, <span class="token-variable">$Script:easeCubicOut</span>)
+<span class="token-variable">$t1</span>.<span class="token-function">setOnComplete</span>({
+    <span class="token-variable">$c</span> = [<span class="token-type">TweenColorARGB</span>]::new(<span class="token-variable">$btn</span>, <span class="token-string">"BackColor"</span>, [<span class="token-type">System.Drawing.Color</span>]::Gray, [<span class="token-type">System.Drawing.Color</span>]::ForestGreen, 0.5, <span class="token-variable">$Script:easeLinear</span>)
+    <span class="token-variable">$c</span>.<span class="token-function">setOnComplete</span>({
+        [<span class="token-type">TweenMoveTo</span>]::new(<span class="token-variable">$btn</span>, [<span class="token-type">System.Drawing.Point</span>]::new(200, 200), 0.8, <span class="token-variable">$Script:easeBounceOut</span>)
+    })
+})</code></pre>
+                </div>
+
+                <h3>2. Injecting Custom Arguments into Callbacks</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>POWERSHELL</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div>
+                    <pre><code><span class="token-variable">$myTween</span> = [<span class="token-type">TweenMoveTo</span>]::new(<span class="token-variable">$panel</span>, [<span class="token-type">System.Drawing.Point</span>]::new(0, 0), 1.0, <span class="token-variable">$Script:easeExpoOut</span>)
+
+<span class="token-variable">$callback</span> = {
+    <span class="token-keyword">param</span>(<span class="token-variable">$tweenInstance</span>, <span class="token-variable">$customMsg</span>, <span class="token-variable">$nextState</span>)
+    <span class="token-function">Write-Host</span> <span class="token-string">"Finished on control: $($tweenInstance.control.Name)"</span>
+    <span class="token-function">Write-Host</span> <span class="token-string">"Message: $customMsg | State: $nextState"</span>
+}
+
+<span class="token-variable">$myTween</span>.<span class="token-function">setOnComplete</span>(<span class="token-variable">$callback</span>, @(<span class="token-string">"Drawer Opened"</span>, 1))</code></pre>
+                </div>
+
+                <h3>3. Staggered Animations</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>POWERSHELL</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div>
+                    <pre><code><span class="token-variable">$cards</span> = @(<span class="token-variable">$card1</span>, <span class="token-variable">$card2</span>, <span class="token-variable">$card3</span>, <span class="token-variable">$card4</span>)
+<span class="token-variable">$delayStep</span> = 0.1
+
+<span class="token-keyword">for</span> (<span class="token-variable">$i</span> = 0; <span class="token-variable">$i</span> -lt <span class="token-variable">$cards</span>.Count; <span class="token-variable">$i</span>++) {
+    <span class="token-variable">$dest</span> = [<span class="token-type">System.Drawing.Point</span>]::new(50, 50 + (<span class="token-variable">$i</span> * 60))
+    <span class="token-variable">$t</span> = [<span class="token-type">TweenMoveTo</span>]::new(<span class="token-variable">$cards</span>[<span class="token-variable">$i</span>], <span class="token-variable">$dest</span>, 0.6, <span class="token-variable">$Script:easeBackOut</span>)
+    <span class="token-variable">$t</span>.<span class="token-function">setDelay</span>(<span class="token-variable">$i</span> * <span class="token-variable">$delayStep</span>)
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- Running Demo -->
+            <section id="demo">
+                <h2>🎬 Running the Interactive Demo</h2>
+                <p>The repository includes a comprehensive WinForms test suite (<code>Demo.ps1</code>). Run it directly:</p>
+                <div class="code-block">
+                    <div class="code-header"><span>CMD / TERMINAL</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div>
+                    <pre><code>run.bat</code></pre>
+                </div>
+                <div class="code-block">
+                    <div class="code-header"><span>POWERSHELL</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div>
+                    <pre><code>PowerShell -NoProfile -ExecutionPolicy Bypass -File .\Demo.ps1</code></pre>
+                </div>
+            </section>
+
+            <!-- Technical Notes -->
+            <section id="tech-notes">
+                <h2>⚙️ Technical Notes & Best Practices</h2>
+                <div class="callout callout-important">
+                    <div class="callout-icon">⚠️</div>
+                    <div class="callout-body">
+                        <strong>WinForms STA Threading</strong>
+                        Animations execute on the main UI thread. Avoid blocking synchronous operations (such as <code>Start-Sleep</code>) during active tweens to prevent frame stutter.
+                    </div>
+                </div>
+                <p>
+                    <strong>Tick vs Real Time:</strong> Duration is converted into internal ticks (<code>ticks = durationInSeconds * refreshRate</code>). 
+                    If the UI is momentarily busy, ticks are counted sequentially, ensuring elements always land precisely at their target without skipping.
+                </p>
+            </section>
+
+            <!-- License -->
+            <section id="license">
+                <h2>📄 License & Credits</h2>
+                <p>
+                    Created by <strong>Olivier Selliez</strong> (<a href="mailto:olivier.selliez.dev@gmail.com">olivier.selliez.dev@gmail.com</a>).<br>
+                    Easing equations based on Robert Penner's Easing Functions.<br>
+                    Released under the <strong>MIT License</strong>.
+                </p>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>PowerShell Tween Library &bull; Created with ❤️ by Olivier Selliez</p>
+    </footer>
+
+    <!-- Interactive JS Logic -->
+    <script>
+        // Copy Code to Clipboard
+        function copyCode(btn) {
+            const pre = btn.closest('.code-block').querySelector('pre');
+            navigator.clipboard.writeText(pre.innerText).then(() => {
+                const originalText = btn.innerText;
+                btn.innerText = '✅ Copied!';
+                btn.style.background = 'var(--accent-emerald)';
+                btn.style.color = '#fff';
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.background = '';
+                    btn.style.color = '';
+                }, 2000);
+            });
+        }
+
+        // Live Easing Math Implementation
+        const PennerEasings = {
+            Linear: (t, b, c, d) => c * t / d + b,
+            BounceEaseOut: (t, b, c, d) => {
+                if ((t /= d) < (1 / 2.75)) return c * (7.5625 * t * t) + b;
+                else if (t < (2 / 2.75)) return c * (7.5625 * (t -= (1.5 / 2.75)) * t + 0.75) + b;
+                else if (t < (2.5 / 2.75)) return c * (7.5625 * (t -= (2.25 / 2.75)) * t + 0.9375) + b;
+                else return c * (7.5625 * (t -= (2.625 / 2.75)) * t + 0.984375) + b;
+            },
+            ElasticEaseOut: (t, b, c, d) => {
+                if ((t /= d) === 1) return b + c;
+                const p = d * 0.3;
+                const s = p / 4;
+                return (c * Math.pow(2, -10 * t) * Math.sin((t * d - s) * (2 * Math.PI) / p) + c + b);
+            },
+            BackEaseOut: (t, b, c, d) => {
+                const s = 1.70158;
+                return c * ((t = t / d - 1) * t * ((s + 1) * t + s) + 1) + b;
+            },
+            ExpoEaseOut: (t, b, c, d) => (t === d) ? b + c : c * (-Math.pow(2, -10 * t / d) + 1) + b,
+            CircEaseOut: (t, b, c, d) => {
+                const temp = (t / d) - 1;
+                return c * Math.sqrt(1 - (temp * temp)) + b;
+            },
+            QuadEaseOut: (t, b, c, d) => -c * (t /= d) * (t - 2) + b,
+            CubicEaseOut: (t, b, c, d) => c * ((t = t / d - 1) * t * t + 1) + b,
+            QuartEaseOut: (t, b, c, d) => -c * ((t = t / d - 1) * t * t * t - 1) + b,
+            QuintEaseOut: (t, b, c, d) => c * ((t = t / d - 1) * t * t * t * t + 1) + b,
+            SineEaseOut: (t, b, c, d) => c * Math.sin(t / d * (Math.PI / 2)) + b
+        };
+
+        // Interactive Orb Animation
+        const orb = document.getElementById('orb');
+        const stage = document.getElementById('stage');
+        const btnPlay = document.getElementById('btnPlay');
+        const easingSelect = document.getElementById('easingSelect');
+        const codePreview = document.getElementById('codePreview');
+        let animId = null;
+
+        function runOrbAnimation() {
+            if (animId) cancelAnimationFrame(animId);
+            const easingName = easingSelect.value;
+            codePreview.innerText = `$Script:ease${easingName}`;
+
+            const stageWidth = stage.clientWidth - 80 - 32; // track travel distance
+            const duration = 1200; // ms
+            const startTime = performance.now();
+
+            function frame(now) {
+                const elapsed = now - startTime;
+                const currentTick = Math.min(elapsed, duration);
+                const easeFn = PennerEasings[easingName] || PennerEasings.Linear;
+                const progress = easeFn(currentTick, 0, stageWidth, duration);
+
+                orb.style.transform = `translateX(${progress}px)`;
+
+                if (currentTick < duration) {
+                    animId = requestAnimationFrame(frame);
+                }
+            }
+
+            animId = requestAnimationFrame(frame);
+        }
+
+        btnPlay.addEventListener('click', runOrbAnimation);
+        easingSelect.addEventListener('change', runOrbAnimation);
+
+        // Filter Easing Table
+        function filterEasing(family) {
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const rows = document.querySelectorAll('#easingListTable tbody tr');
+            rows.forEach(row => {
+                if (family === 'all' || row.dataset.family === family) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Live Search Filter for Sidebar and Content
+        document.getElementById('docSearch').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            document.querySelectorAll('.sidebar .nav-item').forEach(item => {
+                const text = item.innerText.toLowerCase();
+                item.style.display = text.includes(query) ? 'flex' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>
