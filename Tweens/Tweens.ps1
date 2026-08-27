@@ -39,8 +39,14 @@ class Tween {
     # ScriptBlock to execute when the animation completes.
     [ScriptBlock]$onComplete
 
+    # Optional arguments to pass to the onComplete callback.
+    [System.Object[]]$onCompleteArgs
+
     # The delay before the animation starts, in seconds.
-    [int]$delay
+    [double]$delay
+
+    # Indicates whether the animation is currently paused.
+    [bool]$isPaused
 
     Tween () {
         <#
@@ -55,6 +61,7 @@ class Tween {
         $this.nbTicks = 0
         $this.onComplete = $null
         $this.delay = 0
+        $this.isPaused = $false
         $this.startTime = Get-Date # just used for logs
 
         $Script:tweensList.Add($this) | Out-Null
@@ -68,7 +75,16 @@ class Tween {
         $this.onComplete = $pCallBack
     }
 
-    [void]setDelay([int]$pDelay) {
+    [void]setOnComplete([scriptblock]$pCallBack, [System.Object[]]$pArgs) {
+        <#
+        .SYNOPSIS
+            Sets a callback function with optional arguments to be executed when the tween animation completes.
+        #>
+        $this.onComplete = $pCallBack
+        $this.onCompleteArgs = $pArgs
+    }
+
+    [void]setDelay([double]$pDelay) {
         <#
         .SYNOPSIS
             Sets a delay before the tween animation begins.
@@ -79,6 +95,26 @@ class Tween {
             The delay duration in seconds.
         #>
         $this.delay = $pDelay * $Script:refreshRate
+    }
+
+    [void]pause([bool]$isPause) {
+        <#
+        .SYNOPSIS
+            Pauses or resumes the tween animation.
+        .PARAMETER isPause
+            $true to pause the animation, $false to resume.
+        #>
+        $this.isPaused = $isPause
+    }
+
+    [void]stop() {
+        <#
+        .SYNOPSIS
+            Stops the tween animation and removes it from the active update list.
+        #>
+        if ($Script:tweensList.Contains($this)) {
+            $Script:tweensList.Remove($this)
+        }
     }
 
     [void]forceEnd() {
@@ -150,8 +186,6 @@ class TweenNumericString : Tween {
         $this.duration = $pDuration * $Script:refreshRate
 
         $this.delta = $this.endValue - $this.startValue
-
-        # $Script:tweensList.Add($this) | Out-Null
     }
 
 }
@@ -197,8 +231,6 @@ class TweenMoveTo : Tween {
 
         $this.startPos = [System.Drawing.Point]::new($pControl.Location.X, $pControl.Location.Y)
         $this.delta = [System.Drawing.Point]::new($this.destPos.X - $this.startPos.X, $this.destPos.Y - $this.startPos.Y)
-
-        # $Script:tweensList.Add($this) | Out-Null
     }
 
 }
@@ -246,8 +278,6 @@ class TweenProgressBar : Tween {
         $this.easing = $pEasing
 
         $this.delta = $pEndValue - $pStartValue
-
-        # $Script:tweensList.Add($this) | Out-Null
     }
 
 }
@@ -314,8 +344,6 @@ class TweenColorARGB : Tween {
         $this.deltaR = $pEndColor.R - $pStartColor.R
         $this.deltaG = $pEndColor.G - $pStartColor.G
         $this.deltaB = $pEndColor.B - $pStartColor.B
-
-        # $Script:tweensList.Add($this) | Out-Null
     }
 
 }
@@ -337,10 +365,13 @@ class TweenOpacity : Tween {
     # The total change in opacity.
     [double]$delta
 
-    TweenOpacity([Form]$pForm, [double]$pEndValue, [double]$pDuration, [string]$pEasing) {
+    TweenOpacity([Control]$pForm, [double]$pEndValue, [double]$pDuration, [string]$pEasing) {
         <#
         .SYNOPSIS
             Initializes a new instance of TweenOpacity.
+        .DESCRIPTION
+            This constructor sets up an animation for a Form's Opacity property, transitioning
+            it from an initial opacity to a target opacity over a specified duration with an easing function.
         .PARAMETER pForm
             The target Form.
         .PARAMETER pEndValue
@@ -352,7 +383,8 @@ class TweenOpacity : Tween {
         #>
         $this.control = $pForm
         $this.easing = $pEasing
-        $this.startValue = $pForm.Opacity
+        # $this.startValue = $pForm.Opacity
+        $this.startValue = 0.0
         $this.endValue = $pEndValue
         $this.duration = $pDuration * $Script:refreshRate
         $this.delta = $this.endValue - $this.startValue
@@ -384,8 +416,6 @@ class TweenWaiter : Tween {
         $this.control = $pControl
         $this.duration = $pDuration * $Script:refreshRate
         $this.onComplete = $pCallBack
-
-        # $Script:tweensList.Add($this) | Out-Null
     }
 
 }

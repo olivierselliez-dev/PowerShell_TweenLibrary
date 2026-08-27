@@ -663,13 +663,6 @@ function CreateInputs {
 
     #endregion
 
-    # [TweenWaiter]::new($Script:grBoxSettings, 0.00, { addControlToMainForm })
-    # [TweenWaiter]::new($panelAnimatedValue, 0.15, { addControlToGrBoxSettings })
-    # [TweenWaiter]::new($panelProgressBar, 0.25, { addControlToGrBoxSettings })
-    # [TweenWaiter]::new($panelColor, 0.30, { addControlToGrBoxSettings })
-    # [TweenWaiter]::new($panelAnimatedBtn, 0.32, { addControlToGrBoxSettings })
-    # [TweenWaiter]::new($panelAnimatedLabel, 0.33, { addControlToGrBoxSettings })
-
     [TweenWaiter]::new($Script:grBoxSettings, 0.00, { addControlToMainForm })
     [TweenWaiter]::new($panelAnimatedValue, 0.05, { addControlToGrBoxSettings })
     [TweenWaiter]::new($panelProgressBar, 0.10, { addControlToGrBoxSettings })
@@ -677,10 +670,20 @@ function CreateInputs {
     [TweenWaiter]::new($panelAnimatedBtn, 0.20, { addControlToGrBoxSettings })
     [TweenWaiter]::new($panelAnimatedLabel, 0.25, { addControlToGrBoxSettings })
 
-    [double]$duration = 0.4
+    
+
+    $panelAnimatedValue.ForeColor = [System.Drawing.Color]::FromArgb(0, $panelAnimatedValue.ForeColor.R, $panelAnimatedValue.ForeColor.G, $panelAnimatedValue.ForeColor.B)
+    $panelAnimatedValue.BackColor = [System.Drawing.Color]::FromArgb(0, $panelAnimatedValue.BackColor.R, $panelAnimatedValue.BackColor.G, $panelAnimatedValue.BackColor.B)
+    # $tw = [TweenOpacity]::new($panelAnimatedValue, 0.0, $duration, $easeSineIn)
+    # $tw.setDelay($delay)
+
+    <#
 
     # I wish I could tween the alpha of a pannel
     # instead fading all element one by one...
+
+    [double]$duration = 0.4
+    [double]$delay = 0.3
 
     #region AnimatedValue fade inputs
     $delay = 0.3
@@ -883,6 +886,8 @@ function CreateInputs {
     $t = [TweenColorARGB]::new($labelInstructions, "ForeColor", $Script:mainForm.BackColor, [System.Drawing.Color]::FromArgb(255, 100, 100, 100), $duration, $easeSineIn)
     $t.setDelay($delay)
     #endregion
+
+    #>
 
     # Manual adjustment of the GroupBox height
     $grBoxSettings.Height = $panelAnimatedLabel.Location.Y + $labelLabel.Height + 10

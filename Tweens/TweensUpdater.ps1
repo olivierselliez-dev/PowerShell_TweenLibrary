@@ -37,7 +37,7 @@ function TweensUpdate {
                 if ($tween.delay -ne 0) {
                     WaitDelay $tween
                 }
-                else {
+                elseif (-not $tween.isPaused) {
                     switch ($tween.GetType()) {
                         "TweenNumericString" {
                             NumericString $tween
@@ -60,11 +60,6 @@ function TweensUpdate {
                         Default { Write-Host "AnimationType not handled." }
                     }
                 }
-
-                if ($Script:tweensList.Count -eq 0) {
-                    break
-                }
-
             }
         }
         catch {

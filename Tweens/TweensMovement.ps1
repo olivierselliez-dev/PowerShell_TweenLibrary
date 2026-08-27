@@ -10,6 +10,26 @@
     Email: olivier.selliez.dev@gmail.com
 #>
 
+function Invoke-TweenCallback {
+    <#
+    .SYNOPSIS
+        Helper to execute a tween callback with proper arguments.
+    .DESCRIPTION
+        Invokes the onComplete ScriptBlock callback of a finished tween, passing the tween object
+        and any additional arguments configured in onCompleteArgs.
+    .PARAMETER tweenObj
+        The Tween instance whose onComplete callback should be executed.
+    #>
+    param($tweenObj)
+    if ($null -ne $tweenObj.onComplete) {
+        $callbackArgs = @($tweenObj)
+        if ($null -ne $tweenObj.onCompleteArgs) {
+            $callbackArgs += $tweenObj.onCompleteArgs
+        }
+        & $tweenObj.onComplete @callbackArgs
+    }
+}
+
 function NumericString {
     <#
     .SYNOPSIS
@@ -32,7 +52,7 @@ function NumericString {
     
     $val = Ease $tweenObj.easing $tweenObj.startValue $tweenObj.delta $tweenObj.nbTicks $tweenObj.duration
     
-    if (($tweenObj.nbTicks -gt $tweenObj.duration) -or ($tweenObj.endValue - $val -lt 0.05)) {
+    if ($tweenObj.nbTicks -gt $tweenObj.duration) {
         # animation ended
 
         # force end value
@@ -41,10 +61,7 @@ function NumericString {
         # Remove the tweenObject from the list of tweenObjects to animate
         $Script:tweensList.Remove($tweenObj)
 
-        # Execute callback if defined
-        if ($null -ne $tweenObj.onComplete) {
-            & $tweenObj.onComplete
-        }
+        Invoke-TweenCallback $tweenObj
     }
     else {        
        
@@ -78,7 +95,7 @@ function ProgressBar {
 
     $tweenObj.nbTicks++
     
-    if (($tweenObj.nbTicks -gt $tweenObj.duration) -or ($tweenObj.endValue - [double]$tweenObj.control.Value -lt 0.1)) {
+    if ($tweenObj.nbTicks -gt $tweenObj.duration) {
         # animation ended
 
         # force end value
@@ -87,10 +104,7 @@ function ProgressBar {
         # Remove the tweenObject from the list of tweenObjects to animate
         $Script:tweensList.Remove($tweenObj)
 
-        # Execute callback if defined
-        if ($null -ne $tweenObj.onComplete) {
-            & $tweenObj.onComplete
-        }
+        Invoke-TweenCallback $tweenObj
     }
     else {
         $val = Ease $tweenObj.easing $tweenObj.startValue $tweenObj.delta $tweenObj.nbTicks $tweenObj.duration
@@ -119,7 +133,7 @@ function MoveTo {
 
     $tweenObj.nbTicks++
     
-    if (($tweenObj.nbTicks -gt $tweenObj.duration) -or ($tweenObj.destPos -eq $tweenObj.control.Location)) {
+    if ($tweenObj.nbTicks -gt $tweenObj.duration) {
         # animation ended
         
         # force end value
@@ -128,10 +142,7 @@ function MoveTo {
         # Remove the tweenObject from the list of tweenObjects to animate
         $Script:tweensList.Remove($tweenObj)
 
-        # Execute callback if defined
-        if ($null -ne $tweenObj.onComplete) {
-            & $tweenObj.onComplete
-        }
+        Invoke-TweenCallback $tweenObj
     }
     else {
         # TODO Find a way to avoid the "new"
@@ -179,10 +190,7 @@ function ColorARGB {
         # Remove the tweenObject from the list of tweenObjects to animate
         $Script:tweensList.Remove($tweenObj)
 
-        # Execute callback if defined
-        if ($null -ne $tweenObj.onComplete) {
-            & $tweenObj.onComplete
-        }
+        Invoke-TweenCallback $tweenObj
     }
     else {
         $A = Ease $tweenObj.easing $tweenObj.startColor.A $tweenObj.deltaA $tweenObj.nbTicks $tweenObj.duration
@@ -204,8 +212,11 @@ function Opacity {
     <#
     .SYNOPSIS
         Updates the opacity of a Form during an animation.
+    .DESCRIPTION
+        Calculates the current opacity value based on elapsed ticks and the chosen easing function,
+        clamping the resulting value between 0.0 and 1.0 to update the Form's Opacity property.
     .PARAMETER tweenObj
-        The TweenOpacity object.
+        The TweenOpacity object containing the animation state and target Form.
     #>
 
     [CmdletBinding()]
@@ -226,16 +237,13 @@ function Opacity {
         # Remove from list
         $Script:tweensList.Remove($tweenObj)
 
-        # Execute callback
-        if ($null -ne $tweenObj.onComplete) {
-            & $tweenObj.onComplete
-        }
+        Invoke-TweenCallback $tweenObj
     }
     else {
         $val = Ease $tweenObj.easing $tweenObj.startValue $tweenObj.delta $tweenObj.nbTicks $tweenObj.duration
-        
+        Write-Host $val.ToString()
         # Form Opacity must be between 0 and 1
-        $tweenObj.control.Opacity = [Math]::Max(0, [Math]::Min(1, $val))
+        $tweenObj.control.Opacity = [Math]::Max(0.0, [Math]::Min(1.0, $val))
     }
 }
 
@@ -296,10 +304,7 @@ function Wait {
         # Remove the tweenObject from the list of tweenObjects to animate
         $Script:tweensList.Remove($tweenObj)
 
-        # Execute callback if defined
-        if ($null -ne $tweenObj.onComplete) {
-            & $tweenObj.onComplete
-        }
+        Invoke-TweenCallback $tweenObj
     }
 }
 
