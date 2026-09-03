@@ -1,3 +1,35 @@
+<#
+.SYNOPSIS
+    Update logic and mathematical easing engine for the Tweening library.
+.DESCRIPTION
+    This file provides the per-frame update functions for specific tween implementations
+    (Numeric strings, ProgressBars, Movement, and Colors) and the central easing 
+    function that computes interpolated values based on Penner's equations.
+.NOTES
+    Author: Olivier Selliez
+    Email: olivier.selliez.dev@gmail.com
+#>
+
+function Invoke-TweenCallback {
+    <#
+    .SYNOPSIS
+        Helper to execute a tween callback with proper arguments.
+    .DESCRIPTION
+        Invokes the onComplete ScriptBlock callback of a finished tween, passing the tween object
+        and any additional arguments configured in onCompleteArgs.
+    .PARAMETER tweenObj
+        The Tween instance whose onComplete callback should be executed.
+    #>
+    param($tweenObj)
+    if ($null -ne $tweenObj.onComplete) {
+        $callbackArgs = @($tweenObj)
+        if ($null -ne $tweenObj.onCompleteArgs) {
+            $callbackArgs += $tweenObj.onCompleteArgs
+        }
+        & $tweenObj.onComplete @callbackArgs
+    }
+}
+
 function NumericString {
     <#
     .SYNOPSIS
@@ -18,23 +50,20 @@ function NumericString {
 
     $tweenObj.nbTicks++
     
-    if (($tweenObj.nbTicks -gt $tweenObj.duration) -or ($tweenObj.endValue - [double]$tweenObj.control.Text -lt 0.1)) {
+    $val = Ease $tweenObj.easing $tweenObj.startValue $tweenObj.delta $tweenObj.nbTicks $tweenObj.duration
+    
+    if ($tweenObj.nbTicks -gt $tweenObj.duration) {
         # animation ended
+
+        # force end value
+        $tweenObj.control.Text = $tweenObj.endValue.ToString()
 
         # Remove the tweenObject from the list of tweenObjects to animate
         $Script:tweensList.Remove($tweenObj)
 
-        # Log some stuff
-        Write-Host $tweenObj.control.Name "animation ends. Duration :" $($(Get-Date) - $animationStartTime) "(supposed duration :" $($tweenObj.duration / $refreshRate) "sec.)"
-   
-        # Execute callback if defined
-        if ($null -ne $tweenObj.onComplete) {
-            & $tweenObj.onComplete
-        }
-
+        Invoke-TweenCallback $tweenObj
     }
-    else {
-        $val = Ease $tweenObj.easing $tweenObj.startValue $tweenObj.delta $tweenObj.nbTicks $tweenObj.duration
+    else {        
        
         if ($tweenObj.type -eq "double") {
             $tweenObj.control.Text = [Math]::Round($val, 2).ToString()
@@ -66,20 +95,16 @@ function ProgressBar {
 
     $tweenObj.nbTicks++
     
-    if (($tweenObj.nbTicks -gt $tweenObj.duration) -or ($tweenObj.endValue - [double]$tweenObj.control.Value -lt 0.1)) {
+    if ($tweenObj.nbTicks -gt $tweenObj.duration) {
         # animation ended
+
+        # force end value
+        $tweenObj.control.Value = $tweenObj.endValue
 
         # Remove the tweenObject from the list of tweenObjects to animate
         $Script:tweensList.Remove($tweenObj)
 
-        # Log some stuff
-        Write-Host $tweenObj.control.Name "animation ends. Duration :" $($(Get-Date) - $animationStartTime) "(supposed duration :" $($tweenObj.duration / $refreshRate) "sec.)"
-   
-        # Execute callback if defined
-        if ($null -ne $tweenObj.onComplete) {
-            & $tweenObj.onComplete
-        }
-
+        Invoke-TweenCallback $tweenObj
     }
     else {
         $val = Ease $tweenObj.easing $tweenObj.startValue $tweenObj.delta $tweenObj.nbTicks $tweenObj.duration
@@ -108,23 +133,16 @@ function MoveTo {
 
     $tweenObj.nbTicks++
     
-    if (($tweenObj.nbTicks -gt $tweenObj.duration) -or ($tweenObj.destPos -eq $tweenObj.control.Location)) {
+    if ($tweenObj.nbTicks -gt $tweenObj.duration) {
         # animation ended
         
-        # Fix the position to the destination
+        # force end value
         $tweenObj.control.Location = [System.Drawing.Point]::new($tweenObj.destPos.X, $tweenObj.destPos.Y)
         
         # Remove the tweenObject from the list of tweenObjects to animate
         $Script:tweensList.Remove($tweenObj)
 
-        # Log some stuff
-        Write-Host $tweenObj.control.Name "animation ends. Duration :" $($(Get-Date) - $animationStartTime) "(supposed duration :" $($tweenObj.duration / $refreshRate) "sec.)"
-   
-        # Execute callback if defined
-        if ($null -ne $tweenObj.onComplete) {
-            & $tweenObj.onComplete
-        }
-
+        Invoke-TweenCallback $tweenObj
     }
     else {
         # TODO Find a way to avoid the "new"
@@ -143,8 +161,8 @@ function ColorARGB {
     .SYNOPSIS
         Updates the color of a control for color transition animations.
     .DESCRIPTION
-        Calculates the current ARGB values using the specified easing algorithm and updates 
-        the control's ForeColor or BackColor property. Currently supports Label controls.
+        Calculates interpolated ARGB values using the specified easing algorithm and updates 
+        the control's ForeColor or BackColor property.
     .PARAMETER tweenObj
         The TweenColorARGB object containing the animation state, target color, and configuration.
     #>
@@ -160,46 +178,134 @@ function ColorARGB {
     
     if ($tweenObj.nbTicks -gt $tweenObj.duration) {
         # animation ended
-        
+
+        # force end value
+        if ($tweenObj.type -eq "ForeColor") {
+            $tweenObj.control.ForeColor = $tweenObj.endColor
+        }
+        else {
+            $tweenObj.control.BackColor = $tweenObj.endColor
+        }
+
         # Remove the tweenObject from the list of tweenObjects to animate
         $Script:tweensList.Remove($tweenObj)
 
-        # Log some stuff
-        Write-Host $tweenObj.control.Name "animation ends. Duration :" $($(Get-Date) - $animationStartTime) "(supposed duration :" $($tweenObj.duration / $refreshRate) "sec.)"
-   
-        # Execute callback if defined
-        if ($null -ne $tweenObj.onComplete) {
-            & $tweenObj.onComplete
-        }
-
+        Invoke-TweenCallback $tweenObj
     }
     else {
-        switch ($tweenObj.control.GetType()) {
+        $A = Ease $tweenObj.easing $tweenObj.startColor.A $tweenObj.deltaA $tweenObj.nbTicks $tweenObj.duration
+        $R = Ease $tweenObj.easing $tweenObj.startColor.R $tweenObj.deltaR $tweenObj.nbTicks $tweenObj.duration
+        $G = Ease $tweenObj.easing $tweenObj.startColor.G $tweenObj.deltaG $tweenObj.nbTicks $tweenObj.duration
+        $B = Ease $tweenObj.easing $tweenObj.startColor.B $tweenObj.deltaB $tweenObj.nbTicks $tweenObj.duration
 
-            "System.Windows.Forms.Label" { 
-
-                [System.Windows.Forms.Label]$label = $tweenObj.control
-
-                $A = Ease $tweenObj.easing $tweenObj.startColor.A $tweenObj.deltaA $tweenObj.nbTicks $tweenObj.duration
-                $R = Ease $tweenObj.easing $tweenObj.startColor.R $tweenObj.deltaR $tweenObj.nbTicks $tweenObj.duration
-                $G = Ease $tweenObj.easing $tweenObj.startColor.G $tweenObj.deltaG $tweenObj.nbTicks $tweenObj.duration
-                $B = Ease $tweenObj.easing $tweenObj.startColor.B $tweenObj.deltaB $tweenObj.nbTicks $tweenObj.duration
-
-                if ($tweenObj.type -eq "ForeColor") {
-                    $label.ForeColor = [System.Drawing.Color]::FromArgb($A, $R, $G, $B)
-                }
-                else { #BackColor
-                    $label.BackColor = [System.Drawing.Color]::FromArgb($A, $R, $G, $B)
-                }
-            }
-            
-            Default {
-                Write-Host "This type of control is not yet handled. Please implement it."
-            }
-
+        if ($tweenObj.type -eq "ForeColor") {
+            $tweenObj.control.ForeColor = [System.Drawing.Color]::FromArgb($A, $R, $G, $B)
+        }
+        else {
+            # BackColor
+            $tweenObj.control.BackColor = [System.Drawing.Color]::FromArgb($A, $R, $G, $B)
         }
     }
+}
 
+function Opacity {
+    <#
+    .SYNOPSIS
+        Updates the opacity of a Form during an animation.
+    .DESCRIPTION
+        Calculates the current opacity value based on elapsed ticks and the chosen easing function,
+        clamping the resulting value between 0.0 and 1.0 to update the Form's Opacity property.
+    .PARAMETER tweenObj
+        The TweenOpacity object containing the animation state and target Form.
+    #>
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [TweenOpacity]
+        $tweenObj
+    )
+
+    $tweenObj.nbTicks++
+    
+    if ($tweenObj.nbTicks -gt $tweenObj.duration) {
+        # animation ended
+
+        # force end value
+        $tweenObj.control.Opacity = $tweenObj.endValue
+
+        # Remove from list
+        $Script:tweensList.Remove($tweenObj)
+
+        Invoke-TweenCallback $tweenObj
+    }
+    else {
+        $val = Ease $tweenObj.easing $tweenObj.startValue $tweenObj.delta $tweenObj.nbTicks $tweenObj.duration
+        Write-Host $val.ToString()
+        # Form Opacity must be between 0 and 1
+        $tweenObj.control.Opacity = [Math]::Max(0.0, [Math]::Min(1.0, $val))
+    }
+}
+
+function WaitDelay {
+    <#
+    .SYNOPSIS
+        Handles the delay period before an animation starts.
+    .DESCRIPTION
+        Increments the tick count and checks if the assigned delay has passed. 
+        Once the delay is over, it resets ticks to zero to allow the actual animation sequence to begin.
+    .PARAMETER tweenObj
+        The Tween object currently in its delay phase.
+    #>
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [Tween]
+        $tweenObj
+    )
+
+    $tweenObj.nbTicks++
+    
+    if ($tweenObj.nbTicks -gt $tweenObj.delay) {
+        # animation ended
+
+        # force end value
+        $tweenObj.nbTicks = 0
+        $tweenObj.delay = 0
+    }
+    else {
+        Ease $easeLinear $tweenObj.delay $($tweenObj.delay * -1) $tweenObj.nbTicks $tweenObj.delay
+    }
+}
+
+function Wait {
+    <#
+    .SYNOPSIS
+        Processes a simple time-based wait (TweenWaiter).
+    .DESCRIPTION
+        Increments ticks until the specified duration is reached, then triggers the 
+        onComplete callback. This is used for sequencing or delayed logic without 
+        modifying control properties.
+    .PARAMETER tweenObj
+        The TweenWaiter object to process.
+    #>
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [Tween]
+        $tweenObj
+    )
+
+    $tweenObj.nbTicks++
+    
+    if ($tweenObj.nbTicks -gt $tweenObj.duration) {
+        # animation ended
+
+        # Remove the tweenObject from the list of tweenObjects to animate
+        $Script:tweensList.Remove($tweenObj)
+
+        Invoke-TweenCallback $tweenObj
+    }
 }
 
 function Ease {
@@ -209,7 +315,8 @@ function Ease {
     .DESCRIPTION
         Calculates the intermediate value of a property at a specific point in time (tick) using 
         standard Robert Penner easing equations. Supports Linear, Expo, Circ, Quad, Sine, Cubic, 
-        Quart, Quint, Elastic, Bounce, and Back algorithms with In, Out, InOut, and OutIn variations.
+        Quart, Quint, Elastic, Bounce, and Back algorithms with In, Out, InOut, and OutIn 
+        variations.
     .PARAMETER type
         The string identifier of the easing function to use.
     .PARAMETER startValue

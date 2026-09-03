@@ -1,54 +1,73 @@
-# The dynamic list of objets to animate :
+<#
+.SYNOPSIS
+    Animation engine and update loop for the Tweening library.
+.DESCRIPTION
+    This script manages the central timer and the global list of active animations.
+    It handles the frame-by-frame updates, delay management, and dispatching
+    to specific tween type handlers.
+.NOTES
+    Author: Olivier Selliez
+    Email: olivier.selliez.dev@gmail.com
+#>
+
+# The global list containing all active tween objects to be processed in the update loop.
 [System.Collections.ArrayList]$Script:tweensList = @()
 
 # Refresh rate per second
 $Script:refreshRate = 60
 
-# The timer object which call the Update funtion [refreshRate] per second
-[System.Windows.Forms.Timer]$timer = New-Object System.Windows.Forms.Timer
-$timer.Interval = 1 / $($Script:refreshRate * 2) * 1000 #TODO: understand why *2
-$timer.Add_Tick({ Update })
+# The WinForms timer used to drive the animation loop.
+[System.Windows.Forms.Timer]$Script:tweensTimer = New-Object System.Windows.Forms.Timer
+# The interval is calculated to match the target refresh rate.
+$Script:tweensTimer.Interval = 1 / $($Script:refreshRate * 2) * 1000 #TODO: understand why *2
+$Script:tweensTimer.Add_Tick({ TweensUpdate })
 
-function Update {
+function TweensUpdate {
     <#
     .SYNOPSIS
         Processes active animations on each timer tick.
     .DESCRIPTION
-        Iterates through the global list of tweens and dispatches each to its 
-        corresponding update function (NumericString, ProgressBar, MoveTo, or ColorARGB).
+        Iterates through the global list of tweens, handles individual delays, 
+        and dispatches each active tween to its corresponding property update function.
     #>
 
     if ($Script:tweensList.Count -gt 0) {
         try {
-            foreach ($tweenObj in $Script:tweensList) {
-                switch ($tweenObj.GetType()) {
-                    "TweenNumericString" {
-                        NumericString $tweenObj
-                    }
-                    "TweenProgressBar" {
-                        ProgressBar $tweenObj
-                    }
-                    "TweenMoveTo" { 
-                        MoveTo $tweenObj
-                    }
-                    "TweenColorARGB"{
-                        ColorARGB $tweenObj
-                    }
-                    Default { Write-Host "AnimationType not handled." }
+            foreach ($tween in $Script:tweensList) {
+                if ($tween.delay -ne 0) {
+                    WaitDelay $tween
                 }
-
-                if ($Script:tweensList.Count -eq 0) {
-                    break
+                elseif (-not $tween.isPaused) {
+                    switch ($tween.GetType()) {
+                        "TweenNumericString" {
+                            NumericString $tween
+                        }
+                        "TweenProgressBar" {
+                            ProgressBar $tween
+                        }
+                        "TweenMoveTo" { 
+                            MoveTo $tween
+                        }
+                        "TweenColorARGB" {
+                            ColorARGB $tween
+                        }
+                        "TweenOpacity" {
+                            Opacity $tween
+                        }
+                        "TweenWaiter" {
+                            Wait $tween
+                        }
+                        Default { Write-Host "AnimationType not handled." }
+                    }
                 }
-
             }
         }
         catch {
-            # Uncomment for debug :
+            # Debug logging (optional):
             # Write-Host $_.Exception.Message -ForegroundColor Red
-            # Otherwise :
-            # Do nothing
-            # It's just to avoid an error message because the list is modified during the foreach
+            
+            # Error handling to prevent crash when the collection is modified 
+            # during iteration (removal of completed tweens).
             # TODO : try to find a better solution
         }
     }

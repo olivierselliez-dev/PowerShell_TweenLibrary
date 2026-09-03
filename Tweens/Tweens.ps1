@@ -5,7 +5,12 @@
     This script defines a collection of classes used to handle different types of animations (Tweens). 
     It includes a base class for common animation logic and specialized classes for animating 
     control positions, numeric text values, progress bar levels, and ARGB colors.
+.NOTES
+    Author: Olivier Selliez
+    Email: olivier.selliez.dev@gmail.com
 #>
+
+using namespace System.Windows.Forms
 
 <#
 .SYNOPSIS
@@ -15,46 +20,114 @@
 #>
 class Tween {
 
-    <#
-    .NOTES
-        The control object targeted by this tween animation.
-    #>
+    # The control object targeted by this tween animation.
     [System.Object]$control
-    <#
-    .NOTES
-        The name of the easing function to apply to the animation (e.g., "Linear", "ExpoEaseOut").
-    #>
+
+    # The name of the easing function to apply to the animation (e.g., "Linear", "ExpoEaseOut").
     [string]$easing
-    <#
-    .NOTES
-        The number of ticks (frames) that have passed since the animation started.
-        This is used to track progress through the animation duration.
-    #>
+
+    # The number of ticks (frames) that have passed since the animation started.
+    # This is used to track progress through the animation duration.
     [int]$nbTicks
-    <#
-    .NOTES
-        The DateTime when the animation officially started, used for precise duration calculation and logging.
-    #>
+
+    # The DateTime when the animation officially started, used for precise duration calculation and logging.
     [DateTime]$startTime
-    <#
-    .NOTES
-        The total duration of the animation in internal ticks (not necessarily seconds).
-    #>
+
+    # The total duration of the animation in seconds.
     [double]$duration
 
-    <#
-    .NOTES
-        ScriptBlock to execute when the animation completes.
-    #>
+    # ScriptBlock to execute when the animation completes.
     [ScriptBlock]$onComplete
+
+    # Optional arguments to pass to the onComplete callback.
+    [System.Object[]]$onCompleteArgs
+
+    # The delay before the animation starts, in seconds.
+    [double]$delay
+
+    # Indicates whether the animation is currently paused.
+    [bool]$isPaused
 
     Tween () {
         <#
         .SYNOPSIS
             Initializes a new instance of the Tween class.
+        .DESCRIPTION
+            This constructor sets the initial state for a new tween animation,
+            including resetting tick count, clearing the onComplete callback,
+            and setting the delay to zero. It also records the start time
+            for logging purposes.
         #>
-        $this.nbTicks = 0 # probably useless, I guess the default value of int is 0
-        $this.startTime = Get-Date # just used for logs 
+        $this.nbTicks = 0
+        $this.onComplete = $null
+        $this.delay = 0
+        $this.isPaused = $false
+        $this.startTime = Get-Date # just used for logs
+
+        $Script:tweensList.Add($this) | Out-Null
+    }
+
+    [void]setOnComplete([scriptblock]$pCallBack) {
+        <#
+        .SYNOPSIS
+            Sets a callback function to be executed when the tween animation completes.
+        #>
+        $this.onComplete = $pCallBack
+    }
+
+    [void]setOnComplete([scriptblock]$pCallBack, [System.Object[]]$pArgs) {
+        <#
+        .SYNOPSIS
+            Sets a callback function with optional arguments to be executed when the tween animation completes.
+        #>
+        $this.onComplete = $pCallBack
+        $this.onCompleteArgs = $pArgs
+    }
+
+    [void]setDelay([double]$pDelay) {
+        <#
+        .SYNOPSIS
+            Sets a delay before the tween animation begins.
+        .DESCRIPTION
+            The delay is specified in seconds and is converted into internal ticks
+            based on the global refresh rate.
+        .PARAMETER pDelay
+            The delay duration in seconds.
+        #>
+        $this.delay = $pDelay * $Script:refreshRate
+    }
+
+    [void]pause([bool]$isPause) {
+        <#
+        .SYNOPSIS
+            Pauses or resumes the tween animation.
+        .PARAMETER isPause
+            $true to pause the animation, $false to resume.
+        #>
+        $this.isPaused = $isPause
+    }
+
+    [void]stop() {
+        <#
+        .SYNOPSIS
+            Stops the tween animation and removes it from the active update list.
+        #>
+        if ($Script:tweensList.Contains($this)) {
+            $Script:tweensList.Remove($this)
+        }
+    }
+
+    [void]forceEnd() {
+        <#
+        .SYNOPSIS
+            Forces the animation to immediately end.
+        .DESCRIPTION
+            This method sets the delay to zero and advances the animation's
+            tick count to its maximum duration, effectively completing it
+            on the next update cycle.
+        #>
+        $this.delay = 0
+        $this.nbTicks = $this.duration * $Script:refreshRate
     }
 }
 
@@ -67,27 +140,26 @@ class Tween {
 #>
 class TweenNumericString : Tween {
     
+    # The type of value to display: "double" (rounds to 2 decimal places) or "int" (default).
     [string]$type # double or int (default)
-    [double]$startValue
-    <#
-    .NOTES
-        The starting numeric value for the animation.
-    #>
-    [double]$endValue
-    <#
-    .NOTES
-        The target numeric value for the animation.
-    #>
-    [double]$delta
-    <#
-    .NOTES
-        The total change in value from startValue to endValue.
-    #>
     
-    TweenNumericString([System.Windows.Forms.Control]$pControl, [string]$pType, [double]$pStartValue, [double]$pEndValue, [double]$pDuration, [string]$pEasing, [ScriptBlock]$pOnComplete) {
+    # The starting numeric value for the animation.
+    [double]$startValue
+    
+    # The target numeric value for the animation.
+    [double]$endValue
+    
+    # The total change in value from startValue to endValue.
+    [double]$delta
+        
+    TweenNumericString([Control]$pControl, [string]$pType, [double]$pStartValue, [double]$pEndValue, [double]$pDuration, [string]$pEasing) {
         <#
         .SYNOPSIS
             Initializes a new instance of TweenNumericString.
+        .DESCRIPTION
+            This constructor sets up an animation for a numeric value displayed as a string
+            on a control. It validates the numeric type and calculates the total change
+            (delta) for the animation.
         .PARAMETER pControl
             The control object to be updated.
         .PARAMETER pType
@@ -100,9 +172,8 @@ class TweenNumericString : Tween {
             The duration of the animation in seconds.
         .PARAMETER pEasing
             The name of the easing function to apply.
-        .PARAMETER pOnComplete
-            Optional scriptblock to execute on completion.
         #>
+        
         if ($pType -notin @('int', 'double')) {
             throw "Invalid numeric type '$pType'. Supported values are 'int' or 'double'."
         }
@@ -113,10 +184,10 @@ class TweenNumericString : Tween {
         $this.startValue = $pStartValue
         $this.endValue = $pEndValue
         $this.duration = $pDuration * $Script:refreshRate
-        $this.onComplete = $pOnComplete
 
         $this.delta = $this.endValue - $this.startValue
     }
+
 }
 
 <#
@@ -127,42 +198,36 @@ class TweenNumericString : Tween {
 #>
 class TweenMoveTo : Tween {
    
+    # The starting position (X, Y coordinates) of the control.
     [System.Drawing.Point]$startPos
-    <#
-    .NOTES
-        The starting position (X, Y coordinates) of the control.
-    #>
+    
+    # The destination position (X, Y coordinates) for the control.
     [System.Drawing.Point]$destPos
-    <#
-    .NOTES
-        The destination position (X, Y coordinates) for the control.
-    #>
+    
+    # The total change in position (X, Y coordinates) from startPos to destPos.
     [System.Drawing.Point]$delta
-    <#
-    .NOTES
-        The total change in position (X, Y coordinates) from startPos to destPos.
-    #>
-
-    TweenMoveTo([System.Windows.Forms.Control]$pControl, [System.Drawing.Point]$pDestPos, [double]$pDururation, [string]$pEasing, [ScriptBlock]$pOnComplete) {
+    
+    TweenMoveTo([Control]$pControl, [System.Drawing.Point]$pDestPos, [double]$pDuration, [string]$pEasing) {
         <#
         .SYNOPSIS
             Initializes a new instance of TweenMoveTo.
+        .DESCRIPTION
+            This constructor prepares a tween animation to move a specified control
+            from its current location to a new destination point over a given duration,
+            using a defined easing function.
         .PARAMETER pControl
             The control to move.
         .PARAMETER pDestPos
             The destination Point.
-        .PARAMETER pDururation
+        .PARAMETER pDuration
             The duration of the movement in seconds.
         .PARAMETER pEasing
             The name of the easing function to apply.
-        .PARAMETER pOnComplete
-            Optional scriptblock to execute on completion.
         #>
         $this.control = $pControl
         $this.easing = $pEasing
         $this.destPos = $pDestPos
-        $this.duration = $pDururation * $Script:refreshRate
-        $this.onComplete = $pOnComplete
+        $this.duration = $pDuration * $Script:refreshRate
 
         $this.startPos = [System.Drawing.Point]::new($pControl.Location.X, $pControl.Location.Y)
         $this.delta = [System.Drawing.Point]::new($this.destPos.X - $this.startPos.X, $this.destPos.Y - $this.startPos.Y)
@@ -178,26 +243,23 @@ class TweenMoveTo : Tween {
 #>
 class TweenProgressBar : Tween {
 
+    # The initial value of the ProgressBar.
     [double]$startValue
-    <#
-    .NOTES
-        The initial value of the ProgressBar.
-    #>
+    
+    # The target value of the ProgressBar.
     [double]$endValue
-    <#
-    .NOTES
-        The target value of the ProgressBar.
-    #>
+    
+    # The total change in value from startValue to endValue for the ProgressBar.
     [double]$delta
-    <#
-    .NOTES
-        The total change in value from startValue to endValue for the ProgressBar.
-    #>
 
-    TweenProgressBar([System.Windows.Forms.ProgressBar]$pProgressBar, [double]$pStartValue, [double]$pEndValue, [double]$pDuration, [string]$pEasing, [ScriptBlock]$pOnComplete) {
+    TweenProgressBar([ProgressBar]$pProgressBar, [double]$pStartValue, [double]$pEndValue, [double]$pDuration, [string]$pEasing) {
         <#
         .SYNOPSIS
             Initializes a new instance of TweenProgressBar.
+        .DESCRIPTION
+            This constructor sets up an animation for a ProgressBar control,
+            transitioning its value from a starting percentage to an ending percentage
+            over a specified duration with a given easing function.
         .PARAMETER pProgressBar
             The target ProgressBar control.
         .PARAMETER pStartValue
@@ -208,15 +270,12 @@ class TweenProgressBar : Tween {
             The duration in seconds.
         .PARAMETER pEasing
             The name of the easing function to apply.
-        .PARAMETER pOnComplete
-            Optional scriptblock to execute on completion.
         #>
         $this.control = $pProgressBar
         $this.startValue = $pStartValue
         $this.endValue = $pEndValue
         $this.duration = $pDuration * $Script:refreshRate
         $this.easing = $pEasing
-        $this.onComplete = $pOnComplete
 
         $this.delta = $pEndValue - $pStartValue
     }
@@ -231,42 +290,35 @@ class TweenProgressBar : Tween {
 #>
 class TweenColorARGB : Tween {
 
+    # The starting color for the animation.
     [System.Drawing.Color]$startColor
-    <#
-    .NOTES
-        The starting color for the animation.
-    #>
+    
+    # The target color for the animation.
     [System.Drawing.Color]$endColor
-    <#
-    .NOTES
-        The target color for the animation.
-    #>
+    
+    # The total change in the Alpha channel (opacity) from startColor to endColor.
     [double]$deltaA
-    <#
-    .NOTES
-        The total change in the Alpha channel (opacity) from startColor to endColor.
-    #>
+    
+    # The total change in the Red channel from startColor to endColor.
     [double]$deltaR
-    <#
-    .NOTES
-        The total change in the Red channel from startColor to endColor.
-    #>
+    
+    # The total change in the Green channel from startColor to endColor.
     [double]$deltaG
-    <#
-    .NOTES
-        The total change in the Green channel from startColor to endColor.
-    #>
+    
+    # The total change in the Blue channel from startColor to endColor.
     [double]$deltaB
-    <#
-    .NOTES
-        The total change in the Blue channel from startColor to endColor.
-    #>
+    
+    # The property name of the color to change (e.g., "BackColor" or "ForeColor").
     [string]$type # "BackColor" or "ForeColor" (default)
 
-    TweenColorARGB([System.Windows.Forms.Control]$pControl, [string]$pType, [System.Drawing.Color]$pStartColor, [System.Drawing.Color]$pEndColor, [double]$pDuration, [string]$pEasing, [ScriptBlock]$pOnComplete) {
+    TweenColorARGB([Control]$pControl, [string]$pType, [System.Drawing.Color]$pStartColor, [System.Drawing.Color]$pEndColor, [double]$pDuration, [string]$pEasing) {
         <#
         .SYNOPSIS
             Initializes a new instance of TweenColorARGB.
+        .DESCRIPTION
+            This constructor creates a tween animation for a color property (like ForeColor or BackColor)
+            of a control, transitioning it from a starting color to an ending color over a specified
+            duration with a given easing function. It calculates the delta for each ARGB channel.
         .PARAMETER pControl
             The control whose color will be animated.
         .PARAMETER pType
@@ -279,8 +331,6 @@ class TweenColorARGB : Tween {
             The duration in seconds.
         .PARAMETER pEasing
             The name of the easing function to apply.
-        .PARAMETER pOnComplete
-            Optional scriptblock to execute on completion.
         #>
         
         $this.control = $pControl
@@ -289,12 +339,83 @@ class TweenColorARGB : Tween {
         $this.endColor = $pEndColor
         $this.duration = $pDuration * $Script:refreshRate
         $this.easing = $pEasing
-        $this.onComplete = $pOnComplete
         
         $this.deltaA = $pEndColor.A - $pStartColor.A
         $this.deltaR = $pEndColor.R - $pStartColor.R
         $this.deltaG = $pEndColor.G - $pStartColor.G
         $this.deltaB = $pEndColor.B - $pStartColor.B
+    }
+
+}
+
+<#
+.SYNOPSIS
+    Tween class for animating Form opacity.
+.DESCRIPTION
+    Inherits from Tween to transition a Form's Opacity property (0.0 to 1.0).
+#>
+class TweenOpacity : Tween {
+
+    # The starting opacity value.
+    [double]$startValue
+    
+    # The target opacity value.
+    [double]$endValue
+    
+    # The total change in opacity.
+    [double]$delta
+
+    TweenOpacity([Control]$pForm, [double]$pEndValue, [double]$pDuration, [string]$pEasing) {
+        <#
+        .SYNOPSIS
+            Initializes a new instance of TweenOpacity.
+        .DESCRIPTION
+            This constructor sets up an animation for a Form's Opacity property, transitioning
+            it from an initial opacity to a target opacity over a specified duration with an easing function.
+        .PARAMETER pForm
+            The target Form.
+        .PARAMETER pEndValue
+            The target opacity (between 0.0 and 1.0).
+        .PARAMETER pDuration
+            The duration in seconds.
+        .PARAMETER pEasing
+            The name of the easing function to apply.
+        #>
+        $this.control = $pForm
+        $this.easing = $pEasing
+        # $this.startValue = $pForm.Opacity
+        $this.startValue = 0.0
+        $this.endValue = $pEndValue
+        $this.duration = $pDuration * $Script:refreshRate
+        $this.delta = $this.endValue - $this.startValue
+    }
+}
+
+<#
+.SYNOPSIS
+    Tween class for executing a callback after a specified duration.
+.DESCRIPTION
+    Inherits from Tween to provide a simple timer mechanism that executes a ScriptBlock 
+    after a set amount of time. Useful for sequencing UI events or adding delayed elements.
+#>
+class TweenWaiter : Tween {
+
+    TweenWaiter([System.Object]$pControl, [double]$pDuration, [scriptblock]$pCallBack) {
+        <#
+        .SYNOPSIS
+            Initializes a new instance of TweenWaiter.
+        .DESCRIPTION
+            Sets up a delay-only tween that will trigger a callback once the duration expires.
+        .PARAMETER pControl
+            The object associated with this waiter (can be $null or a specific control).
+        .PARAMETER pDuration
+            The time to wait in seconds before executing the callback.
+        .PARAMETER pCallBack
+            The ScriptBlock to run upon completion.
+        #>
+        $this.control = $pControl
+        $this.duration = $pDuration * $Script:refreshRate
+        $this.onComplete = $pCallBack
     }
 
 }
