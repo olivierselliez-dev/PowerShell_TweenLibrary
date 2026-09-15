@@ -1,3 +1,7 @@
+<p align="center">
+  <img src=".github/social-preview.png" alt="PowerShell Tween Library Social Preview" width="100%">
+</p>
+
 # 🎬 PowerShell Tween Library
 
 [![PowerShell](https://img.shields.io/badge/PowerShell-5.1%20%7C%207%2B-blue.svg)](https://microsoft.com/PowerShell)
